@@ -1,0 +1,23 @@
+.wrapper {
+    display: flex;
+    margin-top: 60px;
+    padding: 0 25px;
+    background-color: rgb(255, 255, 255);
+
+    .global-chat {
+        position: fixed;
+        z-index: 100;
+        right: 40px;
+        bottom: 40px;
+    }
+
+    .side-bar {
+        flex: 1 0 20%;
+    }
+
+    .container {
+        margin-top: 16px;
+        padding-left: 20px;
+        flex: 2 0 80%;
+    }
+}

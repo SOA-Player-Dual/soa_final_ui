@@ -1,0 +1,207 @@
+@import 'swiper/scss';
+@import 'swiper/css/bundle';
+
+.wrapper {
+    width: inherit;
+
+    .slider {
+        width: 100%;
+        height: 250px;
+        border-radius: 25px;
+
+        .swiper-content {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            height: 100%;
+            border-radius: 25px;
+        }
+
+        .swiper-slide {
+            width: 100% !important;
+        }
+    }
+
+    .content {
+        margin-top: 32px;
+        width: inherit;
+    }
+
+    .search {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .filter {
+            display: flex;
+            align-items: center;
+
+            .filter__item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100px;
+                height: 35px;
+                padding: 8px;
+                font-size: 0.9rem;
+                margin-right: 8px;
+                border-radius: 25px;
+                outline: none;
+                border: 1px solid rgba(22, 24, 35, 0.3);
+                cursor: pointer;
+            }
+
+            .filter__gender {
+                height: 100%;
+            }
+
+            .filter__name {
+                width: 200px;
+            }
+        }
+
+        .btn__search {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 25px;
+            outline: none;
+            border: none;
+            width: 100px;
+            height: 35px;
+            background-color: var(--primary-color);
+            color: #fff;
+
+            &:hover {
+                cursor: pointer;
+                opacity: 0.7;
+            }
+
+            i {
+                margin-right: 4px;
+            }
+        }
+    }
+
+    .player {
+        margin-top: 20px;
+
+        .player__title {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .container {
+            display: grid;
+            grid-column: 1/4;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px;
+            grid-template-rows: 360px 360px;
+            margin-top: 16px;
+
+            .card {
+                background-color: rgb(255, 255, 255);
+                border-radius: 8px;
+                border: 1px solid rgba(22, 24, 35, 0.12);
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+                .card__image {
+                    width: 100%;
+                    height: 70%;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        border-top-left-radius: 8px;
+                        border-top-right-radius: 8px;
+                        border: none;
+                        outline: none;
+                        display: block;
+                    }
+                }
+
+                .card__info {
+                    padding: 8px;
+
+                    .card__info-name {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        font-weight: 600;
+
+                        .is__active {
+                            font-size: 0.6rem;
+                            color: #00ff00;
+                        }
+                    }
+
+                    .card__bio {
+                        padding: 0 0 12px 0;
+
+                        span {
+                            color: rgba(0, 0, 0, 0.5);
+                        }
+                    }
+
+                    .card__footer {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .game__play {
+                            display: flex;
+                            align-items: center;
+
+                            img {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                width: 23px;
+                                height: 23px;
+                                border-radius: 50%;
+                                object-fit: cover;
+                                margin-right: 4px;
+                                position: relative;
+                            }
+
+                            .game__count {
+                                width: 23px;
+                                height: 23px;
+                                position: relative;
+                                border-radius: 50%;
+                                background-size: cover;
+                                background-position: center;
+
+                                img {
+                                    display: block;
+                                    object-fit: cover;
+                                }
+
+                                .count {
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    color: #fff;
+                                    font-size: 0.7rem;
+                                    font-weight: 800;
+                                }
+                            }
+                        }
+
+                        //
+
+                        .rating {
+                            display: flex;
+                            align-items: center;
+
+                            color: #ffe234;
+                            span {
+                                color: #000;
+                                margin-left: 4px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
