@@ -11,10 +11,13 @@
     z-index: 100;
 
     .container {
-        min-width: 500px;
+        min-width: 700px;
         background-color: rgb(255, 255, 255);
         border-radius: 8px;
         box-shadow: var(--tooltip-boxshadow);
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        position: relative;
     }
 
     .heading {
@@ -25,7 +28,12 @@
         font-weight: 500;
         padding: 12px;
         border-bottom: 1px solid rgb(230, 230, 230);
-        position: relative;
+        position: fixed;
+        background-color: rgb(255, 255, 255);
+
+        top: 0;
+        left: 0;
+        right: 0;
 
         .close {
             width: 36px;
@@ -44,5 +52,9 @@
                 background-color: rgba(22, 24, 35, 0.2);
             }
         }
+    }
+
+    .content {
+        margin-top: 60px;
     }
 }

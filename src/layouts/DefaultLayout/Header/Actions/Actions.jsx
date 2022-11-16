@@ -33,39 +33,41 @@ function Actions() {
                     showModal={modalWithDraw}
                     setShowModal={() => dispatch(handleModalWithdraw(false))}
                 >
-                    alo
+                    Haha
                 </Modal>
             )}
             <div className={cx('wrapper')}>
-                <div className={cx('action__item')}>
-                    <i className={cx('fa-light', 'fa-medal')}></i>
-                </div>
-
-                <Tippy
-                    content={<Notifications />}
-                    trigger='click'
-                    placement='bottom-start'
-                    interactive
-                    arrow
-                    animation='scale'
-                    theme='light'
-                >
-                    <div className={cx('action__item')}>
-                        <i className={cx('fa-solid', 'fa-bell')}></i>
-                    </div>
-                </Tippy>
-
-                <Tippy content={'Messenger'}>
-                    <div
-                        className={cx('action__item')}
-                        onClick={handleClickMessenger}
-                    >
-                        <i className={cx('fab', ' fa-facebook-messenger')}></i>
-                    </div>
-                </Tippy>
-
                 {isUser ? (
-                    <Profile />
+                    <>
+                        <Tippy
+                            content={<Notifications />}
+                            trigger='click'
+                            placement='bottom-start'
+                            interactive
+                            arrow
+                            animation='scale'
+                            theme='light'
+                        >
+                            <div className={cx('action__item')}>
+                                <i className={cx('fa-solid', 'fa-bell')}></i>
+                            </div>
+                        </Tippy>
+
+                        <Tippy content={'Messenger'}>
+                            <div
+                                className={cx('action__item')}
+                                onClick={handleClickMessenger}
+                            >
+                                <i
+                                    className={cx(
+                                        'fab',
+                                        ' fa-facebook-messenger'
+                                    )}
+                                ></i>
+                            </div>
+                        </Tippy>
+                        <Profile />
+                    </>
                 ) : (
                     <div className={cx('auth__btn')}>
                         <Link to='/login'>

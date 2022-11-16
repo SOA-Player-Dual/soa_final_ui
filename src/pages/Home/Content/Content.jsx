@@ -13,7 +13,7 @@ function Content() {
                 <Swipers />
             </div>
             <div className={cx('content')}>
-                <div className={cx('search')}>
+                {/* <div className={cx('search')}>
                     <div className={cx('filter')}>
                         <select
                             name=''
@@ -43,7 +43,7 @@ function Content() {
                         ></i>
                         Search
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <PlayerCard />

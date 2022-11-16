@@ -96,6 +96,9 @@ function Body({ info_data, ratingRef }) {
                                     if (info_data.gallery_image.length === 1) {
                                         return (
                                             <div
+                                                onClick={() =>
+                                                    handleClick(data, index)
+                                                }
                                                 key={index}
                                                 className={cx('image__1')}
                                             >
@@ -107,6 +110,9 @@ function Body({ info_data, ratingRef }) {
                                     ) {
                                         return (
                                             <div
+                                                onClick={() =>
+                                                    handleClick(data, index)
+                                                }
                                                 key={index}
                                                 className={cx('image__2')}
                                             >
@@ -133,6 +139,9 @@ function Body({ info_data, ratingRef }) {
                                     } else if (index < 3) {
                                         return (
                                             <img
+                                                onClick={() =>
+                                                    handleClick(data, index)
+                                                }
                                                 key={index}
                                                 src={data}
                                                 alt=''
@@ -141,10 +150,17 @@ function Body({ info_data, ratingRef }) {
                                     } else if (index === 3) {
                                         return (
                                             <div
+                                                onClick={() =>
+                                                    handleClick(data, index)
+                                                }
                                                 key={index}
                                                 className={cx('image__more')}
                                                 style={{
-                                                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${data})`,
+                                                    backgroundImage: `${
+                                                        count > 0
+                                                            ? 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))'
+                                                            : 'linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))'
+                                                    } , url(${data})`,
                                                 }}
                                             >
                                                 <span
@@ -152,7 +168,9 @@ function Body({ info_data, ratingRef }) {
                                                         'image__count'
                                                     )}
                                                 >
-                                                    +{count}
+                                                    {count > 0
+                                                        ? `+${count}`
+                                                        : ''}
                                                 </span>
                                             </div>
                                         );
@@ -177,9 +195,60 @@ function Body({ info_data, ratingRef }) {
                                         className={cx('rating__item--content')}
                                     >
                                         <div className={cx('user')}>
-                                            <div className={cx('user__name')}>
-                                                Lisa
+                                            <div className={cx('header__user')}>
+                                                <div
+                                                    className={cx('user__name')}
+                                                >
+                                                    <span>Lisa</span>
+                                                    <div
+                                                        className={cx(
+                                                            'rating__time'
+                                                        )}
+                                                    >
+                                                        8/3/2022, 6:14:45 PM
+                                                    </div>
+                                                </div>
+
+                                                <div className={cx('ratings')}>
+                                                    <div
+                                                        className={cx(
+                                                            'ratings__star'
+                                                        )}
+                                                    >
+                                                        <i
+                                                            className={cx(
+                                                                'fa-solid',
+                                                                'fa-star'
+                                                            )}
+                                                        ></i>
+                                                        <i
+                                                            className={cx(
+                                                                'fa-solid',
+                                                                'fa-star'
+                                                            )}
+                                                        ></i>
+                                                        <i
+                                                            className={cx(
+                                                                'fa-solid',
+                                                                'fa-star'
+                                                            )}
+                                                        ></i>
+                                                        <i
+                                                            className={cx(
+                                                                'fa-solid',
+                                                                'fa-star'
+                                                            )}
+                                                        ></i>
+                                                        <i
+                                                            className={cx(
+                                                                'fa-solid',
+                                                                'fa-star'
+                                                            )}
+                                                        ></i>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                             <div
                                                 className={cx('user__comment')}
                                             >
@@ -192,47 +261,6 @@ function Body({ info_data, ratingRef }) {
                                                 content. Lorem ipsum may be used
                                                 as a placeholder before final
                                                 copy is available.
-                                            </div>
-                                        </div>
-
-                                        <div className={cx('ratings')}>
-                                            <div
-                                                className={cx('ratings__star')}
-                                            >
-                                                <i
-                                                    className={cx(
-                                                        'fa-solid',
-                                                        'fa-star'
-                                                    )}
-                                                ></i>
-                                                <i
-                                                    className={cx(
-                                                        'fa-solid',
-                                                        'fa-star'
-                                                    )}
-                                                ></i>
-                                                <i
-                                                    className={cx(
-                                                        'fa-solid',
-                                                        'fa-star'
-                                                    )}
-                                                ></i>
-                                                <i
-                                                    className={cx(
-                                                        'fa-solid',
-                                                        'fa-star'
-                                                    )}
-                                                ></i>
-                                                <i
-                                                    className={cx(
-                                                        'fa-solid',
-                                                        'fa-star'
-                                                    )}
-                                                ></i>
-                                            </div>
-
-                                            <div className={cx('rating__time')}>
-                                                8/3/2022, 6:14:45 PM
                                             </div>
                                         </div>
                                     </div>

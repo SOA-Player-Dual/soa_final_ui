@@ -1,16 +1,34 @@
+import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './SignUp.module.scss';
-import { Link } from 'react-router-dom';
 
 import login_bg from '@/assets/images/login-bg.png';
-import facebookIcon from '@/assets/icons/facebook.png';
-import googleIcon from '@/assets/icons/google.png';
+import logo from '@/assets/icons/logo.png';
 
 const cx = classNames.bind(styles);
 
 function SignUp() {
+    const navigate = useNavigate();
+    const handleClick = {
+        ridirectToSignIn: () => {
+            navigate('/login');
+        },
+    };
     return (
         <div className={cx('wrapper')}>
+            <div className={cx('heading')}>
+                <div className={cx('logo')}>
+                    <img className={cx('logo__image')} src={logo} alt='logo' />
+                    <span className={cx('logo__name')}>PLAYERDUAL</span>
+                </div>
+
+                <div className={cx('heading__action')}>
+                    <span>Already have account?</span>
+                    <button onClick={handleClick.ridirectToSignIn}>
+                        Sign in
+                    </button>
+                </div>
+            </div>
             <div className={cx('container')}>
                 <div className={cx('image')}>
                     <img
@@ -21,7 +39,11 @@ function SignUp() {
                 </div>
                 <div className={cx('form')}>
                     <div className={cx('form__container')}>
-                        <h3 className={cx('form__title')}>Sign up</h3>
+                        <div className={cx('logo')}>
+                            <div className={cx('logo__image')}>
+                                <img src={logo} alt='logo' />
+                            </div>
+                        </div>
                         <input
                             className={cx('form-control')}
                             type='text'
@@ -37,40 +59,6 @@ function SignUp() {
                         <button className={cx('form-control', 'form-btn')}>
                             Sign up
                         </button>
-
-                        <div className={cx('form__footer')}>
-                            <span>Or sign up with</span>
-                            <div className={cx('form__footer-container')}>
-                                <img
-                                    className={cx(
-                                        'form__footer-icon',
-                                        'facebook'
-                                    )}
-                                    src={facebookIcon}
-                                    alt='facebook'
-                                />
-                                <img
-                                    className={cx(
-                                        'form__footer-icon',
-                                        'google'
-                                    )}
-                                    src={googleIcon}
-                                    alt='google'
-                                />
-                            </div>
-                        </div>
-
-                        <div className={cx('register')}>
-                            <span>
-                                Already have an account?
-                                <Link
-                                    className={cx('resgister__direct')}
-                                    to='/login'
-                                >
-                                    Login
-                                </Link>
-                            </span>
-                        </div>
                     </div>
                 </div>
             </div>

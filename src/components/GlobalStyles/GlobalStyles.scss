@@ -3,6 +3,7 @@
 
 :root {
     --primary-color: #fe2c55;
+    --primary-color-hover: #de002c;
     --text-color: #333;
     --primary-boxshadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
     --box-boxshadow: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -108,6 +109,9 @@ a {
 
 // Custom tippy
 body {
+    #tippy-2 {
+        transform: translate3d(5px, 50px, 0px) !important;
+    }
     .tippy-box {
         border-radius: 8px;
         font-size: 1rem;
@@ -244,6 +248,8 @@ body {
 body {
     .offcanvas-header {
         border-bottom: 1px solid rgba(22, 24, 35, 0.1);
+
+        padding: 8px;
     }
 
     .offcanvas-backdrop {
@@ -263,6 +269,14 @@ body {
     .offcanvas.offcanvas-start {
         width: 35% !important;
         top: 60px !important;
+
+        @media screen and (max-width: 739px) {
+            width: 100% !important;
+        }
+
+        @media screen and (min-width: 740px) and (max-width: 1023px) {
+            width: 80% !important;
+        }
     }
 
     .offcanvas.offcanvas-bottom {
@@ -337,5 +351,18 @@ body {
             border-radius: 50%;
             background-color: #fe2c55;
         }
+    }
+}
+
+// Custom firebase
+body {
+    #firebaseui-container {
+        font-family: var(--font-family);
+        margin: 0;
+    }
+
+    .firebaseui-idp-list,
+    .firebaseui-tenant-list {
+        margin: 0;
     }
 }

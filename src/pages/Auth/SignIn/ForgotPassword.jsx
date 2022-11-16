@@ -37,11 +37,8 @@ function SignIn() {
                             Submit
                         </button>
 
-                        <div className={cx('register')}>
-                            <Link
-                                className={cx('resgister__direct')}
-                                to='/login'
-                            >
+                        <div className={cx('redirect__login')}>
+                            <Link className={cx('login__direct')} to='/login'>
                                 Back to login.
                             </Link>
                         </div>

@@ -21,7 +21,7 @@ const fake_data = {
     competitionRate: 90,
     price: 200,
     ratings: 12,
-    gallery_image: [rose_avatar, rose_cover, lol],
+    gallery_image: [rose_avatar, lol, rose_cover, rose_avatar, lol, rose_cover],
 };
 
 const name = fake_data.name;

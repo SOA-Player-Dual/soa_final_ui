@@ -37,6 +37,14 @@ function Modal({ title, children, showModal, setShowModal }) {
         return () => document.removeEventListener('keydown', keyProp);
     });
 
+    // Disable scroll when modal is open
+    useEffect(() => {
+        if (showModal) {
+            document.body.style.overflow = 'hidden';
+        }
+        return () => (document.body.style.overflow = 'unset');
+    }, [showModal]);
+
     return (
         <>
             {showModal ? (

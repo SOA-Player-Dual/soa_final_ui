@@ -4,32 +4,98 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgb(238, 174, 202);
-    background: radial-gradient(
-        circle,
-        rgba(238, 174, 202, 1) 0%,
-        rgba(148, 187, 233, 1) 100%
-    );
+
+    .heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        padding: 0 32px;
+
+        @media screen and (max-width: 1023px) {
+            padding: 0 8px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            .logo__image {
+                margin-right: 5px;
+                height: 40px;
+                display: block;
+            }
+
+            .logo__name {
+                font-family: 'Fredoka One', cursive;
+                font-size: 1.6rem;
+                word-spacing: 1px;
+                text-transform: uppercase;
+                background: linear-gradient(to right, #30cfd0 0%, #330867 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+
+                @media screen and (max-width: 321px) {
+                    display: none;
+                }
+            }
+        }
+
+        .heading__action {
+            span {
+                @media screen and (max-width: 739px) {
+                    display: none;
+                }
+            }
+            button {
+                margin-left: 10px;
+                width: fit-content;
+                height: 40px;
+                padding: 0 32px;
+                border-radius: 8px;
+                outline: none;
+                border: none;
+                background-color: var(--primary-color);
+                color: #fff;
+                font-weight: 500;
+
+                &:hover {
+                    background-color: var(--primary-color-hover);
+                }
+            }
+        }
+    }
 
     .container {
         display: flex;
-        width: 60%;
-        height: 60%;
-        border-radius: 8px;
+        align-items: center;
+        width: 70%;
+        border-radius: 16px;
+
+        @media screen and (max-width: 1365px) {
+            width: 100%;
+            padding: 0 32px;
+        }
+
+        @media screen and (max-width: 739px) {
+            padding: 0 8px;
+        }
 
         .image {
-            border-bottom-left-radius: 16px;
-            border-top-left-radius: 16px;
             flex: 2 0 60%;
 
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            background: rgba(255, 255, 255, 0.5);
+            @media screen and (max-width: 739px) {
+                display: none;
+            }
+
             .image__action {
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
-                border-bottom-left-radius: 16px;
-                border-top-left-radius: 16px;
                 user-select: none;
                 pointer-events: none;
             }
@@ -40,22 +106,33 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-bottom-right-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 16px;
-
-            background: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            background-color: rgb(255, 255, 255);
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+                rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
             .form__container {
                 width: 100%;
 
-                .form__title {
-                    font-size: 2.2rem;
-                    font-weight: 500;
-                    margin-bottom: 16px;
-                    text-align: center;
-                    color: black;
+                .logo {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 20px;
+
+                    .logo__image {
+                        width: 60px;
+                        height: 60px;
+                        text-align: center;
+
+                        img {
+                            display: block;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                        }
+                    }
                 }
 
                 .form-control {
@@ -64,14 +141,10 @@
                     margin-bottom: 16px;
                     padding: 8px;
                     border-radius: 8px;
-                    backdrop-filter: blur(1rem);
-                    border: 1px solid rgba(255, 255, 255, 0.25);
-                    border-top: 1px solid rgba(255, 255, 255, 0.5);
-                    border-left: 1px solid rgba(255, 255, 255, 0.5);
-                    background-color: rgba(255, 255, 255, 0.5);
+                    border: 1px solid rgba(22, 24, 35, 0.2);
 
                     &:focus {
-                        background-color: rgba(255, 255, 255, 0.02);
+                        border: 1px solid var(--primary-color);
                     }
                 }
 
@@ -82,38 +155,10 @@
                     font-weight: 500;
                     font-size: 1.2rem;
 
-                    background: rgb(
-                        244,
-                        175,
-                        194
-                    ); /* fallback for old browsers */
-                    background: -webkit-linear-gradient(
-                        to right,
-                        rgb(244, 175, 194),
-                        rgb(232, 114, 151)
-                    ); /* Chrome 10-25, Safari 5.1-6 */
-                    background: linear-gradient(
-                        to right,
-                        rgb(244, 175, 194),
-                        rgb(232, 114, 151)
-                    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+                    background-color: var(--primary-color);
                     &:hover {
                         cursor: pointer;
-                        opacity: 0.7;
-                    }
-                }
-                .forgot-password {
-                    display: flex;
-                    justify-content: flex-end;
-                    margin-bottom: 16px;
-                    color: var(--primary-color);
-                    margin-top: -8px;
-                    font-size: 0.9rem;
-
-                    &:hover {
-                        cursor: pointer;
-                        text-decoration: underline;
+                        background-color: var(--primary-color-hover);
                     }
                 }
 
