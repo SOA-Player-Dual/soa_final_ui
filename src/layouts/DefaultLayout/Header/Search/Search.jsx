@@ -16,8 +16,6 @@ function Search() {
     const [showResult, setShowResult] = useState(true);
     const [formSearchResponsive, setFormSearchResponsive] = useState(false);
 
-    console.log(formSearchResponsive);
-
     const handleClick = {
         openSearchResponsive: () => {
             setFormSearchResponsive((prev) => !prev);

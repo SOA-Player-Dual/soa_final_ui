@@ -6,7 +6,10 @@ import 'firebase/compat/auth';
 
 import { publicRoutes } from '@/routes';
 import { DefaultLayout } from '@/layouts';
+
 import { getAllGames } from '@/api/game_api';
+import { useDispatch } from 'react-redux';
+import { setGames } from '@/_redux/features/games/gamesSlice';
 // Store
 
 const config = {
@@ -15,15 +18,20 @@ const config = {
 };
 firebase.initializeApp(config);
 
-const getStore = async () => {
-    const gameRes = await getAllGames();
-
-    console.log('Game store: ', gameRes);
-};
-
-getStore();
-
 function App() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const getStore = async () => {
+            const gameRes = await getAllGames();
+            dispatch(setGames(gameRes.data));
+        };
+
+        getStore();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     useEffect(() => {
         const unregisterAuthObserver = firebase
             .auth()
