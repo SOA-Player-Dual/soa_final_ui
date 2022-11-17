@@ -6,14 +6,13 @@ import ModalEditProfile from './ModalEditProfile';
 import { handleModalEditProfile } from '@/_redux/features/modal/modalSlice';
 
 import styles from './Profile.module.scss';
-
+import ImageCover from '@/components/ImageCover';
 const cx = classNames.bind(styles);
 
 const isUser = false;
 
 function Header({ info_data, exeScrollRating }) {
     const dispatch = useDispatch();
-
     const modal = useSelector(
         (state) => state.modal.modalType.modalEditProfile
     );
@@ -27,22 +26,22 @@ function Header({ info_data, exeScrollRating }) {
             <div className={cx('header')}>
                 <div className={cx('header__container')}>
                     <div className={cx('cover__photo')}>
-                        <img src={info_data.coverImage} alt='' />
+                        <ImageCover src={info_data.coverImage || ''} alt='' />
                     </div>
                     <div className={cx('avatar')}>
                         <div className={cx('avatar__image')}>
-                            <img src={info_data.avatar} alt='' />
+                            <img src={info_data?.avatar || ''} alt='' />
                         </div>
                     </div>
 
                     <div className={cx('info')}>
                         <div className={cx('info__left')}>
                             <div className={cx('name')}>
-                                <span>{info_data.name}</span>
+                                <span>{info_data?.name}</span>
                                 {/* <div className={cx('follow-btn')}>Follow</div> */}
                             </div>
                             <div className={cx('game__play')}>
-                                {info_data.gamePlay.map((data, index) => {
+                                {info_data?.gamePlay?.map((data, index) => {
                                     return index < 5 ? (
                                         <img key={index} src={data} alt='' />
                                     ) : index === 5 ? (
@@ -66,17 +65,17 @@ function Header({ info_data, exeScrollRating }) {
                             <div className={cx('achie')}>
                                 <div className={cx('achie__item')}>
                                     <span>Follower</span>
-                                    <p>{info_data.follower}</p>
+                                    <p>{info_data?.follower || 0}</p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Has been active</span>
-                                    <p>{info_data.hasbeenActive} hours</p>
+                                    <p>{info_data?.hiredTime} hours</p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Completion rate</span>
-                                    <p>{info_data.competitionRate}%</p>
+                                    <p>{info_data?.completeRate}%</p>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +83,7 @@ function Header({ info_data, exeScrollRating }) {
                         <div className={cx('info__right')}>
                             <div className={cx('services')}>
                                 <div className={cx('info__price')}>
-                                    Price: <span>${info_data.price}</span>
+                                    Price: <span>${info_data?.fee}</span>
                                 </div>
                                 <div className={cx('info__rating')}>
                                     <i
@@ -102,7 +101,7 @@ function Header({ info_data, exeScrollRating }) {
                                     <i
                                         className={cx('fa-solid', 'fa-star')}
                                     ></i>
-                                    <span>({info_data.ratings} ratings)</span>
+                                    <span>({info_data?.ratings} ratings)</span>
                                 </div>
                             </div>
                             <div className={cx('info__action')}>

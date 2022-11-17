@@ -366,3 +366,10 @@ body {
         margin: 0;
     }
 }
+
+// ngprocsess
+body {
+    #nprogress .bar {
+        z-index: 1000000 !important;
+    }
+}

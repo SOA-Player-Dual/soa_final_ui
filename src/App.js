@@ -8,8 +8,11 @@ import { publicRoutes } from '@/routes';
 import { DefaultLayout } from '@/layouts';
 
 import { getAllGames } from '@/api/game_api';
+import { getProUsers } from '@/api/user_api';
+
 import { useDispatch } from 'react-redux';
 import { setGames } from '@/_redux/features/games/gamesSlice';
+import { setProUsers } from '@/_redux/features/user/userSlice';
 // Store
 
 const config = {
@@ -21,14 +24,26 @@ firebase.initializeApp(config);
 function App() {
     const dispatch = useDispatch();
 
+    // Get all games
     useEffect(() => {
-        const getStore = async () => {
+        const getGameStore = async () => {
             const gameRes = await getAllGames();
-            dispatch(setGames(gameRes.data));
+            dispatch(setGames(gameRes?.data));
         };
 
-        getStore();
+        getGameStore();
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Get all users
+    useEffect(() => {
+        const getProUsersFunc = async () => {
+            const userRes = await getProUsers();
+            dispatch(setProUsers(userRes?.user));
+        };
+
+        getProUsersFunc();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

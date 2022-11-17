@@ -1,5 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import classNames from 'classnames/bind';
+
+import { getUserByURLCode } from '@/api/user_api';
 
 import styles from './Profile.module.scss';
 import Header from './Header';
@@ -24,18 +27,34 @@ const fake_data = {
     gallery_image: [rose_avatar, lol, rose_cover, rose_avatar, lol, rose_cover],
 };
 
-const name = fake_data.name;
+// const name = fake_data.name;
 
 function Profile() {
-    //* Scroll to Rating
+    let { urlCode } = useParams();
+
+    const [profile, setProfile] = useState({});
+
+    // console.log('profile', JSON.parse(`${profile.album}`));
 
     useEffect(() => {
-        document.title = `${name}`;
-    });
+        const getProfile = async () => {
+            const res = await getUserByURLCode(urlCode);
+
+            setProfile(res);
+        };
+        getProfile();
+    }, [urlCode]);
+
+    useEffect(() => {
+        document.title = `${urlCode}`;
+
+        return () => {};
+    }, [urlCode]);
+
     return (
         <div className={cx('wrapper')}>
-            <Header info_data={fake_data} />
-            <BodyContent info_data={fake_data} />
+            <Header info_data={profile} />
+            <BodyContent info_data={profile} />
         </div>
     );
 }

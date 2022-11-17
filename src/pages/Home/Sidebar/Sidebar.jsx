@@ -7,8 +7,7 @@ import Image from '@/components/Image';
 const cx = classNames.bind(styles);
 
 function Sidebar() {
-    const gameList = useSelector((state) => state.games.games);
-    console.log('test game list: ', gameList[0]);
+    const gameList = useSelector((state) => state.games?.games);
     return (
         <div className={cx('wrapper')}>
             <span className={cx('title')}>Game list</span>

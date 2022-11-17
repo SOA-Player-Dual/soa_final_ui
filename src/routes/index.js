@@ -13,7 +13,7 @@ const publicRoutes = [
     { path: '/login', component: SignIn, layout: null },
     { path: '/register', component: SignUp, layout: null },
     { path: '/forgot-password', component: ForgotPassword, layout: null },
-    { path: '/profile', component: Profile },
+    { path: '/profile/:urlCode', component: Profile },
     { path: '/messenger', component: Messenger },
     { path: '/test', component: TestPage, layout: null },
 ];

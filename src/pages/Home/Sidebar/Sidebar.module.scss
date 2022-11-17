@@ -6,6 +6,12 @@
         color: var(--primary-color);
     }
 
+    .game {
+        @media screen and (max-width: 1023px) {
+            display: flex;
+        }
+    }
+
     .list-item {
         display: flex;
         align-items: center;
@@ -31,6 +37,10 @@
 
         .item__label {
             flex: 1;
+
+            @media screen and (max-width: 1023px) {
+                display: none;
+            }
         }
     }
 }

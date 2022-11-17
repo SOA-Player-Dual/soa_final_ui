@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SignIn.module.scss';
 import { useNavigate, Link } from 'react-router-dom';
+
+import { Login } from '@/api/user_api';
 
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/compat/app';
@@ -13,19 +16,24 @@ import google_logo from '@/assets/icons/google.png';
 const cx = classNames.bind(styles);
 
 const uiConfig = {
-    // Popup signin flow rather than redirect flow.
     signInFlow: 'popup',
-    // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
     signInSuccessUrl: '/',
-    // We will display Google and Facebook as auth providers.
     signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
 };
 
 function SignIn() {
     const navigate = useNavigate();
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
     const handleClick = {
         ridirectToSignUp: () => {
             navigate('/register');
+        },
+        Login: () => {
+            const res = Login(username, password);
+            console.log(res);
         },
     };
 
@@ -62,18 +70,25 @@ function SignIn() {
                         </div>
 
                         <input
+                            value={username}
                             className={cx('form-control')}
                             type='text'
-                            placeholder='Email'
+                            placeholder='Username'
+                            onChange={(e) => setUsername(e.target.value)}
                         />
 
                         <input
+                            value={password}
                             className={cx('form-control')}
                             type='password'
                             placeholder='Password'
+                            onChange={(e) => setPassword(e.target.value)}
                         />
 
-                        <button className={cx('form-control', 'form-btn')}>
+                        <button
+                            className={cx('form-control', 'form-btn')}
+                            onClick={handleClick.Login}
+                        >
                             Sign in
                         </button>
 
