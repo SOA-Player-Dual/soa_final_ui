@@ -48,13 +48,17 @@
             margin-top: 16px;
 
             a {
-                display: inline-block;
+                display: inherit;
             }
 
             @media screen and (max-width: 739px) {
                 grid-template-columns: minmax(0, 1fr);
                 gap: 8px;
                 grid-template-rows: 360px 360px 360px 360px 360px 360px 360px 360px;
+
+                a {
+                    display: inherit;
+                }
             }
 
             @media screen and (min-width: 740px) and (max-width: 1023px) {
@@ -74,6 +78,7 @@
                 border-radius: 8px;
                 border: 1px solid rgba(22, 24, 35, 0.12);
                 box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+                height: 100%;
 
                 &:hover {
                     cursor: pointer;
@@ -98,6 +103,7 @@
 
                 .card__info {
                     padding: 8px;
+                    height: 30%;
 
                     .card__info-name {
                         display: flex;

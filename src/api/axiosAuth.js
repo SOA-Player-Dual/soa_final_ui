@@ -1,5 +1,6 @@
 import axios from 'axios';
 import NProgress from 'nprogress';
+// import queryString from 'query-string';
 
 NProgress.configure({ showSpinner: false, trickleSpeed: 100 });
 
@@ -10,6 +11,9 @@ const axiosClient = axios.create({
         'Content-Type': 'application/json',
     },
     // withCredentials: true,
+    // paramsSerializer: (params) => {
+    //     return queryString.stringify(params, { arrayFormat: 'repeat' });
+    // },
 });
 
 axiosClient.interceptors.request.use(
@@ -27,12 +31,11 @@ axiosClient.interceptors.response.use(
     function (response) {
         NProgress.done();
 
-        // return response.data;
-        return response && response.data ? response.data : response;
+        return response;
     },
     function (error) {
         NProgress.done();
-        return error && error.response ? error.response : Promise.reject(error);
+        return Promise.reject(error);
     }
 );
 

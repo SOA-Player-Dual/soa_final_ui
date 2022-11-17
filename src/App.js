@@ -1,5 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { Fragment, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -7,12 +9,6 @@ import 'firebase/compat/auth';
 import { publicRoutes } from '@/routes';
 import { DefaultLayout } from '@/layouts';
 
-import { getAllGames } from '@/api/game_api';
-import { getProUsers } from '@/api/user_api';
-
-import { useDispatch } from 'react-redux';
-import { setGames } from '@/_redux/features/games/gamesSlice';
-import { setProUsers } from '@/_redux/features/user/userSlice';
 // Store
 
 const config = {
@@ -22,31 +18,6 @@ const config = {
 firebase.initializeApp(config);
 
 function App() {
-    const dispatch = useDispatch();
-
-    // Get all games
-    useEffect(() => {
-        const getGameStore = async () => {
-            const gameRes = await getAllGames();
-            dispatch(setGames(gameRes?.data));
-        };
-
-        getGameStore();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // Get all users
-    useEffect(() => {
-        const getProUsersFunc = async () => {
-            const userRes = await getProUsers();
-            dispatch(setProUsers(userRes?.user));
-        };
-
-        getProUsersFunc();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     useEffect(() => {
         const unregisterAuthObserver = firebase
             .auth()
@@ -61,6 +32,19 @@ function App() {
 
     return (
         <div className='App'>
+            <ToastContainer
+                position='bottom-left'
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme='light'
+            />
+
             <Routes>
                 {publicRoutes.map((route, index) => {
                     const Page = route.component;

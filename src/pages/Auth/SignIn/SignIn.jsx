@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import classNames from 'classnames/bind';
-import styles from './SignIn.module.scss';
 import { useNavigate, Link } from 'react-router-dom';
-
-import { Login } from '@/api/user_api';
+import { toast } from 'react-toastify';
+import jwt_decode from 'jwt-decode';
+import { useDispatch } from 'react-redux';
 
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
+import { Login } from '@/api/user_api';
+import { setUserAuth, setUserID } from '@/_redux/features/user/userSlice';
+
+import styles from './SignIn.module.scss';
 import login_bg from '@/assets/images/login-bg.png';
 import logo from '@/assets/icons/logo.png';
 import google_logo from '@/assets/icons/google.png';
+import useEnterKeyListener from '@/hooks/useEnterKeyListener';
 
 const cx = classNames.bind(styles);
 
@@ -23,17 +28,37 @@ const uiConfig = {
 
 function SignIn() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    useEnterKeyListener({
+        querySelectorToExecuteClick: '#submitLoginBtn',
+    });
 
     const handleClick = {
         ridirectToSignUp: () => {
             navigate('/register');
         },
-        Login: () => {
-            const res = Login(username, password);
-            console.log(res);
+        Login: async () => {
+            if (!username) {
+                toast.error('Please enter your username');
+                return;
+            }
+            if (!password) {
+                toast.error('Please enter your password');
+                return;
+            }
+
+            try {
+                const res = await Login(username, password);
+                const userID = jwt_decode(res?.data?.accessToken);
+                dispatch(setUserAuth(res?.data));
+                dispatch(setUserID(userID?.id));
+            } catch (error) {
+                toast.error(error?.response?.data?.error);
+            }
         },
     };
 
@@ -86,6 +111,7 @@ function SignIn() {
                         />
 
                         <button
+                            id='submitLoginBtn'
                             className={cx('form-control', 'form-btn')}
                             onClick={handleClick.Login}
                         >

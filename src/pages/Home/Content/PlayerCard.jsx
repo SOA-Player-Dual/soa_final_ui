@@ -15,10 +15,10 @@ function PlayerCard() {
 
     const handleClickToProfile = (urlCode) => {
         console.log(urlCode);
-        // navigate(`/profile/${urlCode}`);
+        navigate(`/profile/${urlCode}`);
     };
 
-    console.log('usersPro', usersPro);
+    // console.log('usersPro', usersPro);
     return (
         <div className={cx('player')}>
             <span className={cx('player__title')}>VIP PLAYER</span>
@@ -26,27 +26,26 @@ function PlayerCard() {
                 {usersPro?.map((player, index) =>
                     index < 8 ? (
                         // <Link to={`/profile/${player.urlCode}`}>
-
                         <div
                             key={player.urlCode}
                             className={cx('card')}
-                            // onClick={handleClickToProfile(player.urlCode)}
+                            onClick={() => handleClickToProfile(player.urlCode)}
                         >
-                            <Link to={`/profile/${player.urlCode}`}>
-                                <div className={cx('card__image')}>
-                                    <Image src={player.avatar} alt='' />
-                                </div>
-                                <div className={cx('card__info')}>
-                                    <div className={cx('card__info-name')}>
-                                        <span>{player.name}</span>
-                                        <span className={cx('is__active')}>
-                                            <i
-                                                className={cx(
-                                                    'fa-solid',
-                                                    'fa-circle'
-                                                )}
-                                            ></i>
-                                            {/* {player.isOnline ? (
+                            {/* <Link to={`/profile/${player.urlCode}`}> */}
+                            <div className={cx('card__image')}>
+                                <Image src={player.avatar} alt='' />
+                            </div>
+                            <div className={cx('card__info')}>
+                                <div className={cx('card__info-name')}>
+                                    <span>{player.name}</span>
+                                    <span className={cx('is__active')}>
+                                        <i
+                                            className={cx(
+                                                'fa-solid',
+                                                'fa-circle'
+                                            )}
+                                        ></i>
+                                        {/* {player.isOnline ? (
                                                     <i
                                                         className={cx(
                                                             'fa-solid',
@@ -62,14 +61,14 @@ function PlayerCard() {
                                                         )}
                                                     ></i>
                                                 )} */}
-                                        </span>
-                                    </div>
+                                    </span>
+                                </div>
 
-                                    <div className={cx('card__bio')}>
-                                        <span>{player.description}</span>
-                                    </div>
+                                <div className={cx('card__bio')}>
+                                    <span>{player.description}</span>
+                                </div>
 
-                                    {/* <div className={cx('card__footer')}>
+                                {/* <div className={cx('card__footer')}>
                                             <div className={cx('game__play')}>
                                                 {player.gamePlay.map((data, index) => {
                                                     const count =
@@ -111,10 +110,10 @@ function PlayerCard() {
                                                 <span>{player.rating}</span>
                                             </div>
                                         </div> */}
-                                </div>
-                            </Link>
+                            </div>
                         </div>
-                    ) : null
+                    ) : // </Link>
+                    null
                 )}
             </div>
         </div>

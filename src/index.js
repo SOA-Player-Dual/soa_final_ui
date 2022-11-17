@@ -4,7 +4,7 @@ import App from '@/App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyles from '@/components/GlobalStyles';
 import { BrowserRouter } from 'react-router-dom';
-import './pages/Home/Content/Content.module.scss';
+import 'nprogress/nprogress.css';
 
 import { Provider } from 'react-redux';
 import store from '@/_redux/store';
