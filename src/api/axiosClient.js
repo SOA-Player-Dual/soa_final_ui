@@ -28,11 +28,11 @@ axiosClient.interceptors.response.use(
         NProgress.done();
 
         // return response.data;
-        return response && response.data ? response.data : response;
+        return response;
     },
     function (error) {
         NProgress.done();
-        return error && error.response ? error.response : Promise.reject(error);
+        return Promise.reject(error);
     }
 );
 

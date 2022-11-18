@@ -1,5 +1,6 @@
 import axios from 'axios';
 import NProgress from 'nprogress';
+import { useSelector } from 'react-redux';
 // import queryString from 'query-string';
 
 NProgress.configure({ showSpinner: false, trickleSpeed: 100 });
@@ -10,15 +11,16 @@ const axiosClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    // withCredentials: true,
-    // paramsSerializer: (params) => {
-    //     return queryString.stringify(params, { arrayFormat: 'repeat' });
-    // },
 });
 
 axiosClient.interceptors.request.use(
     function (config) {
         NProgress.start();
+        console.log('test');
+
+        const accessToken = 'hehe';
+
+        console.log('accessToken', accessToken);
 
         return config;
     },

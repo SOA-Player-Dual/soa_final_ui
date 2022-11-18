@@ -5,7 +5,9 @@ const userSlice = createSlice({
     initialState: {
         user: {
             id: '',
+            information: {},
             auth: {},
+            isLogin: false,
         },
         usersPro: [],
     },
@@ -15,6 +17,9 @@ const userSlice = createSlice({
         },
         setUserAuth: (state, action) => {
             state.user.auth = action.payload;
+        },
+        setUser: (state, action) => {
+            state.user = action.payload;
         },
         setProUsers: (state, action) => {
             state.usersPro = action.payload;

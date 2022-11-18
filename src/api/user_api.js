@@ -6,7 +6,7 @@ const Login = (username, password) => {
 };
 
 const getProUsers = () => {
-    return axios.get('get-all-player');
+    return axios.get('user');
 };
 
 const getUserByURLCode = (urlCode) => {

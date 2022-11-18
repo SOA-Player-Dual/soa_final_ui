@@ -22,7 +22,8 @@ function Home() {
     useEffect(() => {
         const getGameStore = async () => {
             const gameRes = await getAllGames();
-            dispatch(setGames(gameRes?.data));
+
+            dispatch(setGames(gameRes?.data?.data));
         };
 
         getGameStore();
@@ -34,6 +35,7 @@ function Home() {
     useEffect(() => {
         const getProUsersFunc = async () => {
             const userRes = await getProUsers();
+            console.log('test user', userRes);
             dispatch(setProUsers(userRes?.user));
         };
 

@@ -1,10 +1,8 @@
 import classNames from 'classnames/bind';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './Content.module.scss';
-import teamFlight from '@/assets/icons/teamfight.jpg';
-import lol from '@/assets/icons/lol.jpg';
 import Image from '@/components/Image';
 
 const cx = classNames.bind(styles);
@@ -18,7 +16,6 @@ function PlayerCard() {
         navigate(`/profile/${urlCode}`);
     };
 
-    // console.log('usersPro', usersPro);
     return (
         <div className={cx('player')}>
             <span className={cx('player__title')}>VIP PLAYER</span>

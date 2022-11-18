@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -30,6 +30,9 @@ function SignIn() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const usernameRef = useRef(null);
+    const passwordRef = useRef(null);
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -44,18 +47,24 @@ function SignIn() {
         Login: async () => {
             if (!username) {
                 toast.error('Please enter your username');
+                usernameRef.current.focus();
                 return;
             }
             if (!password) {
                 toast.error('Please enter your password');
+                passwordRef.current.focus();
                 return;
             }
 
             try {
                 const res = await Login(username, password);
                 const userID = jwt_decode(res?.data?.accessToken);
+
+                console.log(res);
                 dispatch(setUserAuth(res?.data));
                 dispatch(setUserID(userID?.id));
+                // navigate('/');
+                toast.success('Login success!');
             } catch (error) {
                 toast.error(error?.response?.data?.error);
             }
@@ -95,6 +104,7 @@ function SignIn() {
                         </div>
 
                         <input
+                            ref={usernameRef}
                             value={username}
                             className={cx('form-control')}
                             type='text'
@@ -103,6 +113,7 @@ function SignIn() {
                         />
 
                         <input
+                            ref={passwordRef}
                             value={password}
                             className={cx('form-control')}
                             type='password'
