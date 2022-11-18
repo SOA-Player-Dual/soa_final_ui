@@ -6,26 +6,32 @@ const userSlice = createSlice({
         user: {
             id: '',
             information: {},
-            auth: {},
             isLogin: false,
         },
         usersPro: [],
     },
     reducers: {
-        setUserID: (state, action) => {
+        login: (state, action) => {
             state.user.id = action.payload;
+            state.user.isLogin = true;
         },
-        setUserAuth: (state, action) => {
-            state.user.auth = action.payload;
+
+        setUserInformation: (state, action) => {
+            state.user.information = action.payload;
         },
-        setUser: (state, action) => {
-            state.user = action.payload;
+
+        logout: (state) => {
+            state.user.id = '';
+            state.user.information = {};
+            state.user.isLogin = false;
         },
+
         setProUsers: (state, action) => {
             state.usersPro = action.payload;
         },
     },
 });
 
-export const { setProUsers, setUserID, setUserAuth } = userSlice.actions;
+export const { login, setUserInformation, logout, setProUsers } =
+    userSlice.actions;
 export default userSlice.reducer;

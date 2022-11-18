@@ -1,16 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import jwt_decode from 'jwt-decode';
-import { useDispatch, useStore } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
-import { Login } from '@/api/user_api';
-import { setUserAuth, setUserID } from '@/_redux/features/user/userSlice';
+import authApi from '@/api/authApi';
+import { login } from '@/_redux/features/user/userSlice';
 
 import styles from './SignIn.module.scss';
 import login_bg from '@/assets/images/login-bg.png';
@@ -57,11 +57,14 @@ function SignIn() {
             }
 
             try {
-                const res = await Login(username, password);
-                const userID = jwt_decode(res?.data?.accessToken);
-                localStorage.setItem('accessToken', res?.data?.accessToken);
-                dispatch(setUserID(userID?.id));
-                // navigate('/');
+                const { data } = await authApi.post('v1/auth/login', {
+                    username,
+                    password,
+                });
+                const userID = jwt_decode(data?.accessToken);
+                localStorage.setItem('accessToken', data?.accessToken);
+                dispatch(login(userID?.id));
+                navigate('/');
                 toast.success('Login success!');
             } catch (error) {
                 toast.error(error?.response?.data?.error);
@@ -107,7 +110,7 @@ function SignIn() {
                             className={cx('form-control')}
                             type='text'
                             placeholder='Username'
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => setUsername(e.target.value.trim())}
                         />
 
                         <input
@@ -116,7 +119,7 @@ function SignIn() {
                             className={cx('form-control')}
                             type='password'
                             placeholder='Password'
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value.trim())}
                         />
 
                         <button

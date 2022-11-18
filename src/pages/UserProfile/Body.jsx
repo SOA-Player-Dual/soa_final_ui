@@ -7,15 +7,21 @@ import {
     setCurrentIndex,
 } from '@/_redux/features/previewer/previewerSlice';
 
-import Image from '@/components/Image';
 import ImagePreviewer from '@/components/ImagePreviewer';
 
 import styles from './Profile.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Body({ info_data, ratingRef }) {
+function Body({ ratingRef }) {
     const distpach = useDispatch();
+
+    const user = useSelector((state) => state?.user?.user?.information);
+
+    let albumGallery = [];
+    if (user?.player?.album) {
+        albumGallery = JSON.parse(`${user?.player?.album}`);
+    }
 
     const imgPreviewer = useSelector((state) => state.previewer.previewer);
     // * Image preview
@@ -24,11 +30,6 @@ function Body({ info_data, ratingRef }) {
         distpach(setCurrentIndex(index));
         distpach(setClickedImg(item));
     };
-
-    let albumGallery = [];
-    if (info_data?.player?.album) {
-        albumGallery = JSON.parse(`${info_data?.player?.album}`);
-    }
 
     //* Truncate text
     const _text = `💬 Hi mn. Tôi tên Chi 🤍`;
@@ -54,13 +55,13 @@ function Body({ info_data, ratingRef }) {
                     <div className={cx('container__box', 'intro')}>
                         <div className={cx('title')}>Intro</div>
                         <div className={cx('intro__bio')}>
-                            <span>{info_data?.player?.description}</span>
+                            <span>{user?.description}</span>
                         </div>
                         <hr />
                         <div className={cx('intro__birtday')}>
                             <i className={cx('fa-thin', 'fa-cake-candles')}></i>
                             <div className={cx('info')}>
-                                <p>{info_data?.dateOfBirth}</p>
+                                <p>{user?.dateOfBirth}</p>
                                 <span>Birthday</span>
                             </div>
                         </div>
@@ -79,7 +80,7 @@ function Body({ info_data, ratingRef }) {
                                     ></i>
                                 </div>
                             </div>
-                            {info_data?.caption && (
+                            {user?.caption && (
                                 <div
                                     ref={ref}
                                     key={key}
@@ -198,10 +199,7 @@ function Body({ info_data, ratingRef }) {
                             <div className={cx('rating')}>
                                 <div className={cx('rating__item')}>
                                     <div className={cx('rating__item--avatar')}>
-                                        <Image
-                                            src={info_data?.avatar || ''}
-                                            alt=''
-                                        />
+                                        <img src={user.avatar} alt='' />
                                     </div>
                                     <div
                                         className={cx('rating__item--content')}
@@ -211,9 +209,7 @@ function Body({ info_data, ratingRef }) {
                                                 <div
                                                     className={cx('user__name')}
                                                 >
-                                                    <span>
-                                                        {info_data?.name}
-                                                    </span>
+                                                    <span>{user.name}</span>
                                                     <div
                                                         className={cx(
                                                             'rating__time'

@@ -9,10 +9,9 @@ const cx = classNames.bind(styles);
 
 function PlayerCard() {
     const navigate = useNavigate();
-    const usersPro = useSelector((state) => state?.user?.usersPro);
+    const usersPro = useSelector((state) => state?.player?.playersPro);
 
     const handleClickToProfile = (urlCode) => {
-        console.log(urlCode);
         navigate(`/profile/${urlCode}`);
     };
 
@@ -24,13 +23,15 @@ function PlayerCard() {
                     index < 8 ? (
                         // <Link to={`/profile/${player.urlCode}`}>
                         <div
-                            key={player.urlCode}
+                            key={player.user.urlCode}
                             className={cx('card')}
-                            onClick={() => handleClickToProfile(player.urlCode)}
+                            onClick={() =>
+                                handleClickToProfile(player.user.urlCode)
+                            }
                         >
                             {/* <Link to={`/profile/${player.urlCode}`}> */}
                             <div className={cx('card__image')}>
-                                <Image src={player.avatar} alt='' />
+                                <Image src={player.user.avatar} alt='' />
                             </div>
                             <div className={cx('card__info')}>
                                 <div className={cx('card__info-name')}>

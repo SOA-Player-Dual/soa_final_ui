@@ -385,3 +385,16 @@ body {
         z-index: 100001;
     }
 }
+
+// star rating
+
+body {
+    .star-container {
+        padding: 0 !important;
+    }
+
+    .widget-svg {
+        width: 25px !important;
+        height: 25px !important;
+    }
+}

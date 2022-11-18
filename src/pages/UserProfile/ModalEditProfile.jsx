@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import LoadingIcon from '@/layouts/LoadingIcon';
+
+import userApi from '@/api/userApi';
+import imgbbApi from '@/api/imgbbApi';
+
+import { setUserInformation } from '@/_redux/features/user/userSlice';
 
 import Modal from '@/components/Modal';
 import styles from './Profile.module.scss';
@@ -9,8 +16,14 @@ import Image from '@/components/Image';
 
 const cx = classNames.bind(styles);
 
-function ModalEditProfile({ data }) {
+function ModalEditProfile() {
     const dispatch = useDispatch();
+
+    const [loadingNickName, setLoadingNickName] = useState(false);
+    const [loadingAvatar, setLoadingAvatar] = useState(false);
+
+    const user = useSelector((state) => state?.user?.user?.information);
+
     const modal = useSelector(
         (state) => state.modal.modalType.modalEditProfile
     );
@@ -22,17 +35,57 @@ function ModalEditProfile({ data }) {
     const [bioForm, setBioForm] = useState(false);
 
     const [avatar, setAvatar] = useState('');
-    // const [nickname, setNickname] = useState('');
+    const [nickname, setNickname] = useState(user?.nickname);
+
+    console.log('avartar value: ', avatar);
     // const [username, setUsername] = useState('');
     // const [birthday, setBirthday] = useState('');
     // const [gender, setGender] = useState('');
     // const [bio, setBio] = useState('');
-    const [previewAvatar, setPreviewAvatar] = useState(data.avatar);
+    const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
+
+    const handleUpdateProfile = async () => {
+        if (!nickname) {
+            toast.error('Nickname is required');
+            return;
+        }
+
+        try {
+            setLoadingNickName(true);
+            const { data } = await userApi.put('v1/user', { nickname });
+            dispatch(setUserInformation(data?.data?.user));
+            toast.success('Update nickname successfully!');
+            setLoadingNickName(false);
+            setNicknameForm(false);
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+            setLoadingNickName(false);
+        }
+    };
 
     const handleUploadAvatar = (e) => {
         if (e.target && e.target.files && e.target.files[0]) {
             setPreviewAvatar(URL.createObjectURL(e.target.files[0]));
             setAvatar(e.target.files[0]);
+        }
+    };
+
+    const handleUpdateAvatar = async () => {
+        const formData = new FormData();
+        formData.append('image', avatar);
+        try {
+            setLoadingAvatar(true);
+            const res = await imgbbApi.post('upload', formData);
+            setLoadingAvatar(false);
+            console.log('Avatar imgbb: ', res);
+            const { newAvatar } = await userApi.put('v1/user', {
+                avatar: res?.data?.data?.display_url,
+            });
+
+            console.log('newAvatar: ', newAvatar);
+        } catch (error) {
+            setLoadingAvatar(false);
+            console.log(error);
         }
     };
 
@@ -97,6 +150,32 @@ function ModalEditProfile({ data }) {
                                 <Image src={''} alt='' />
                             </div>
                         )}
+                        {previewAvatar && (
+                            <div
+                                className={cx(
+                                    'content__edit',
+                                    'content__edit-avatar'
+                                )}
+                            >
+                                <div className={cx('form__action')}>
+                                    <button
+                                        onClick={() => {
+                                            setPreviewAvatar(user?.avatar);
+                                            setAvatar('');
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    {loadingAvatar ? (
+                                        <LoadingIcon />
+                                    ) : (
+                                        <button onClick={handleUpdateAvatar}>
+                                            Save
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -120,20 +199,34 @@ function ModalEditProfile({ data }) {
                         {nicknameForm ? (
                             <div className={cx('content__edit')}>
                                 <div className={cx('form__input')}>
-                                    <input type='text' value={'Rose'} />
+                                    <input
+                                        type='text'
+                                        value={nickname}
+                                        onChange={(e) =>
+                                            setNickname(e.target.value)
+                                        }
+                                    />
                                 </div>
                                 <div className={cx('form__action')}>
                                     <button
-                                        onClick={() => setNicknameForm(false)}
+                                        onClick={() => {
+                                            setNicknameForm(false);
+                                        }}
                                     >
                                         Cancel
                                     </button>
-                                    <button>Save</button>
+                                    {loadingNickName ? (
+                                        <LoadingIcon />
+                                    ) : (
+                                        <button onClick={handleUpdateProfile}>
+                                            Save
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ) : (
                             <div className={cx('display__name')}>
-                                <span>Rose</span>
+                                <span>{user?.nickname}</span>
                             </div>
                         )}
                     </div>

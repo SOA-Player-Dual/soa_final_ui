@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 
-import { getAllGames } from '@/api/game_api';
-import { getProUsers } from '@/api/user_api';
+import gameApi from '@/api/gameApi';
+import userApi from '@/api/userApi';
 
+import { setUserInformation } from '@/_redux/features/user/userSlice';
 import { setGames } from '@/_redux/features/games/gamesSlice';
-import { setProUsers } from '@/_redux/features/user/userSlice';
+import { setPlayersPro } from '@/_redux/features/player/playerSlice';
 
 import styles from './Home.module.scss';
 import GlobalChat from './GlobalChat';
@@ -18,30 +19,50 @@ const cx = classNames.bind(styles);
 function Home() {
     const dispatch = useDispatch();
 
+    const userID = useSelector((state) => state?.user?.user.id);
+
+    const checkPlayerPro = useSelector((state) => state?.player?.playersPro);
+    const checkListGames = useSelector((state) => state?.games?.games);
+    const checkUserInformation = useSelector(
+        (state) => state?.user?.user?.information
+    );
+
+    console.log('checkUserInformation', checkUserInformation);
+
+    console.log(
+        'checkPlayerPro',
+        Object.getOwnPropertyNames(checkUserInformation).length === 0
+    );
+
     // Get all games
     useEffect(() => {
+        const getUserInformation = async () => {
+            if (Object.getOwnPropertyNames(checkUserInformation).length === 0) {
+                const { data } = await userApi.get(`v1/user/id/${userID}`);
+                dispatch(setUserInformation(data?.data?.user));
+            }
+        };
+
         const getGameStore = async () => {
-            const gameRes = await getAllGames();
-
-            dispatch(setGames(gameRes?.data?.data));
+            if (!checkListGames.length) {
+                const { data } = await gameApi.get('v1/game');
+                dispatch(setGames(data?.data?.data));
+            }
         };
 
-        getGameStore();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // Get all users
-    useEffect(() => {
         const getProUsersFunc = async () => {
-            const userRes = await getProUsers();
-            console.log('test user', userRes);
-            dispatch(setProUsers(userRes?.user));
+            if (!checkPlayerPro.length) {
+                const { data } = await userApi.get('v1/player');
+                dispatch(setPlayersPro(data?.data?.user));
+            }
         };
-
         getProUsersFunc();
+        getGameStore();
+        getUserInformation();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('global-chat')}>

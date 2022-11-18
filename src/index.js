@@ -4,20 +4,25 @@ import App from '@/App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyles from '@/components/GlobalStyles';
 import { BrowserRouter } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
 import 'nprogress/nprogress.css';
 
 import { Provider } from 'react-redux';
 import store from '@/_redux/store';
 
 const container = document.getElementById('root');
+const persistor = persistStore(store);
 const root = createRoot(container);
 root.render(
     <Provider store={store}>
-        <GlobalStyles>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </GlobalStyles>
+        <PersistGate persistor={persistor}>
+            <GlobalStyles>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </GlobalStyles>
+        </PersistGate>
     </Provider>
 );
 

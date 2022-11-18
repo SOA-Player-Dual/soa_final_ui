@@ -1,19 +1,18 @@
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
-// import { DateSelect } from 'react-ymd-date-select/dist/esm/presets/mui';
 
+import ModalEditProfile from './ModalEditProfile';
 import { handleModalEditProfile } from '@/_redux/features/modal/modalSlice';
 
 import styles from './Profile.module.scss';
-import ImageCover from '@/components/ImageCover';
 import Image from '@/components/Image';
+import ImageCover from '@/components/ImageCover';
 const cx = classNames.bind(styles);
 
-const isUser = false;
-
-function Header({ info_data, exeScrollRating }) {
+function Header({ exeScrollRating }) {
     const dispatch = useDispatch();
+    const user = useSelector((state) => state?.user?.user?.information);
     const modal = useSelector(
         (state) => state.modal.modalType.modalEditProfile
     );
@@ -27,14 +26,14 @@ function Header({ info_data, exeScrollRating }) {
             <div className={cx('header')}>
                 <div className={cx('header__container')}>
                     <div className={cx('cover__photo')}>
-                        <ImageCover src={info_data.coverImage || ''} alt='' />
+                        <ImageCover src={user.coverImage || ''} alt='' />
                     </div>
                     <div className={cx('avatar')}>
                         <div className={cx('avatar__image')}>
-                            {info_data?.avatar ? (
-                                <img src={info_data?.avatar} alt='' />
+                            {user?.avatar.length > 0 ? (
+                                <img src={user?.avatar} alt='avatar' />
                             ) : (
-                                <Image src={''} alt='' />
+                                <Image src='' alt='avatar' />
                             )}
                         </div>
                     </div>
@@ -42,24 +41,10 @@ function Header({ info_data, exeScrollRating }) {
                     <div className={cx('info')}>
                         <div className={cx('info__left')}>
                             <div className={cx('name')}>
-                                <span>{info_data?.nickname}</span>
-                                {info_data?.nickname && (
-                                    // <div className={cx('follow__btn')}>
-                                    //     +&nbsp;Follow
-                                    // </div>
-
-                                    <div className={cx('followed__btn')}>
-                                        <i
-                                            className={cx(
-                                                'fa-regular fa-check'
-                                            )}
-                                        ></i>
-                                        &nbsp;Followed
-                                    </div>
-                                )}
+                                <span>{user?.player?.name}</span>
                             </div>
                             <div className={cx('game__play')}>
-                                {info_data?.gamePlay?.map((data, index) => {
+                                {user?.gamePlay?.map((data, index) => {
                                     return index < 5 ? (
                                         <img key={index} src={data} alt='' />
                                     ) : index === 5 ? (
@@ -83,17 +68,17 @@ function Header({ info_data, exeScrollRating }) {
                             <div className={cx('achie')}>
                                 <div className={cx('achie__item')}>
                                     <span>Follower</span>
-                                    <p>{info_data?.player?.follower || 0}</p>
+                                    <p>{user?.player?.follower}</p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Has been active</span>
-                                    <p>{info_data?.player?.hiredTime} hours</p>
+                                    <p>{user?.player?.hiredTime} hours</p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Completion rate</span>
-                                    <p>{info_data?.player?.completeRate}%</p>
+                                    <p>{user?.player?.completeRate}%</p>
                                 </div>
                             </div>
                         </div>
@@ -102,14 +87,14 @@ function Header({ info_data, exeScrollRating }) {
                             <div className={cx('services')}>
                                 <div className={cx('info__price')}>
                                     <span>
-                                        {info_data?.player?.fee.toLocaleString()}
+                                        {user?.player?.fee.toLocaleString()}
                                         &nbsp;VND/hour
                                     </span>
                                 </div>
                                 <div className={cx('info__rating')}>
                                     <div className={cx('info__rating-star')}>
                                         <StarRatings
-                                            rating={info_data?.player?.avgRate}
+                                            rating={user?.player?.avgRate}
                                             starRatedColor='#ffcd3c'
                                             // changeRating={this.changeRating}
                                             numberOfStars={5}
@@ -117,47 +102,22 @@ function Header({ info_data, exeScrollRating }) {
                                         />
                                     </div>
                                     <div>
-                                        ({info_data?.player?.avgRate}
+                                        ({user?.player?.avgRate}
                                         &nbsp;ratings)
                                     </div>
                                 </div>
                             </div>
                             <div className={cx('info__action')}>
-                                {isUser ? (
-                                    <div
-                                        className={cx(
-                                            'info__action-btn',
-                                            'edit__btn'
-                                        )}
-                                        onClick={handleOpenModalEditProfile}
-                                    >
-                                        <i
-                                            className={cx('fa-solid fa-pen')}
-                                        ></i>
-                                        Edit profile
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div className={cx('info__action-btn')}>
-                                            <i
-                                                className={cx(
-                                                    'fa-solid',
-                                                    'fa-rectangle-history-circle-user'
-                                                )}
-                                            ></i>
-                                            Rent
-                                        </div>
-                                        <div className={cx('info__action-btn')}>
-                                            <i
-                                                className={cx(
-                                                    'fa-brands',
-                                                    'fa-facebook-messenger'
-                                                )}
-                                            ></i>
-                                            Message
-                                        </div>
-                                    </>
-                                )}
+                                <div
+                                    className={cx(
+                                        'info__action-btn',
+                                        'edit__btn'
+                                    )}
+                                    onClick={handleOpenModalEditProfile}
+                                >
+                                    <i className={cx('fa-solid fa-pen')}></i>
+                                    Edit profile
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -175,6 +135,7 @@ function Header({ info_data, exeScrollRating }) {
                     </div>
                 </div>
             </div>
+            {modal && <ModalEditProfile data={user} />}
         </>
     );
 }

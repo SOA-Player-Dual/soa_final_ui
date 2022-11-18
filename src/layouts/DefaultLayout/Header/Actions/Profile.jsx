@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -13,6 +14,8 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const profileHref = useRef();
+    const user = useSelector((state) => state?.user?.user?.information);
+
     return (
         <div className={cx('profile__wrapper')}>
             <Tippy
@@ -25,7 +28,15 @@ function Profile() {
                 animation='scale'
                 theme='light'
             >
-                <Image className={cx('avatar')} src='' />
+                {user?.avatar.length > 0 ? (
+                    <img
+                        className={cx('avatar')}
+                        src={user?.avatar}
+                        alt='avatar'
+                    />
+                ) : (
+                    <Image className={cx('avatar')} src='' alt='avatar' />
+                )}
             </Tippy>
         </div>
     );

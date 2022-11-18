@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { handleModalWithdraw } from '@/_redux/features/modal/modalSlice';
 
 import styles from './Actions.module.scss';
@@ -11,6 +11,8 @@ const cx = classNames.bind(styles);
 function Tooltipes({ profileHref }) {
     const dispatch = useDispatch();
 
+    const user = useSelector((state) => state?.user?.user?.information);
+
     const handleClickWithDraw = () => {
         dispatch(handleModalWithdraw(true));
     };
@@ -18,17 +20,32 @@ function Tooltipes({ profileHref }) {
         <div className={cx('tooltip')}>
             <div className={cx('tooltip-container')}>
                 <Link
-                    to={'/profile'}
+                    to={`/user/profile/${user?.nickname}`}
                     onClick={profileHref.current._tippy.hide()}
                 >
                     <div className={cx('tooltip-item', 'profile')}>
-                        <Image className={cx('avatar')} src='' />
+                        {user?.avatar.length > 0 ? (
+                            <img
+                                className={cx('avatar')}
+                                src={user?.avatar}
+                                alt='avatar'
+                            />
+                        ) : (
+                            <Image
+                                className={cx('avatar')}
+                                src=''
+                                alt='avatar'
+                            />
+                        )}
+
                         <div className={cx('info')}>
-                            <span className={cx('name')}>jungjung261</span>
+                            <span className={cx('name')}>
+                                {user?.player?.name}
+                            </span>
                             <span className={cx('id')}>
-                                ID:
+                                Balance:&nbsp;
                                 <span className={cx('id__name')}>
-                                    jungjung261
+                                    {user?.balance}
                                 </span>
                             </span>
                         </div>

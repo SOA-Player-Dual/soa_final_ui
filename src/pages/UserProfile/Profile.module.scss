@@ -94,46 +94,9 @@
                         display: flex;
                         align-items: center;
 
-                        .follow__btn {
-                            margin-left: 12px;
-                            width: fit-content;
-                            padding: 0 12px;
-                            border-radius: 12px;
-                            color: #fff;
-                            background-color: var(--primary-color);
-                            cursor: pointer;
-
-                            &:hover {
-                                background-color: var(--primary-color-hover);
-                            }
-
-                            @media screen and (max-width: 1023px) {
-                                margin: 0;
-                            }
-                        }
-
-                        .followed__btn {
-                            margin-left: 12px;
-                            width: fit-content;
-                            padding: 0 12px;
-                            border-radius: 12px;
-                            color: #fff;
-                            background-color: #4bb513;
-                            cursor: pointer;
-
-                            &:hover {
-                                background-color: #419f0f;
-                            }
-
-                            @media screen and (max-width: 1023px) {
-                                margin: 0;
-                            }
-                        }
-
                         @media screen and (max-width: 1023px) {
                             flex-direction: column;
                             align-items: center;
-                            justify-content: center;
                         }
 
                         span {
@@ -654,8 +617,13 @@
         .content {
             display: flex;
             align-items: center;
+            flex-direction: column;
             justify-content: center;
             margin: 8px 0;
+
+            .content__edit-avatar {
+                margin-top: 8px;
+            }
 
             .content__edit {
                 display: flex;

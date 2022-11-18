@@ -13,7 +13,6 @@ import Modal from '@/components/Modal';
 const cx = classNames.bind(styles);
 
 function Actions() {
-    const isUser = true;
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
@@ -24,6 +23,8 @@ function Actions() {
     const handleClickMessenger = () => {
         navigate('/messenger');
     };
+
+    const isLogin = useSelector((state) => state?.user?.user?.isLogin);
 
     return (
         <>
@@ -37,7 +38,7 @@ function Actions() {
                 </Modal>
             )}
             <div className={cx('wrapper')}>
-                {isUser ? (
+                {isLogin ? (
                     <>
                         <Tippy
                             content={<Notifications />}
