@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import jwt_decode from 'jwt-decode';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useStore } from 'react-redux';
 
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/compat/app';
@@ -59,9 +59,7 @@ function SignIn() {
             try {
                 const res = await Login(username, password);
                 const userID = jwt_decode(res?.data?.accessToken);
-
-                console.log(res);
-                dispatch(setUserAuth(res?.data));
+                localStorage.setItem('accessToken', res?.data?.accessToken);
                 dispatch(setUserID(userID?.id));
                 // navigate('/');
                 toast.success('Login success!');

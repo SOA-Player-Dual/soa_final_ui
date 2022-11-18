@@ -1,39 +1,49 @@
 import axios from 'axios';
 import NProgress from 'nprogress';
+import { refreshToken } from './user_api';
 
 NProgress.configure({ showSpinner: false, trickleSpeed: 100 });
 
-const axiosClient = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
-    responseType: 'json',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    // withCredentials: true,
-});
+const axiosClientSetup = () => {
+    const axiosClient = axios.create({
+        baseURL: process.env.REACT_APP_API_URL,
+        responseType: 'json',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
 
-axiosClient.interceptors.request.use(
-    function (config) {
-        NProgress.start();
+    axiosClient.interceptors.request.use(
+        function (config) {
+            NProgress.start();
 
-        return config;
-    },
-    function (error) {
-        return Promise.reject(error);
-    }
-);
+            const token = localStorage.getItem('accessToken');
 
-axiosClient.interceptors.response.use(
-    function (response) {
-        NProgress.done();
+            config.headers.Authorization = token ? `Bearer ${token}` : '';
 
-        // return response.data;
-        return response;
-    },
-    function (error) {
-        NProgress.done();
-        return Promise.reject(error);
-    }
-);
+            return config;
+        },
+        function (error) {
+            return Promise.reject(error);
+        }
+    );
 
-export default axiosClient;
+    axiosClient.interceptors.response.use(
+        function (response) {
+            NProgress.done();
+
+            return response;
+        },
+        function (error) {
+            NProgress.done();
+            if (error?.response?.status === 401) {
+                refreshToken();
+            }
+            return Promise.reject(error);
+        }
+    );
+
+    return axiosClient;
+};
+
+export default axiosClientSetup;

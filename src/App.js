@@ -18,6 +18,7 @@ const config = {
 firebase.initializeApp(config);
 
 function App() {
+    // Firebase
     useEffect(() => {
         const unregisterAuthObserver = firebase
             .auth()
