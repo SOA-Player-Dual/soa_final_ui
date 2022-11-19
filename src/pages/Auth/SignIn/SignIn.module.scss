@@ -1,9 +1,10 @@
 .wrapper {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 64px 0;
 
     .heading {
         display: flex;
@@ -73,7 +74,7 @@
     .container {
         display: flex;
         align-items: center;
-        width: 70%;
+        width: 80%;
         border-radius: 16px;
 
         @media screen and (max-width: 1365px) {
@@ -109,8 +110,6 @@
             border-radius: 12px;
             padding: 16px 12px;
             background-color: rgb(255, 255, 255);
-            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
-                rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
             .form__container {
                 width: 100%;
@@ -238,6 +237,23 @@
                                     object-fit: contain;
                                 }
                             }
+                        }
+                    }
+                }
+
+                .auth {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-top: 16px;
+
+                    span {
+                        color: var(--primary-color);
+                        margin-left: 5px;
+
+                        &:hover {
+                            cursor: pointer;
+                            text-decoration: underline;
                         }
                     }
                 }

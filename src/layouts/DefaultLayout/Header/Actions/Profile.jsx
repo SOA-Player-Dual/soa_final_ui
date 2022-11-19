@@ -15,7 +15,6 @@ const cx = classNames.bind(styles);
 function Profile() {
     const profileHref = useRef();
     const user = useSelector((state) => state?.user?.user?.information);
-
     return (
         <div className={cx('profile__wrapper')}>
             <Tippy
@@ -28,7 +27,7 @@ function Profile() {
                 animation='scale'
                 theme='light'
             >
-                {user?.avatar.length > 0 ? (
+                {user?.avatar ? (
                     <img
                         className={cx('avatar')}
                         src={user?.avatar}

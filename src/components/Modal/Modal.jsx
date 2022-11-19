@@ -1,34 +1,25 @@
 import { useRef, useCallback, useEffect } from 'react';
-import { useSpring, animated } from 'react-spring';
 import classNames from 'classnames/bind';
 
 import styles from './Modal.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Modal({ title, children, showModal, setShowModal }) {
+function Modal({ title, children, show, close, size }) {
     const modalRef = useRef();
-
-    const animation = useSpring({
-        config: {
-            duration: 250,
-        },
-        opacity: showModal ? 1 : 0,
-        transform: showModal ? `translateY(0%)` : `translateY(-100%)`,
-    });
 
     const keyProp = useCallback(
         (e) => {
-            if (e.key === 'Escape' && showModal) {
-                setShowModal(false);
+            if (e.key === 'Escape' && show) {
+                close(false);
             }
         },
-        [setShowModal, showModal]
+        [close, show]
     );
 
     const closeModal = (e) => {
         if (modalRef.current === e.target) {
-            setShowModal(false);
+            close(false);
         }
     };
 
@@ -39,36 +30,40 @@ function Modal({ title, children, showModal, setShowModal }) {
 
     // Disable scroll when modal is open
     useEffect(() => {
-        if (showModal) {
+        if (show) {
             document.body.style.overflow = 'hidden';
         }
         return () => (document.body.style.overflow = 'unset');
-    }, [showModal]);
+    }, [show]);
 
     return (
         <>
-            {showModal ? (
+            {show ? (
                 <div
                     className={cx('wrapper')}
                     ref={modalRef}
                     onClick={closeModal}
                 >
-                    <animated.div style={animation}>
-                        <div className={cx('container')}>
-                            <div className={cx('heading')}>
-                                <div className={cx('title')}>{title}</div>
-                                <span
-                                    className={cx('close')}
-                                    onClick={() => setShowModal(false)}
-                                >
-                                    <li
-                                        className={cx('fa-light', 'fa-xmark')}
-                                    ></li>
-                                </span>
-                            </div>
-                            <div className={cx('content')}>{children}</div>
+                    <div
+                        // set width modal auto or 100%
+                        className={cx('container', {
+                            large: size === 'large',
+                            medium: size === 'medium',
+                            small: size === 'small',
+                        })}
+                        // style={{ width: `${setWidthModal}` }}
+                    >
+                        <div className={cx('heading')}>
+                            <div className={cx('title')}>{title}</div>
+                            <span
+                                className={cx('close')}
+                                onClick={() => close(false)}
+                            >
+                                <li className={cx('fa-light', 'fa-xmark')}></li>
+                            </span>
                         </div>
-                    </animated.div>
+                        <div className={cx('content')}>{children}</div>
+                    </div>
                 </div>
             ) : null}
         </>

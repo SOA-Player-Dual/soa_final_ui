@@ -6,6 +6,8 @@ const modalSlice = createSlice({
         modalType: {
             modalWithdraw: false,
             modalEditProfile: false,
+            modalLogin: false,
+            modalRegister: false,
         },
     },
     reducers: {
@@ -15,10 +17,20 @@ const modalSlice = createSlice({
         handleModalEditProfile: (state, action) => {
             state.modalType.modalEditProfile = action.payload;
         },
+        handleModalLogin: (state, action) => {
+            state.modalType.modalLogin = action.payload;
+        },
+        handleModalRegister: (state, action) => {
+            state.modalType.modalRegister = action.payload;
+        },
     },
 });
 
-export const { handleModalWithdraw, handleModalEditProfile } =
-    modalSlice.actions;
+export const {
+    handleModalWithdraw,
+    handleModalEditProfile,
+    handleModalLogin,
+    handleModalRegister,
+} = modalSlice.actions;
 
 export default modalSlice.reducer;

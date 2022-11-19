@@ -4,6 +4,10 @@ import 'tippy.js/dist/tippy.css';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
 import { handleModalWithdraw } from '@/_redux/features/modal/modalSlice';
+import {
+    handleModalLogin,
+    handleModalRegister,
+} from '@/_redux/features/modal/modalSlice';
 
 import styles from './Actions.module.scss';
 import Profile from './Profile';
@@ -16,12 +20,29 @@ function Actions() {
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
+
+    const modalLogin = useSelector(
+        (state) => state?.modal?.modalType?.modalLogin
+    );
+
+    const modalRegister = useSelector(
+        (state) => state?.modal?.modalType?.modalRegister
+    );
+
     const modalWithDraw = useSelector(
         (state) => state.modal.modalType.modalWithdraw
     );
 
     const handleClickMessenger = () => {
         navigate('/messenger');
+    };
+
+    const handleClickOPenModalLogin = () => {
+        dispatch(handleModalLogin(!modalLogin));
+    };
+
+    const handleOpenModalRegister = () => {
+        dispatch(handleModalRegister(!modalRegister));
     };
 
     const isLogin = useSelector((state) => state?.user?.user?.isLogin);
@@ -71,17 +92,23 @@ function Actions() {
                     </>
                 ) : (
                     <div className={cx('auth__btn')}>
-                        <Link to='/login'>
-                            <span className={cx('auth__btn-login')}>
-                                Sign in
-                            </span>
-                        </Link>
+                        {/* <Link to='/login'> */}
+                        <span
+                            className={cx('auth__btn-login')}
+                            onClick={handleClickOPenModalLogin}
+                        >
+                            Sign in
+                        </span>
+                        {/* </Link> */}
 
-                        <Link to='/register'>
-                            <button className={cx('auth__btn-register')}>
-                                Sign up
-                            </button>
-                        </Link>
+                        {/* <Link to='/register'> */}
+                        <button
+                            className={cx('auth__btn-register')}
+                            onClick={handleOpenModalRegister}
+                        >
+                            Sign up
+                        </button>
+                        {/* </Link> */}
                     </div>
                 )}
             </div>

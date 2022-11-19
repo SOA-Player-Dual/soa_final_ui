@@ -1,7 +1,10 @@
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
+import { toast } from 'react-toastify';
 // import { DateSelect } from 'react-ymd-date-select/dist/esm/presets/mui';
+
+import followApi from '@/api/followApi';
 
 import { handleModalEditProfile } from '@/_redux/features/modal/modalSlice';
 
@@ -10,16 +13,31 @@ import ImageCover from '@/components/ImageCover';
 import Image from '@/components/Image';
 const cx = classNames.bind(styles);
 
-const isUser = false;
-
 function Header({ info_data, exeScrollRating }) {
     const dispatch = useDispatch();
-    const modal = useSelector(
-        (state) => state.modal.modalType.modalEditProfile
+
+    const storeFollowing = useSelector(
+        (state) => state?.user?.user?.following?.followingData
     );
 
-    const handleOpenModalEditProfile = () => {
-        dispatch(handleModalEditProfile(!modal));
+    console.log(
+        'hehe',
+        storeFollowing.filter((item) => item?.urlCode === info_data?.urlCode)
+            .length > 0
+    );
+
+    // Check user is following in store
+
+    const handleFollow = () => {
+        try {
+            const { data } = followApi.post(
+                `v1/player/${info_data.id}/follower`
+            );
+            console.log('Test data follow', data);
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+            console.log('r324231', error);
+        }
     };
 
     return (
@@ -43,20 +61,32 @@ function Header({ info_data, exeScrollRating }) {
                         <div className={cx('info__left')}>
                             <div className={cx('name')}>
                                 <span>{info_data?.nickname}</span>
-                                {info_data?.nickname && (
+                                {info_data?.nickname &&
                                     // <div className={cx('follow__btn')}>
                                     //     +&nbsp;Follow
                                     // </div>
 
-                                    <div className={cx('followed__btn')}>
-                                        <i
-                                            className={cx(
-                                                'fa-regular fa-check'
-                                            )}
-                                        ></i>
-                                        &nbsp;Followed
-                                    </div>
-                                )}
+                                    // filter user follow
+                                    (storeFollowing.filter(
+                                        (item) =>
+                                            item?.urlCode === info_data?.urlCode
+                                    ).length === 0 ? (
+                                        <div
+                                            className={cx('follow__btn')}
+                                            onClick={handleFollow}
+                                        >
+                                            +&nbsp;Follow
+                                        </div>
+                                    ) : (
+                                        <div className={cx('followed__btn')}>
+                                            <i
+                                                className={cx(
+                                                    'fa-regular fa-check'
+                                                )}
+                                            ></i>
+                                            &nbsp;Followed
+                                        </div>
+                                    ))}
                             </div>
                             <div className={cx('game__play')}>
                                 {info_data?.gamePlay?.map((data, index) => {
@@ -123,41 +153,24 @@ function Header({ info_data, exeScrollRating }) {
                                 </div>
                             </div>
                             <div className={cx('info__action')}>
-                                {isUser ? (
-                                    <div
+                                <div className={cx('info__action-btn')}>
+                                    <i
                                         className={cx(
-                                            'info__action-btn',
-                                            'edit__btn'
+                                            'fa-solid',
+                                            'fa-rectangle-history-circle-user'
                                         )}
-                                        onClick={handleOpenModalEditProfile}
-                                    >
-                                        <i
-                                            className={cx('fa-solid fa-pen')}
-                                        ></i>
-                                        Edit profile
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div className={cx('info__action-btn')}>
-                                            <i
-                                                className={cx(
-                                                    'fa-solid',
-                                                    'fa-rectangle-history-circle-user'
-                                                )}
-                                            ></i>
-                                            Rent
-                                        </div>
-                                        <div className={cx('info__action-btn')}>
-                                            <i
-                                                className={cx(
-                                                    'fa-brands',
-                                                    'fa-facebook-messenger'
-                                                )}
-                                            ></i>
-                                            Message
-                                        </div>
-                                    </>
-                                )}
+                                    ></i>
+                                    Rent
+                                </div>
+                                <div className={cx('info__action-btn')}>
+                                    <i
+                                        className={cx(
+                                            'fa-brands',
+                                            'fa-facebook-messenger'
+                                        )}
+                                    ></i>
+                                    Message
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -169,14 +169,27 @@
         width: 300px;
         padding: 8px 0 0 0;
         .tooltip-item {
-            padding: 8px;
+            padding: 5px;
             border-radius: 8px;
             display: flex;
             align-items: center;
+            // animation hover
+            transition: background-color ease-in-out 200ms;
 
             &:hover {
                 cursor: pointer;
+                background-color: rgba(22, 24, 35, 0.09);
+            }
+
+            .label__icon {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                object-fit: cover;
                 background-color: rgba(22, 24, 35, 0.07);
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .tooltip-item__label {
@@ -197,10 +210,11 @@
             align-items: center;
             box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
             margin-bottom: 8px;
+            padding: 16px 8px;
 
             .avatar {
-                width: 37px;
-                height: 37px;
+                width: 40px;
+                height: 40px;
                 border-radius: 50%;
                 object-fit: cover;
                 cursor: pointer;

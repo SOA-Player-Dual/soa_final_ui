@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useClampText } from 'use-clamp-text';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
+
 import {
     setClickedImg,
     setCurrentIndex,
@@ -55,13 +57,17 @@ function Body({ ratingRef }) {
                     <div className={cx('container__box', 'intro')}>
                         <div className={cx('title')}>Intro</div>
                         <div className={cx('intro__bio')}>
-                            <span>{user?.description}</span>
+                            <span>{user?.player?.description}</span>
                         </div>
                         <hr />
                         <div className={cx('intro__birtday')}>
                             <i className={cx('fa-thin', 'fa-cake-candles')}></i>
                             <div className={cx('info')}>
-                                <p>{user?.dateOfBirth}</p>
+                                <p>
+                                    {moment(user?.dateOfBirth).format(
+                                        'MMMM Do YYYY'
+                                    )}
+                                </p>
                                 <span>Birthday</span>
                             </div>
                         </div>

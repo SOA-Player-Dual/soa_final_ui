@@ -6,6 +6,7 @@ const userSlice = createSlice({
         user: {
             id: '',
             information: {},
+            following: {},
             isLogin: false,
         },
         usersPro: [],
@@ -20,9 +21,14 @@ const userSlice = createSlice({
             state.user.information = action.payload;
         },
 
+        setFollowing: (state, action) => {
+            state.user.following = action.payload;
+        },
+
         logout: (state) => {
             state.user.id = '';
             state.user.information = {};
+            state.user.following = {};
             state.user.isLogin = false;
         },
 
@@ -32,6 +38,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { login, setUserInformation, logout, setProUsers } =
+export const { login, setUserInformation, logout, setProUsers, setFollowing } =
     userSlice.actions;
 export default userSlice.reducer;

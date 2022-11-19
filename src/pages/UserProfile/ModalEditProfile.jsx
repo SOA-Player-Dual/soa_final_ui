@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import moment from 'moment';
+
 import LoadingIcon from '@/layouts/LoadingIcon';
 
 import userApi from '@/api/userApi';
@@ -19,14 +21,26 @@ const cx = classNames.bind(styles);
 function ModalEditProfile() {
     const dispatch = useDispatch();
 
-    const [loadingNickName, setLoadingNickName] = useState(false);
-    const [loadingAvatar, setLoadingAvatar] = useState(false);
-
     const user = useSelector((state) => state?.user?.user?.information);
 
     const modal = useSelector(
         (state) => state.modal.modalType.modalEditProfile
     );
+
+    // turn off modal when reload page
+    useEffect(() => {
+        window.onbeforeunload = () => {
+            dispatch(handleModalEditProfile(false));
+        };
+
+        return () => (window.onbeforeunload = null);
+    }, [dispatch]);
+
+    const [loadingNickName, setLoadingNickName] = useState(false);
+    const [loadingUrlCode, setLoadingUrlCode] = useState(false);
+    const [loadingAvatar, setLoadingAvatar] = useState(false);
+    const [loadingDateOfBirth, setLoadingDateOfBirth] = useState(false);
+    const [loadingGender, setLoadingGender] = useState(false);
 
     const [nicknameForm, setNicknameForm] = useState(false);
     const [usernameForm, setUsernameForm] = useState(false);
@@ -35,10 +49,12 @@ function ModalEditProfile() {
     const [bioForm, setBioForm] = useState(false);
 
     const [avatar, setAvatar] = useState('');
+    const [urlCode, setUrlCode] = useState(user?.urlCode);
     const [nickname, setNickname] = useState(user?.nickname);
+    const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth);
+    const [gender, setGender] = useState(user?.gender);
 
-    console.log('avartar value: ', avatar);
-    // const [username, setUsername] = useState('');
+    //
     // const [birthday, setBirthday] = useState('');
     // const [gender, setGender] = useState('');
     // const [bio, setBio] = useState('');
@@ -76,16 +92,73 @@ function ModalEditProfile() {
         try {
             setLoadingAvatar(true);
             const res = await imgbbApi.post('upload', formData);
-            setLoadingAvatar(false);
-            console.log('Avatar imgbb: ', res);
-            const { newAvatar } = await userApi.put('v1/user', {
+
+            const { data } = await userApi.put('v1/user', {
                 avatar: res?.data?.data?.display_url,
             });
 
-            console.log('newAvatar: ', newAvatar);
+            dispatch(setUserInformation(data?.data?.user));
+            setLoadingAvatar(false);
+            setAvatar('');
+            setPreviewAvatar(data?.data?.user?.avatar);
+
+            toast.success('Update avatar successfully!');
         } catch (error) {
             setLoadingAvatar(false);
-            console.log(error);
+            toast.error(error?.response?.data?.error);
+        }
+    };
+
+    const handleUpdateUrlCode = async () => {
+        if (!urlCode) {
+            toast.error('Url code is required!');
+            return;
+        }
+
+        try {
+            setLoadingUrlCode(true);
+            const { data } = await userApi.put('v1/user', { urlCode });
+            dispatch(setUserInformation(data?.data?.user));
+
+            toast.success('Update url code successfully!');
+            setLoadingUrlCode(false);
+            setUsernameForm(false);
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+            setLoadingUrlCode(false);
+        }
+    };
+
+    const handleUpdateGender = async () => {
+        try {
+            const { data } = await userApi.post('v1/user', { gender });
+            dispatch(setUserInformation(data?.data?.user));
+
+            toast.success('Update gender successfully!');
+            setLoadingGender(false);
+            setGenderForm(false);
+        } catch (e) {
+            toast.error(e?.response?.data?.error);
+            setLoadingGender(false);
+        }
+    };
+
+    const handleUpdateDateOfBirth = async () => {
+        if (!dateOfBirth) {
+            toast.error('Date of birth is required!');
+            return;
+        }
+
+        try {
+            setLoadingDateOfBirth(true);
+            const { data } = await userApi.put('v1/user', { dateOfBirth });
+            dispatch(setUserInformation(data?.data?.user));
+            toast.success('Update date of birth successfully!');
+            setLoadingDateOfBirth(false);
+            setBirthdayForm(false);
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+            setLoadingDateOfBirth(false);
         }
     };
 
@@ -114,8 +187,9 @@ function ModalEditProfile() {
     return (
         <Modal
             title={'Edit profile'}
-            showModal={modal}
-            setShowModal={() => {
+            size={'large'}
+            show={modal}
+            close={() => {
                 setNicknameForm(false);
                 setUsernameForm(false);
                 setBirthdayForm(false);
@@ -129,15 +203,13 @@ function ModalEditProfile() {
                 <div className={cx('form__group')}>
                     <div className={cx('heading')}>
                         <div className={cx('title')}>Profile picture</div>
-                        <div className={cx('action')}>
-                            <input
-                                type='file'
-                                id='upload-avatar'
-                                hidden
-                                onChange={(e) => handleUploadAvatar(e)}
-                            />
-                            <label htmlFor='upload-avatar'>Edit</label>
-                        </div>
+                        <input
+                            type='file'
+                            id='upload-avatar'
+                            hidden
+                            onChange={(e) => handleUploadAvatar(e)}
+                        />
+                        <label htmlFor='upload-avatar'>Edit</label>
                     </div>
 
                     <div className={cx('content')}>
@@ -150,7 +222,7 @@ function ModalEditProfile() {
                                 <Image src={''} alt='' />
                             </div>
                         )}
-                        {previewAvatar && (
+                        {avatar && (
                             <div
                                 className={cx(
                                     'content__edit',
@@ -183,16 +255,18 @@ function ModalEditProfile() {
                 <div className={cx('form__group')}>
                     <div className={cx('heading')}>
                         <div className={cx('title')}>Nick name</div>
-                        <div
-                            className={cx('action')}
-                            onClick={handleClickOpenForm.name}
-                        >
-                            {nicknameForm ? (
-                                <span>Cancel</span>
-                            ) : (
-                                <span>Edit</span>
-                            )}
-                        </div>
+                        {!loadingNickName && (
+                            <div
+                                className={cx('action')}
+                                onClick={handleClickOpenForm.name}
+                            >
+                                {nicknameForm ? (
+                                    <span>Cancel</span>
+                                ) : (
+                                    <span>Edit</span>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className={cx('content')}>
@@ -215,6 +289,7 @@ function ModalEditProfile() {
                                     >
                                         Cancel
                                     </button>
+
                                     {loadingNickName ? (
                                         <LoadingIcon />
                                     ) : (
@@ -232,40 +307,66 @@ function ModalEditProfile() {
                     </div>
                 </div>
 
-                {/* username */}
+                {/* url code */}
                 <div className={cx('form__group')}>
                     <div className={cx('heading')}>
-                        <div className={cx('title')}>Username</div>
-                        <div
-                            className={cx('action')}
-                            onClick={handleClickOpenForm.username}
-                        >
-                            {usernameForm ? (
-                                <span>Cancel</span>
-                            ) : (
-                                <span>Edit</span>
-                            )}
-                        </div>
+                        <div className={cx('title')}>URL code</div>
+                        {!loadingUrlCode && (
+                            <div
+                                className={cx('action')}
+                                onClick={handleClickOpenForm.username}
+                            >
+                                {usernameForm ? (
+                                    <span>Cancel</span>
+                                ) : (
+                                    <span
+                                        onClick={() =>
+                                            setUrlCode(user?.urlCode)
+                                        }
+                                    >
+                                        Edit
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className={cx('content')}>
                         {usernameForm ? (
                             <div className={cx('content__edit')}>
                                 <div className={cx('form__input')}>
-                                    <input type='text' value={'Rose'} />
+                                    <input
+                                        type='text'
+                                        value={urlCode}
+                                        onChange={(e) =>
+                                            setUrlCode(e.target.value)
+                                        }
+                                    />
                                 </div>
                                 <div className={cx('form__action')}>
                                     <button
-                                        onClick={() => setUsernameForm(false)}
+                                        onClick={() => {
+                                            setUsernameForm(false);
+                                            setUrlCode(user?.urlCode);
+                                        }}
                                     >
                                         Cancel
                                     </button>
-                                    <button>Save</button>
+                                    {loadingUrlCode ? (
+                                        <LoadingIcon />
+                                    ) : (
+                                        <button onClick={handleUpdateUrlCode}>
+                                            Save
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ) : (
                             <div className={cx('display__name')}>
-                                <span>rose.123</span>
+                                <span>
+                                    https://soa-playerdual.herokuapp.com/
+                                    {user?.urlCode}
+                                </span>
                             </div>
                         )}
                     </div>
@@ -275,16 +376,24 @@ function ModalEditProfile() {
                 <div className={cx('form__group')}>
                     <div className={cx('heading')}>
                         <div className={cx('title')}>Birthday</div>
-                        <div
-                            className={cx('action')}
-                            onClick={handleClickOpenForm.birthday}
-                        >
-                            {birthdayForm ? (
-                                <span>Cancel</span>
-                            ) : (
-                                <span>Edit</span>
-                            )}
-                        </div>
+                        {!loadingDateOfBirth && (
+                            <div
+                                className={cx('action')}
+                                onClick={handleClickOpenForm.birthday}
+                            >
+                                {birthdayForm ? (
+                                    <span>Cancel</span>
+                                ) : (
+                                    <span
+                                        onClick={() =>
+                                            setDateOfBirth(user?.dateOfBirth)
+                                        }
+                                    >
+                                        Edit
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className={cx('content')}>
@@ -292,7 +401,13 @@ function ModalEditProfile() {
                             {birthdayForm ? (
                                 <div className={cx('content__edit')}>
                                     <div className={cx('form__input')}>
-                                        <input type='date' />
+                                        <input
+                                            value={dateOfBirth}
+                                            type='date'
+                                            onChange={(e) =>
+                                                setDateOfBirth(e.target.value)
+                                            }
+                                        />
                                     </div>
                                     <div className={cx('form__action')}>
                                         <button
@@ -302,7 +417,17 @@ function ModalEditProfile() {
                                         >
                                             Cancel
                                         </button>
-                                        <button>Save</button>
+                                        {loadingDateOfBirth ? (
+                                            <LoadingIcon />
+                                        ) : (
+                                            <button
+                                                onClick={
+                                                    handleUpdateDateOfBirth
+                                                }
+                                            >
+                                                Save
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             ) : (
@@ -312,7 +437,11 @@ function ModalEditProfile() {
                                             'fa-light fa-cake-candles'
                                         )}
                                     ></i>
-                                    <span>11/03/1992</span>
+                                    <span>
+                                        {moment(user?.dateOfBirth).format(
+                                            'MMMM Do YYYY'
+                                        )}
+                                    </span>
                                 </>
                             )}
                         </div>
@@ -323,16 +452,24 @@ function ModalEditProfile() {
                 <div className={cx('form__group')}>
                     <div className={cx('heading')}>
                         <div className={cx('title')}>Gender</div>
-                        <div
-                            className={cx('action')}
-                            onClick={handleClickOpenForm.gender}
-                        >
-                            {genderForm ? (
-                                <span>Cancel</span>
-                            ) : (
-                                <span>Edit</span>
-                            )}
-                        </div>
+                        {!loadingGender && (
+                            <div
+                                className={cx('action')}
+                                onClick={handleClickOpenForm.gender}
+                            >
+                                {genderForm ? (
+                                    <span>Cancel</span>
+                                ) : (
+                                    <span
+                                        onClick={() => {
+                                            setGender(user?.gender);
+                                        }}
+                                    >
+                                        Edit
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className={cx('content')}>
@@ -340,7 +477,17 @@ function ModalEditProfile() {
                             {genderForm ? (
                                 <div className={cx('content__edit')}>
                                     <div className={cx('form__input')}>
-                                        <input type='text' value={'Female'} />
+                                        <select
+                                            value={gender}
+                                            onChange={(e) =>
+                                                setGender(e.target.value)
+                                            }
+                                        >
+                                            <option value='male'>Male</option>
+                                            <option value='female'>
+                                                Female
+                                            </option>
+                                        </select>
                                     </div>
                                     <div className={cx('form__action')}>
                                         <button
@@ -348,7 +495,15 @@ function ModalEditProfile() {
                                         >
                                             Cancel
                                         </button>
-                                        <button>Save</button>
+                                        {loadingGender ? (
+                                            <LoadingIcon />
+                                        ) : (
+                                            <button
+                                                onClick={handleUpdateGender}
+                                            >
+                                                Save
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             ) : (

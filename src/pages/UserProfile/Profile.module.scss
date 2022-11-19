@@ -595,6 +595,22 @@
                 font-weight: 500;
             }
 
+            label {
+                cursor: pointer;
+                padding: 2px 8px;
+                color: var(--primary-color);
+                border-radius: 8px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: rgba(22, 24, 35, 0.1);
+                }
+            }
+
             .action {
                 padding: 2px 8px;
                 color: var(--primary-color);
@@ -602,10 +618,6 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-
-                label {
-                    cursor: pointer;
-                }
 
                 &:hover {
                     cursor: pointer;
@@ -632,6 +644,18 @@
                 justify-content: center;
                 .form__input {
                     input {
+                        border-radius: 8px;
+                        border: 1px solid rgba(22, 24, 35, 0.12);
+                        padding: 8px;
+                        margin-bottom: 8px;
+
+                        &:focus {
+                            border: 1px solid var(--primary-color);
+                            border-radius: 8px;
+                        }
+                    }
+
+                    select {
                         border-radius: 8px;
                         border: 1px solid rgba(22, 24, 35, 0.12);
                         padding: 8px;

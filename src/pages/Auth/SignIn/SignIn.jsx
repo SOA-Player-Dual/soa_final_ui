@@ -11,12 +11,17 @@ import 'firebase/compat/auth';
 
 import authApi from '@/api/authApi';
 import { login } from '@/_redux/features/user/userSlice';
+import {
+    handleModalLogin,
+    handleModalRegister,
+} from '@/_redux/features/modal/modalSlice';
 
 import styles from './SignIn.module.scss';
 import login_bg from '@/assets/images/login-bg.png';
 import logo from '@/assets/icons/logo.png';
 import google_logo from '@/assets/icons/google.png';
 import useEnterKeyListener from '@/hooks/useEnterKeyListener';
+import LoadingIcon from '@/layouts/LoadingIcon';
 
 const cx = classNames.bind(styles);
 
@@ -33,6 +38,7 @@ function SignIn() {
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
 
+    const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -42,7 +48,8 @@ function SignIn() {
 
     const handleClick = {
         ridirectToSignUp: () => {
-            navigate('/register');
+            dispatch(handleModalLogin(false));
+            dispatch(handleModalRegister(true));
         },
         Login: async () => {
             if (!username) {
@@ -57,6 +64,7 @@ function SignIn() {
             }
 
             try {
+                setLoading(true);
                 const { data } = await authApi.post('v1/auth/login', {
                     username,
                     password,
@@ -64,29 +72,20 @@ function SignIn() {
                 const userID = jwt_decode(data?.accessToken);
                 localStorage.setItem('accessToken', data?.accessToken);
                 dispatch(login(userID?.id));
+                dispatch(handleModalLogin(false));
+                setLoading(false);
                 navigate('/');
                 toast.success('Login success!');
+                window.location.reload();
             } catch (error) {
                 toast.error(error?.response?.data?.error);
+                setLoading(false);
             }
         },
     };
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('heading')}>
-                <div className={cx('logo')}>
-                    <img className={cx('logo__image')} src={logo} alt='logo' />
-                    <span className={cx('logo__name')}>PLAYERDUAL</span>
-                </div>
-
-                <div className={cx('heading__action')}>
-                    <span>Don't have account?</span>
-                    <button onClick={handleClick.ridirectToSignUp}>
-                        Sign up
-                    </button>
-                </div>
-            </div>
             <div className={cx('container')}>
                 <div className={cx('image')}>
                     <img
@@ -98,11 +97,11 @@ function SignIn() {
                 <div className={cx('form')}>
                     <div className={cx('form__container')}>
                         {/* <h3 className={cx('form__title')}>Sign in</h3> */}
-                        <div className={cx('logo')}>
+                        {/* <div className={cx('logo')}>
                             <div className={cx('logo__image')}>
                                 <img src={logo} alt='logo' />
                             </div>
-                        </div>
+                        </div> */}
 
                         <input
                             ref={usernameRef}
@@ -122,13 +121,17 @@ function SignIn() {
                             onChange={(e) => setPassword(e.target.value.trim())}
                         />
 
-                        <button
-                            id='submitLoginBtn'
-                            className={cx('form-control', 'form-btn')}
-                            onClick={handleClick.Login}
-                        >
-                            Sign in
-                        </button>
+                        {loading ? (
+                            <LoadingIcon />
+                        ) : (
+                            <button
+                                id='submitLoginBtn'
+                                className={cx('form-control', 'form-btn')}
+                                onClick={handleClick.Login}
+                            >
+                                Sign in
+                            </button>
+                        )}
 
                         <div className={cx('forgot-password')}>
                             <Link to='/forgot-password'>
@@ -169,6 +172,14 @@ function SignIn() {
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        <div
+                            className={cx('auth')}
+                            onClick={handleClick.ridirectToSignUp}
+                        >
+                            Don't have an account?
+                            <span>Sign up now</span>
                         </div>
                     </div>
                 </div>
