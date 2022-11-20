@@ -1,9 +1,13 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
-import { handleModalWithdraw } from '@/_redux/features/modal/modalSlice';
+
+import {
+    handleModalWithdraw,
+    handleModalListFollowing,
+} from '@/_redux/features/modal/modalSlice';
 import {
     handleModalLogin,
     handleModalRegister,
@@ -13,6 +17,8 @@ import styles from './Actions.module.scss';
 import Profile from './Profile';
 import Notifications from './Notifications';
 import Modal from '@/components/Modal';
+import Image from '@/components/Image';
+import no_following from '@/assets/icons/no_following.svg';
 
 const cx = classNames.bind(styles);
 
@@ -21,45 +27,116 @@ function Actions() {
 
     const dispatch = useDispatch();
 
-    const modalLogin = useSelector(
-        (state) => state?.modal?.modalType?.modalLogin
-    );
-
-    const modalRegister = useSelector(
-        (state) => state?.modal?.modalType?.modalRegister
-    );
-
-    const modalWithDraw = useSelector(
-        (state) => state.modal.modalType.modalWithdraw
-    );
-
-    const handleClickMessenger = () => {
-        navigate('/messenger');
+    const store = {
+        isLogin: useSelector((state) => state?.user?.user?.isLogin),
+        listFollowing: useSelector((state) => state?.user?.user?.following),
+        modalLogin: useSelector((state) => state?.modal?.modalType?.modalLogin),
+        modalRegister: useSelector(
+            (state) => state?.modal?.modalType?.modalRegister
+        ),
+        modalWithdraw: useSelector(
+            (state) => state?.modal?.modalType?.modalWithdraw
+        ),
+        modalListFollowing: useSelector(
+            (state) => state?.modal?.modalType?.modalListFollowing
+        ),
     };
 
-    const handleClickOPenModalLogin = () => {
-        dispatch(handleModalLogin(!modalLogin));
+    const handleClick = {
+        redirectMessage: () => {
+            navigate('/message');
+        },
+        modalLogin: () => {
+            dispatch(handleModalLogin(!store.modalLogin));
+        },
+        modalRegister: () => {
+            dispatch(handleModalRegister(!store.modalRegister));
+        },
+        redirectUserProfile: (urlCode) => {
+            navigate(`/profile/${urlCode}`);
+            dispatch(handleModalListFollowing(false));
+        },
     };
-
-    const handleOpenModalRegister = () => {
-        dispatch(handleModalRegister(!modalRegister));
-    };
-
-    const isLogin = useSelector((state) => state?.user?.user?.isLogin);
 
     return (
         <>
-            {modalWithDraw && (
+            {store.modalWithdraw && (
                 <Modal
                     title='With Draw'
-                    showModal={modalWithDraw}
-                    setShowModal={() => dispatch(handleModalWithdraw(false))}
+                    size={'medium'}
+                    show={store.modalWithdraw}
+                    close={() => dispatch(handleModalWithdraw(false))}
                 >
-                    Haha
+                    <div className={'modal'}></div>
+                </Modal>
+            )}
+            {store.modalListFollowing && (
+                <Modal
+                    title='Following'
+                    size={'medium'}
+                    show={store.modalListFollowing}
+                    close={() => dispatch(handleModalListFollowing(false))}
+                >
+                    <div className={cx('modal__following-list')}>
+                        {store?.listFollowing.following > 0 ? (
+                            <>
+                                <span>
+                                    Following total:&nbsp;
+                                    {store.listFollowing.following}{' '}
+                                </span>
+                                {store?.listFollowing?.followingData.map(
+                                    (item, index) => {
+                                        return (
+                                            <div
+                                                key={item?.urlCode}
+                                                className={cx(
+                                                    'modal__following-list__item'
+                                                )}
+                                                onClick={() =>
+                                                    handleClick.redirectUserProfile(
+                                                        item?.urlCode
+                                                    )
+                                                }
+                                            >
+                                                <div className={cx('avatar')}>
+                                                    {item?.avatar ? (
+                                                        <img
+                                                            src={item?.avatar}
+                                                            alt='avatar'
+                                                        />
+                                                    ) : (
+                                                        <Image
+                                                            src={item?.avatar}
+                                                            alt='avatar'
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div className={cx('name')}>
+                                                    {item?.nickname}
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                )}
+                            </>
+                        ) : (
+                            <div className={cx('not__following')}>
+                                <div className={cx('title')}>
+                                    You are not following anyone!
+                                </div>
+                                <div className={cx('not__following-img')}>
+                                    <img
+                                        src={no_following}
+                                        alt='no-following'
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </Modal>
             )}
             <div className={cx('wrapper')}>
-                {isLogin ? (
+                {store.isLogin ? (
                     <>
                         <Tippy
                             content={<Notifications />}
@@ -78,7 +155,7 @@ function Actions() {
                         <Tippy content={'Messenger'}>
                             <div
                                 className={cx('action__item')}
-                                onClick={handleClickMessenger}
+                                onClick={handleClick.redirectMessage}
                             >
                                 <i
                                     className={cx(
@@ -95,7 +172,7 @@ function Actions() {
                         {/* <Link to='/login'> */}
                         <span
                             className={cx('auth__btn-login')}
-                            onClick={handleClickOPenModalLogin}
+                            onClick={handleClick.modalLogin}
                         >
                             Sign in
                         </span>
@@ -104,7 +181,7 @@ function Actions() {
                         {/* <Link to='/register'> */}
                         <button
                             className={cx('auth__btn-register')}
-                            onClick={handleOpenModalRegister}
+                            onClick={handleClick.modalRegister}
                         >
                             Sign up
                         </button>

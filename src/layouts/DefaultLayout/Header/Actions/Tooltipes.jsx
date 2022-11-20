@@ -3,7 +3,10 @@ import classNames from 'classnames/bind';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { handleModalWithdraw } from '@/_redux/features/modal/modalSlice';
+import {
+    handleModalWithdraw,
+    handleModalListFollowing,
+} from '@/_redux/features/modal/modalSlice';
 import { logout } from '@/_redux/features/user/userSlice';
 
 import styles from './Actions.module.scss';
@@ -17,15 +20,22 @@ function Tooltipes({ profileHref }) {
 
     const user = useSelector((state) => state?.user?.user?.information);
 
-    const handleClickWithDraw = () => {
-        dispatch(handleModalWithdraw(true));
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem('acessToken');
-        dispatch(logout());
-        navigate('/');
-        toast.success('Logout successfully!');
+    const handleClick = {
+        withDrawModal: () => {
+            dispatch(handleModalWithdraw(true));
+        },
+        followListModal: () => {
+            dispatch(handleModalListFollowing(true));
+        },
+        logout: () => {
+            localStorage.removeItem('accessToken');
+            dispatch(logout());
+            navigate('/');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+            toast.success('Logout successfully!');
+        },
     };
 
     return (
@@ -51,13 +61,14 @@ function Tooltipes({ profileHref }) {
                         )}
 
                         <div className={cx('info')}>
-                            <span className={cx('name')}>
-                                {user?.player?.name}
-                            </span>
+                            <span className={cx('name')}>{user?.nickname}</span>
                             <span className={cx('id')}>
                                 Balance:&nbsp;
                                 <span className={cx('id__name')}>
-                                    {user?.balance}
+                                    {user?.balance
+                                        ? user?.balance.toLocaleString()
+                                        : 0}
+                                    &nbsp;VND
                                 </span>
                             </span>
                         </div>
@@ -66,7 +77,7 @@ function Tooltipes({ profileHref }) {
 
                 <div
                     className={cx('tooltip-item')}
-                    onClick={handleClickWithDraw}
+                    onClick={handleClick.withDrawModal}
                 >
                     <div className={cx('label__icon')}>
                         <i className={cx('fa-regular', 'fa-sack-dollar')}></i>
@@ -81,7 +92,10 @@ function Tooltipes({ profileHref }) {
                     <span className={cx('tooltip-item__label')}>Buy card</span>
                 </div>
 
-                <div className={cx('tooltip-item')}>
+                <div
+                    className={cx('tooltip-item')}
+                    onClick={handleClick.followListModal}
+                >
                     <div className={cx('label__icon')}>
                         <i className={cx('fa-regular', 'fa-user-group')}></i>
                     </div>
@@ -95,7 +109,7 @@ function Tooltipes({ profileHref }) {
                         <i className={cx('fa-regular', 'fa-gear')}></i>
                     </div>
                     <span className={cx('tooltip-item__label')}>
-                        Account settings
+                        Change password
                     </span>
                 </div>
 
@@ -103,7 +117,7 @@ function Tooltipes({ profileHref }) {
 
                 <div
                     className={cx('tooltip-item', 'tooltip-item__logout')}
-                    onClick={handleLogout}
+                    onClick={handleClick.logout}
                 >
                     <div className={cx('label__icon')}>
                         <i

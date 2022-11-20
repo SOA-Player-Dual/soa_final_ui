@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useClampText } from 'use-clamp-text';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,8 +17,17 @@ import styles from './Profile.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Body({ info_data, ratingRef }) {
+function Body({ ratingRef }) {
     const distpach = useDispatch();
+
+    const { urlCode } = useParams();
+    const store = {
+        player: useSelector((state) => state?.player?.profile),
+    };
+
+    const playerData = store?.player?.filter(
+        (item) => item?.urlCode === urlCode
+    );
 
     const imgPreviewer = useSelector((state) => state.previewer.previewer);
     // * Image preview
@@ -28,8 +38,8 @@ function Body({ info_data, ratingRef }) {
     };
 
     let albumGallery = [];
-    if (info_data?.player?.album) {
-        albumGallery = JSON.parse(`${info_data?.player?.album}`);
+    if (playerData[0]?.player?.album) {
+        albumGallery = JSON.parse(`${playerData[0]?.player?.album}`);
     }
 
     //* Truncate text
@@ -56,14 +66,14 @@ function Body({ info_data, ratingRef }) {
                     <div className={cx('container__box', 'intro')}>
                         <div className={cx('title')}>Intro</div>
                         <div className={cx('intro__bio')}>
-                            <span>{info_data?.player?.description}</span>
+                            <span>{playerData[0]?.player?.description}</span>
                         </div>
                         <hr />
                         <div className={cx('intro__birtday')}>
                             <i className={cx('fa-thin', 'fa-cake-candles')}></i>
                             <div className={cx('info')}>
                                 <p>
-                                    {moment(info_data?.dateOfBirth).format(
+                                    {moment(playerData[0]?.dateOfBirth).format(
                                         'MMMM Do YYYY'
                                     )}
                                 </p>
@@ -85,7 +95,7 @@ function Body({ info_data, ratingRef }) {
                                     ></i>
                                 </div>
                             </div>
-                            {info_data?.caption && (
+                            {playerData[0]?.caption && (
                                 <div
                                     ref={ref}
                                     key={key}
@@ -205,7 +215,7 @@ function Body({ info_data, ratingRef }) {
                                 <div className={cx('rating__item')}>
                                     <div className={cx('rating__item--avatar')}>
                                         <Image
-                                            src={info_data?.avatar || ''}
+                                            src={playerData[0]?.avatar || ''}
                                             alt=''
                                         />
                                     </div>
@@ -218,7 +228,7 @@ function Body({ info_data, ratingRef }) {
                                                     className={cx('user__name')}
                                                 >
                                                     <span>
-                                                        {info_data?.name}
+                                                        {playerData[0]?.name}
                                                     </span>
                                                     <div
                                                         className={cx(

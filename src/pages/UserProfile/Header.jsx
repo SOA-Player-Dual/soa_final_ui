@@ -41,7 +41,7 @@ function Header({ exeScrollRating }) {
                     <div className={cx('info')}>
                         <div className={cx('info__left')}>
                             <div className={cx('name')}>
-                                <span>{user?.player?.name}</span>
+                                <span>{user?.nickname}</span>
                             </div>
                             <div className={cx('game__play')}>
                                 {user?.gamePlay?.map((data, index) => {

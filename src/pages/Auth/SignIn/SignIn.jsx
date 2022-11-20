@@ -18,7 +18,6 @@ import {
 
 import styles from './SignIn.module.scss';
 import login_bg from '@/assets/images/login-bg.png';
-import logo from '@/assets/icons/logo.png';
 import google_logo from '@/assets/icons/google.png';
 import useEnterKeyListener from '@/hooks/useEnterKeyListener';
 import LoadingIcon from '@/layouts/LoadingIcon';
@@ -69,14 +68,13 @@ function SignIn() {
                     username,
                     password,
                 });
-                const userID = jwt_decode(data?.accessToken);
                 localStorage.setItem('accessToken', data?.accessToken);
+                const userID = jwt_decode(data?.accessToken);
                 dispatch(login(userID?.id));
                 dispatch(handleModalLogin(false));
                 setLoading(false);
                 navigate('/');
                 toast.success('Login success!');
-                window.location.reload();
             } catch (error) {
                 toast.error(error?.response?.data?.error);
                 setLoading(false);
@@ -121,17 +119,19 @@ function SignIn() {
                             onChange={(e) => setPassword(e.target.value.trim())}
                         />
 
-                        {loading ? (
-                            <LoadingIcon />
-                        ) : (
-                            <button
-                                id='submitLoginBtn'
-                                className={cx('form-control', 'form-btn')}
-                                onClick={handleClick.Login}
-                            >
-                                Sign in
-                            </button>
-                        )}
+                        <div className={cx('form-control-btn')}>
+                            {loading ? (
+                                <LoadingIcon />
+                            ) : (
+                                <button
+                                    id='submitLoginBtn'
+                                    className={cx('form-btn')}
+                                    onClick={handleClick.Login}
+                                >
+                                    Sign in
+                                </button>
+                            )}
+                        </div>
 
                         <div className={cx('forgot-password')}>
                             <Link to='/forgot-password'>
