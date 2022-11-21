@@ -94,6 +94,12 @@
                         display: flex;
                         align-items: center;
 
+                        .follow {
+                            @media screen and (max-width: 1023px) {
+                                margin-top: 8px;
+                            }
+                        }
+
                         .follow__btn {
                             margin-left: 12px;
                             width: fit-content;
@@ -139,7 +145,7 @@
                             justify-content: center;
                         }
 
-                        span {
+                        .name__wrapper {
                             font-size: 1.9rem;
                             font-weight: 600;
                         }
@@ -323,6 +329,10 @@
                             i {
                                 margin-right: 8px;
                             }
+                        }
+
+                        .donate__btn {
+                            background-color: rgb(100, 162, 204);
                         }
 
                         .edit__btn {
@@ -721,6 +731,141 @@
                 i {
                     margin-right: 8px;
                 }
+            }
+        }
+    }
+}
+
+// Rent modal
+
+.rent__modal {
+    padding: 8px 32px;
+
+    .user {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+
+        .user__avatar {
+            width: 100px;
+            height: 100px;
+            margin-right: 8px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+
+        .user__name {
+            margin-top: 8px;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+    }
+
+    .rent__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 16px;
+        .rent__item-content {
+            display: flex;
+            align-items: center;
+
+            span {
+                font-weight: 500;
+            }
+
+            .user__money {
+                font-weight: 500;
+                color: #4bb513;
+            }
+
+            .user__money-not-enough {
+                font-weight: 500;
+                color: #ff0000;
+            }
+
+            .form-control {
+                padding: 0 32px;
+                height: 40px;
+                border-radius: 8px;
+                outline: none;
+                border: 1px solid rgba(22, 24, 35, 0.12);
+
+                &:focus {
+                    border: 1px solid var(--primary-color);
+                }
+
+                // &:focus-visible {
+                //     border: 1px solid var(--primary-color) !important;
+                // }
+            }
+
+            .top__up-btn {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #ff0000;
+
+                &:hover {
+                    cursor: pointer;
+
+                    background-color: rgba(22, 24, 35, 0.3);
+                }
+            }
+        }
+    }
+
+    .form__action {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+        margin-top: 16px;
+        border-top: 1px solid rgba(22, 24, 35, 0.1);
+        padding-top: 8px;
+
+        .form__btn-primary {
+            width: 100px;
+            height: 40px;
+            border-radius: 8px;
+
+            button {
+                width: 100%;
+                height: 100%;
+                border-radius: 8px;
+                outline: none;
+                border: none;
+                background-color: var(--primary-color);
+                color: #fff;
+                font-weight: 500;
+
+                &:hover {
+                    background-color: var(--primary-color-hover);
+                }
+            }
+        }
+
+        .form__btn-close {
+            color: #fff;
+            background-color: none;
+            color: var(--primary-color);
+            background-color: transparent;
+            outline: none;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 8px;
+            &:hover {
+                cursor: pointer;
+                background-color: rgba(22, 24, 35, 0.1);
             }
         }
     }

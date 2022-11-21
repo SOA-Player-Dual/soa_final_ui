@@ -1,7 +1,4 @@
 import axios from 'axios';
-import NProgress from 'nprogress';
-
-NProgress.configure({ showSpinner: false, trickleSpeed: 100 });
 
 const baseAPI = (url) => {
     const api = axios.create({
@@ -14,22 +11,18 @@ const baseAPI = (url) => {
 
     api.interceptors.request.use(
         function (config) {
-            NProgress.start();
             return config;
         },
         function (error) {
-            NProgress.done();
             return Promise.reject(error);
         }
     );
 
     api.interceptors.response.use(
         function (response) {
-            NProgress.done();
             return response;
         },
         function (error) {
-            NProgress.done();
             return Promise.reject(error);
         }
     );

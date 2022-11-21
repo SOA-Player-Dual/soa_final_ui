@@ -77,6 +77,12 @@ function SignUp() {
                 return;
             }
 
+            if (password.length < 6) {
+                toast.error('Password must be at least 6 characters!');
+                passwordRef.current.focus();
+                return;
+            }
+
             if (!dateOfBirth) {
                 toast.error('Date of birth is required!');
                 birthdayRef.current.focus();
@@ -322,12 +328,12 @@ function SignUp() {
                             </div>
                         </div>
 
-                        <div className={cx('form-btn')}>
+                        <div className={cx('form-control-btn')}>
                             {loading ? (
                                 <LoadingIcon />
                             ) : (
                                 <button
-                                    className={cx('form-control')}
+                                    className={cx('form-btn')}
                                     onClick={handleClick.register}
                                 >
                                     Sign up

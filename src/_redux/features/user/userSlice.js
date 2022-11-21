@@ -9,7 +9,6 @@ const userSlice = createSlice({
             following: {},
             isLogin: false,
         },
-        usersPro: [],
     },
     reducers: {
         login: (state, action) => {
@@ -31,13 +30,9 @@ const userSlice = createSlice({
             state.user.following = {};
             state.user.isLogin = false;
         },
-
-        setProUsers: (state, action) => {
-            state.usersPro = action.payload;
-        },
     },
 });
 
-export const { login, setUserInformation, logout, setProUsers, setFollowing } =
+export const { login, setUserInformation, logout, setFollowing } =
     userSlice.actions;
 export default userSlice.reducer;

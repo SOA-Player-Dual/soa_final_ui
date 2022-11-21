@@ -7,7 +7,10 @@ const cx = classNames.bind(styles);
 function Loading_Icon() {
     return (
         <div className={cx('wrapper')}>
-            <span className={cx('loader')}></span>
+            <div className={cx('lds-ripple')}>
+                <div></div>
+                <div></div>
+            </div>
             {/* <div className={cx('loader')}>
                 <div className={cx('dot')}></div>
                 <div className={cx('dot')}></div>

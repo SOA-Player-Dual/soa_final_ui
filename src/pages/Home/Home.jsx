@@ -37,8 +37,6 @@ function Home() {
         (state) => state?.modal?.modalType?.modalRegister
     );
 
-    console.log('modalLogin', modalLogin);
-
     const checkPlayerPro = useSelector((state) => state?.player?.playersPro);
     const checkListGames = useSelector((state) => state?.games?.games);
     const checkListFollowing = useSelector(
@@ -62,27 +60,45 @@ function Home() {
 
     // Get all games
     useEffect(() => {
-        const getUserInformation = async () => {
-            if (
-                Object.getOwnPropertyNames(checkUserInformation).length === 0 &&
-                checkUser
-            ) {
-                const { data } = await userApi.get(`v1/user/id/${userID}`);
-                dispatch(setUserInformation(data?.data?.user));
+        if (checkUser) {
+            const getUserInformation = async () => {
+                if (
+                    Object.getOwnPropertyNames(checkUserInformation).length ===
+                        0 &&
+                    checkUser
+                ) {
+                    const { data } = await userApi.get(`v1/user/id/${userID}`);
+                    dispatch(setUserInformation(data?.data?.user));
+                }
+            };
+
+            const getFollowing = async () => {
+                if (
+                    checkListFollowing &&
+                    Object.getOwnPropertyNames(checkListFollowing).length ===
+                        0 &&
+                    checkUser
+                ) {
+                    const { data } = await userApi.get(`v1/user/following`);
+                    console.log('Status following: ', data);
+                    dispatch(setFollowing(data?.data));
+                }
+            };
+
+            getUserInformation();
+            getFollowing();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [checkUser]);
+
+    useEffect(() => {
+        const getProUsersFunc = async () => {
+            if (!checkPlayerPro.length) {
+                const { data } = await userApi.get('v1/player');
+                dispatch(setPlayersPro(data?.data?.user));
             }
         };
-
-        const getFollowing = async () => {
-            if (
-                Object.getOwnPropertyNames(checkListFollowing).length === 0 &&
-                checkUser
-            ) {
-                const { data } = await userApi.get(`v1/user/following`);
-
-                console.log('data following', data);
-                dispatch(setFollowing(data?.data));
-            }
-        };
+        getProUsersFunc();
 
         const getGameStore = async () => {
             if (!checkListGames.length) {
@@ -91,17 +107,7 @@ function Home() {
             }
         };
 
-        const getProUsersFunc = async () => {
-            if (!checkPlayerPro.length) {
-                const { data } = await userApi.get('v1/player');
-                dispatch(setPlayersPro(data?.data?.user));
-            }
-        };
-        getProUsersFunc();
         getGameStore();
-        getUserInformation();
-        getFollowing();
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -123,6 +129,7 @@ function Home() {
                 <Modal
                     title='Login'
                     show={modalLogin}
+                    notCloseOutside={true}
                     close={() => dispatch(handleModalLogin(false))}
                     size={'large'}
                 >
@@ -137,6 +144,7 @@ function Home() {
             {modalRegister && (
                 <Modal
                     title='Register'
+                    notCloseOutside={true}
                     show={modalRegister}
                     close={() => dispatch(handleModalRegister(false))}
                     size={'large'}

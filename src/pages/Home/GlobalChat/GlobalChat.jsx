@@ -6,7 +6,7 @@ import Tippy from '@tippyjs/react';
 import classNames from 'classnames/bind';
 import Image from '@/components/Image';
 import fake_data from './chat-data.json';
-import lol from '@/assets/icons/lol.jpg';
+// import lol from '@/assets/icons/lol.jpg';
 
 import styles from './GlobalChat.module.scss';
 
@@ -67,7 +67,7 @@ function GlobalChat() {
                             return (
                                 <div key={data.id} className={cx('comment')}>
                                     <div className={cx('comment-avatar')}>
-                                        <Image src={lol} alt='' />
+                                        <Image src={''} alt='' />
                                     </div>
                                     <div className={cx('comment-content')}>
                                         <div className={cx('content')}>

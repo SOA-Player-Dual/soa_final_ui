@@ -5,7 +5,7 @@ import styles from './Modal.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Modal({ title, children, show, close, size }) {
+function Modal({ title, children, show, close, size, notCloseOutside }) {
     const modalRef = useRef();
 
     const keyProp = useCallback(
@@ -17,6 +17,8 @@ function Modal({ title, children, show, close, size }) {
         [close, show]
     );
 
+    // forward prop close outside modal
+
     const closeModal = (e) => {
         if (modalRef.current === e.target) {
             close(false);
@@ -27,6 +29,8 @@ function Modal({ title, children, show, close, size }) {
         document.addEventListener('keydown', keyProp);
         return () => document.removeEventListener('keydown', keyProp);
     });
+
+    //option to close modal outside
 
     // Disable scroll when modal is open
     useEffect(() => {
@@ -42,7 +46,7 @@ function Modal({ title, children, show, close, size }) {
                 <div
                     className={cx('wrapper')}
                     ref={modalRef}
-                    onClick={closeModal}
+                    onClick={!notCloseOutside ? closeModal : null}
                 >
                     <div
                         // set width modal auto or 100%
