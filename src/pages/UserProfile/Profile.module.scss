@@ -810,6 +810,64 @@
                     border: 1px solid rgb(22, 24, 35, 0.25);
                 }
             }
+
+            .input__photo {
+                width: 70%;
+                height: 100px;
+                border-radius: 8px;
+                border: 1px dashed rgb(22, 24, 35, 0.25);
+                border-spacing: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                label {
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgb(22, 24, 35, 0.1);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    i {
+                        font-size: 1.6rem;
+                        color: var(--primary-color);
+                    }
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: rgb(22, 24, 35, 0.2);
+                    }
+                }
+
+                p {
+                    position: absolute;
+
+                    margin: 0;
+                    bottom: 12px;
+                }
+            }
+        }
+
+        .previewer {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 8px 0;
+
+            .previewer__item {
+                width: 100px;
+                margin-right: 5px;
+                height: 100px;
+                border-radius: 8px;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
         }
     }
 

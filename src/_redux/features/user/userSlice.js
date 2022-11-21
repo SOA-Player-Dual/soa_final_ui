@@ -24,6 +24,11 @@ const userSlice = createSlice({
             state.user.following = action.payload;
         },
 
+        updateFollowing: (state, action) => {
+            console.log('updateFollowing', action.payload);
+            state.user.following.followingData = action.payload;
+        },
+
         logout: (state) => {
             state.user.id = '';
             state.user.information = {};
@@ -33,6 +38,11 @@ const userSlice = createSlice({
     },
 });
 
-export const { login, setUserInformation, logout, setFollowing } =
-    userSlice.actions;
+export const {
+    login,
+    setUserInformation,
+    logout,
+    setFollowing,
+    updateFollowing,
+} = userSlice.actions;
 export default userSlice.reducer;

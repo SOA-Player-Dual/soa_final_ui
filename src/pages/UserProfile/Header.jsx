@@ -133,7 +133,7 @@ function Header({ exeScrollRating }) {
                                             'fa-solid fa-circle-plus'
                                         )}
                                     ></i>
-                                    Add to Post
+                                    Add to information
                                 </div>
                                 <div
                                     className={cx(

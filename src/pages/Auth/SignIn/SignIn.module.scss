@@ -197,14 +197,11 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    color: var(--primary-color);
 
-                    .login__direct {
-                        color: var(--primary-color);
-
-                        &:hover {
-                            cursor: pointer;
-                            text-decoration: underline;
-                        }
+                    &:hover {
+                        cursor: pointer;
+                        text-decoration: underline;
                     }
                 }
 

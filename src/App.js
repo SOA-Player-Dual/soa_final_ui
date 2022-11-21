@@ -19,6 +19,9 @@ import {
     handleRentModal,
     handleLoginRequiredModal,
     handlePostModal,
+    handleChangePassModal,
+    handleForgotPassModal,
+    handleTopupModal,
 } from '@/_redux/features/modal/modalSlice';
 import Modal from '@/components/Modal';
 import login_required from '@/assets/icons/login_required_bg.svg';
@@ -46,6 +49,9 @@ function App() {
             dispatch(handleRentModal(false));
             dispatch(handleLoginRequiredModal(false));
             dispatch(handlePostModal(false));
+            dispatch(handleChangePassModal(false));
+            dispatch(handleForgotPassModal(false));
+            dispatch(handleTopupModal(false));
         };
 
         return () => (window.onbeforeunload = null);

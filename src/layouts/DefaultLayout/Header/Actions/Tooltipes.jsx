@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     handleModalWithdraw,
     handleModalListFollowing,
+    handleChangePassModal,
+    handleTopupModal,
 } from '@/_redux/features/modal/modalSlice';
 import { logout } from '@/_redux/features/user/userSlice';
 
@@ -26,6 +28,12 @@ function Tooltipes({ profileHref }) {
         },
         followListModal: () => {
             dispatch(handleModalListFollowing(true));
+        },
+        topupModal: () => {
+            dispatch(handleTopupModal(true));
+        },
+        changePassModal: () => {
+            dispatch(handleChangePassModal(true));
         },
         logout: () => {
             localStorage.removeItem('accessToken');
@@ -85,11 +93,14 @@ function Tooltipes({ profileHref }) {
                     <span className={cx('tooltip-item__label')}>Withdraw</span>
                 </div>
 
-                <div className={cx('tooltip-item')}>
+                <div
+                    className={cx('tooltip-item')}
+                    onClick={handleClick.topupModal}
+                >
                     <div className={cx('label__icon')}>
                         <i className={cx('fa-regular', 'fa-credit-card')}></i>
                     </div>
-                    <span className={cx('tooltip-item__label')}>Buy card</span>
+                    <span className={cx('tooltip-item__label')}>Top up</span>
                 </div>
 
                 <div
@@ -104,7 +115,10 @@ function Tooltipes({ profileHref }) {
                     </span>
                 </div>
 
-                <div className={cx('tooltip-item')}>
+                <div
+                    className={cx('tooltip-item')}
+                    onClick={handleClick.changePassModal}
+                >
                     <div className={cx('label__icon')}>
                         <i className={cx('fa-regular', 'fa-gear')}></i>
                     </div>

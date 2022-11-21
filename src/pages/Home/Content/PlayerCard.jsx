@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import StarRatings from 'react-star-ratings';
 
 import styles from './Content.module.scss';
 import Image from '@/components/Image';
@@ -22,6 +23,7 @@ function PlayerCard() {
                 {usersPro?.map((player, index) =>
                     index < 8 ? (
                         // <Link to={`/profile/${player.urlCode}`}>
+
                         <div
                             key={player.user.urlCode}
                             className={cx('card')}
@@ -29,7 +31,6 @@ function PlayerCard() {
                                 handleClickToProfile(player.user.urlCode)
                             }
                         >
-                            {/* <Link to={`/profile/${player.urlCode}`}> */}
                             <div className={cx('card__image')}>
                                 <Image src={player.user.avatar} alt='' />
                             </div>
@@ -43,22 +44,6 @@ function PlayerCard() {
                                                 'fa-circle'
                                             )}
                                         ></i>
-                                        {/* {player.isOnline ? (
-                                                    <i
-                                                        className={cx(
-                                                            'fa-solid',
-                                                            'fa-circle'
-                                                        )}
-                                                    ></i>
-                                                ) : (
-                                                    <i
-                                                        style={{ color: 'gray' }}
-                                                        className={cx(
-                                                            'fa-solid',
-                                                            'fa-circle'
-                                                        )}
-                                                    ></i>
-                                                )} */}
                                     </span>
                                 </div>
 
@@ -66,48 +51,55 @@ function PlayerCard() {
                                     <span>{player.description}</span>
                                 </div>
 
-                                {/* <div className={cx('card__footer')}>
-                                            <div className={cx('game__play')}>
-                                                {player.gamePlay.map((data, index) => {
-                                                    const count =
-                                                        player.gamePlay.length - 5;
-                                                    return index < 4 ? (
-                                                        <img
-                                                            key={index}
-                                                            src={data}
-                                                            alt=''
-                                                        />
-                                                    ) : index === 4 ? (
-                                                        <div
-                                                            key={index}
-                                                            className={cx(
-                                                                'game__count'
-                                                            )}
-                                                            style={{
-                                                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${data})`,
-                                                            }}
-                                                        >
-                                                            <span
-                                                                className={cx('count')}
-                                                            >
-                                                                +{count}
-                                                            </span>
-                                                        </div>
-                                                    ) : null;
-                                                })}
-                                            </div>
-        
-                                            <div className={cx('rating')}>
-                                                <i
-                                                    className={cx(
-                                                        'fa-sharp',
-                                                        'fa-solid',
-                                                        'fa-star'
-                                                    )}
-                                                ></i>
-                                                <span>{player.rating}</span>
-                                            </div>
-                                        </div> */}
+                                <div className={cx('card__footer')}>
+                                    <div className={cx('game__play')}>
+                                        {player?.get_game &&
+                                        player?.get_game.length > 0
+                                            ? player?.get_game.map(
+                                                  (data, index) => {
+                                                      const count =
+                                                          player?.get_game
+                                                              .length - 5;
+                                                      return index < 4 ? (
+                                                          <img
+                                                              key={data.id}
+                                                              src={data.gameImg}
+                                                              alt=''
+                                                          />
+                                                      ) : index === 4 ? (
+                                                          <div
+                                                              key={data.id}
+                                                              className={cx(
+                                                                  'game__count'
+                                                              )}
+                                                              style={{
+                                                                  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${data.gameImg})`,
+                                                              }}
+                                                          >
+                                                              <span
+                                                                  className={cx(
+                                                                      'count'
+                                                                  )}
+                                                              >
+                                                                  +{count}
+                                                              </span>
+                                                          </div>
+                                                      ) : null;
+                                                  }
+                                              )
+                                            : null}
+                                    </div>
+                                    <div className={cx('rating')}>
+                                        <StarRatings
+                                            rating={player?.avgRate}
+                                            starRatedColor='#ffcd3c'
+                                            // changeRating={this.changeRating}
+                                            numberOfStars={5}
+                                            name='rating'
+                                        />
+                                        <span>{player.rating}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ) : // </Link>

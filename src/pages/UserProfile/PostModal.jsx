@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { toast } from 'react-toastify';
+
+import imgbbApi from '@/api/imgbbApi';
 
 import { CFormCheck } from '@coreui/react';
 
@@ -13,32 +17,85 @@ import styles from './Profile.module.scss';
 
 const cx = classNames.bind(styles);
 
+const MAX_COUNT = 4;
+
 function PostModal() {
     const dispatch = useDispatch();
     const modal = useSelector((state) => state?.modal?.modalType.postModal);
     const user = useSelector((state) => state?.user?.user?.information);
 
     const [mediaOption, setMediaOption] = useState('video');
-    const [photoForm, setPhotosForm] = useState(false);
-    const [videoForm, setVideoForm] = useState(false);
 
-    useEffect(() => {
-        // setForm
-        if (mediaOption === 'photos') {
-            setPhotosForm(true);
-            setVideoForm(false);
-        }
-        if (mediaOption === 'video') {
-            setPhotosForm(false);
-            setVideoForm(true);
-        }
-    }, [mediaOption]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [fileLimit, setFileLimit] = useState(false);
 
-    console.log('Check media option', mediaOption);
+    const [previewPhotos, setPreviewPhotos] = useState([]);
+
+    const [photosImgbb, setPhotosImgbb] = useState([]);
+    const [videoLink, setVideoLink] = useState('');
+    const [caption, setCaption] = useState('');
+
+    console.log('check photos imgbb', photosImgbb);
+
+    console.log('check video link', videoLink);
+
+    //     Upload multiple files
+    const handleSetPreviewPhotos = (files) => {
+        const previewPhotos = [];
+        for (let i = 0; i < files.length; i++) {
+            previewPhotos.push(URL.createObjectURL(files[i]));
+        }
+        setPreviewPhotos(previewPhotos);
+    };
+
+    const handleUploadFiles = (files) => {
+        const uploaded = [...uploadedFiles];
+        let limitExceeded = false;
+        files.some((file) => {
+            if (uploaded.findIndex((f) => f.name === file.name) === -1) {
+                uploaded.push(file);
+                if (uploaded.length === MAX_COUNT) setFileLimit(true);
+                if (uploaded.length > MAX_COUNT) {
+                    toast.error(
+                        `You can only add a maximum of ${MAX_COUNT} files`
+                    );
+                    setFileLimit(false);
+                    limitExceeded = true;
+                    return true;
+                }
+            }
+            return false;
+        });
+        if (!limitExceeded) {
+            setUploadedFiles(uploaded);
+            handleSetPreviewPhotos(uploaded);
+        }
+    };
+
+    const handleFileEvent = (e) => {
+        const chosenFiles = Array.prototype.slice.call(e.target.files);
+        handleUploadFiles(chosenFiles);
+    };
+
+    const handleUpdoadPhoto = async () => {
+        const formPhotos = uploadedFiles.map((file) => {
+            const form = new FormData();
+            form.append('image', file);
+            return form;
+        });
+        const photos = formPhotos.map((form) => {
+            return imgbbApi.post('upload', form);
+        });
+        const res = await Promise.all(photos);
+        let urlPhotos = res.map((r) => r?.data?.data?.display_url);
+        setPhotosImgbb(urlPhotos);
+
+        // const {data} =
+    };
 
     return (
         <Modal
-            title='Post'
+            title='Add to information'
             show={modal}
             close={() => dispatch(handlePostModal(false))}
             size='medium'
@@ -60,8 +117,10 @@ function PostModal() {
 
                 <div className={cx('content')}>
                     <textarea
+                        value={caption}
                         placeholder='Write something'
                         className={cx('content__text')}
+                        onChange={(e) => setCaption(e.target.value)}
                     ></textarea>
                 </div>
 
@@ -73,7 +132,10 @@ function PostModal() {
                             type='radio'
                             name='media'
                             id='video'
-                            onChange={(e) => setMediaOption(e.target.value)}
+                            onChange={(e) => {
+                                setMediaOption(e.target.value);
+                                setPhotosImgbb([]);
+                            }}
                             label='Video link (Youtube)'
                             defaultChecked
                         />
@@ -83,27 +145,64 @@ function PostModal() {
                             name='media'
                             id='photos'
                             label='Photos'
-                            onChange={(e) => setMediaOption(e.target.value)}
+                            onChange={(e) => {
+                                setMediaOption(e.target.value);
+                                setVideoLink('');
+                            }}
                         />
                     </div>
+
+                    {previewPhotos && previewPhotos.length > 0 ? (
+                        <div className={cx('previewer')}>
+                            {previewPhotos.map((photo, index) => (
+                                <div
+                                    className={cx('previewer__item')}
+                                    key={index}
+                                >
+                                    <img src={photo} alt='previewer' />
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
 
                     <div className={cx('feature__media')}>
                         {mediaOption === 'video' ? (
                             <div className={cx('input__video-link')}>
                                 <i className={cx('fa-regular fa-paste')}></i>
                                 <input
+                                    value={videoLink}
                                     type='text'
                                     placeholder='Past your youtube link in here'
+                                    onChange={(e) =>
+                                        setVideoLink(e.target.value.trim())
+                                    }
                                 />
                             </div>
                         ) : (
-                            <span>Upload imge</span>
+                            <div className={cx('input__photo')}>
+                                <label htmlFor='uploadPhotos'>
+                                    <i
+                                        className={cx(
+                                            'fa-light fa-down-to-bracket'
+                                        )}
+                                    ></i>
+                                    <p>Click to select file(s)</p>
+                                </label>
+                                <input
+                                    type='file'
+                                    accept='image/*'
+                                    id='uploadPhotos'
+                                    onChange={handleFileEvent}
+                                    disabled={fileLimit}
+                                    hidden
+                                />
+                            </div>
                         )}
                     </div>
                 </div>
 
                 <div className={cx('footer')}>
-                    <button>Post</button>
+                    <button onClick={handleUpdoadPhoto}>Post</button>
                 </div>
             </div>
         </Modal>

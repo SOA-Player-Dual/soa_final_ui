@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -48,8 +48,6 @@ function ModalEditProfile() {
     const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth || '');
     const [gender, setGender] = useState(user?.gender || '');
     const [game, setGame] = useState([]);
-
-    console.log('game', game);
 
     const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
 

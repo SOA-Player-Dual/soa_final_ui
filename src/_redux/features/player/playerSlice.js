@@ -16,8 +16,13 @@ const playerSlice = createSlice({
         updateProfile: (state, action) => {
             state.profile = action.payload;
         },
+        updateFollowers: (state, action) => {
+            console.log('updateFollowers', action.payload);
+            state.profile.player.follower = action.payload;
+        },
     },
 });
 
-export const { setPlayersPro, setProfile, updateProfile } = playerSlice.actions;
+export const { setPlayersPro, setProfile, updateProfile, updateFollowers } =
+    playerSlice.actions;
 export default playerSlice.reducer;

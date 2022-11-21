@@ -10,9 +10,10 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const username = useSelector(
-        (state) => state?.user?.user?.information.nickname
+        (state) => state?.user?.user?.information?.nickname
     );
-    DynamicTitle(username);
+
+    DynamicTitle(username ? username : 'Profile');
     return (
         <div className={cx('wrapper')}>
             <Header />

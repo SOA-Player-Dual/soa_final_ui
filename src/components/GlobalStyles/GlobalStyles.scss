@@ -391,13 +391,19 @@ body {
 // star rating
 
 body {
+    .star-ratings {
+        display: flex !important;
+        align-items: center !important;
+    }
     .star-container {
         padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
     }
 
     .widget-svg {
-        width: 25px !important;
-        height: 25px !important;
+        width: 20px !important;
+        height: 100% !important;
     }
 }
 

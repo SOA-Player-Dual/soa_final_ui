@@ -14,6 +14,7 @@ import { setGames } from '@/_redux/features/games/gamesSlice';
 import { setPlayersPro } from '@/_redux/features/player/playerSlice';
 import {
     handleModalLogin,
+    handleForgotPassModal,
     handleModalRegister,
 } from '@/_redux/features/modal/modalSlice';
 
@@ -28,6 +29,7 @@ import { DynamicTitle } from '@/layouts/DefaultLayout/DynamicTitle/DynamicTitle'
 
 import SignIn from '@/pages/Auth/SignIn';
 import SignUp from '@/pages/Auth/SignUp';
+import ForgotPassword from '@/pages/Auth/SignIn/ForgotPassword';
 import Modal from '@/components/Modal';
 
 const cx = classNames.bind(styles);
@@ -118,6 +120,9 @@ function Home() {
     const modalRegister = useSelector(
         (state) => state?.modal?.modalType?.modalRegister
     );
+    const forgotPassModal = useSelector(
+        (state) => state?.modal?.modalType?.forgotPassModal
+    );
 
     return (
         <>
@@ -161,6 +166,17 @@ function Home() {
                         {/* click to swap sign in adn sign up */}
                         <SignUp />
                     </>
+                </Modal>
+            )}
+
+            {forgotPassModal && (
+                <Modal
+                    title={'Forgot Password'}
+                    show={forgotPassModal}
+                    close={() => dispatch(handleForgotPassModal(false))}
+                    size={'medium'}
+                >
+                    <ForgotPassword />
                 </Modal>
             )}
         </>

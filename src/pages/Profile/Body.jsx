@@ -20,7 +20,6 @@ const cx = classNames.bind(styles);
 function Body({ ratingRef }) {
     const distpach = useDispatch();
 
-    const { urlCode } = useParams();
     const store = {
         player: useSelector((state) => state?.player?.profile),
     };

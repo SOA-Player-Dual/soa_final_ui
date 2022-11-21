@@ -3,15 +3,15 @@ import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
 import { toast } from 'react-toastify';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 // import { DateSelect } from 'react-ymd-date-select/dist/esm/presets/mui';
 
 import followApi from '@/api/followApi';
 import userApi from '@/api/userApi';
 import contractApi from '@/api/contractApi';
 
-import { setFollowing } from '@/_redux/features/user/userSlice';
-import { updateProfile } from '@/_redux/features/player/playerSlice';
+import { updateFollowing } from '@/_redux/features/user/userSlice';
+import { updateFollowers } from '@/_redux/features/player/playerSlice';
 import {
     handleRentModal,
     handleLoginRequiredModal,
@@ -41,6 +41,8 @@ function Header({ exeScrollRating }) {
         isLogin: useSelector((state) => state?.user?.user?.isLogin),
     };
 
+    console.log('Following: ', store.following);
+
     const [time, setTime] = useState('1');
 
     const [pendingBtn, setPendingBtn] = useState(false);
@@ -49,17 +51,19 @@ function Header({ exeScrollRating }) {
     const [unFollowLoading, setUnFollowLoading] = useState(false);
     const [rentLoading, setRentLoading] = useState(false);
 
-    console.log(rentLoading);
-
     const handleClick = {
         follow: async () => {
             try {
                 setFollowLoading(true);
-                await followApi.post(`v1/player/${store?.player?.id}/follower`);
-                const { data } = await userApi.get(`v1/user/following`);
-                const newInfo = await userApi.get(`v1/user/${urlCode}`);
-                dispatch(updateProfile(newInfo?.data?.data?.user));
-                dispatch(setFollowing(data?.data));
+                const { data } = await followApi.post(
+                    `v1/player/${store?.player?.id}/follower`
+                );
+
+                console.log('Test follow', data);
+
+                dispatch(updateFollowing(data?.data?.following));
+                dispatch(updateFollowers(data?.data?.playerFollower));
+
                 setFollowLoading(false);
             } catch (error) {
                 toast.error(error?.response?.data?.error);
@@ -69,13 +73,15 @@ function Header({ exeScrollRating }) {
         unfollow: async () => {
             try {
                 setUnFollowLoading(true);
-                await followApi.put(`v1/player/${store?.player?.id}/follower`);
-                const { data } = await userApi.get(`v1/user/following`);
-                const newInfo = await userApi.get(`v1/user/${urlCode}`);
+                const { data } = await followApi.put(
+                    `v1/player/${store?.player?.id}/follower`
+                );
 
-                console.log('Test data', data?.data);
-                dispatch(updateProfile(newInfo?.data?.data?.user));
-                dispatch(setFollowing(data?.data));
+                console.log('Test unfollow', data);
+
+                dispatch(updateFollowing(data?.data?.following));
+                dispatch(updateFollowers(data?.data?.playerFollower));
+
                 setUnFollowLoading(false);
             } catch (error) {
                 toast.error(error?.response?.data?.error);
@@ -100,7 +106,7 @@ function Header({ exeScrollRating }) {
                     player: store?.player?.id,
                     time,
                 });
-                console.log('Rent data', data);
+
                 setRentLoading(false);
             } catch (e) {
                 toast.error(e?.response?.data?.error);
@@ -144,8 +150,8 @@ function Header({ exeScrollRating }) {
                                         (store.following ? (
                                             store.following?.filter(
                                                 (item) =>
-                                                    item?.urlCode ===
-                                                    store?.player?.urlCode
+                                                    item?.player_id ===
+                                                    store?.player?.id
                                             ).length === 0 ? (
                                                 <div
                                                     className={cx(
@@ -177,26 +183,37 @@ function Header({ exeScrollRating }) {
                                 </div>
                             </div>
                             <div className={cx('game__play')}>
-                                {store?.player?.gamePlay?.map((data, index) => {
-                                    return index < 5 ? (
-                                        <img key={index} src={data} alt='' />
-                                    ) : index === 5 ? (
-                                        <div
-                                            key={index}
-                                            className={cx('game__play-image')}
-                                            style={{
-                                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${data})`,
-                                            }}
-                                        >
-                                            <i
-                                                className={cx(
-                                                    'fa-regular',
-                                                    'fa-ellipsis'
-                                                )}
-                                            ></i>
-                                        </div>
-                                    ) : null;
-                                })}
+                                {store?.player?.get_game &&
+                                store?.player?.get_game?.length > 0
+                                    ? store?.player?.get_game?.map(
+                                          (data, index) => {
+                                              return index < 5 ? (
+                                                  <img
+                                                      key={data.id}
+                                                      src={data.gameImg}
+                                                      alt='game'
+                                                  />
+                                              ) : index === 5 ? (
+                                                  <div
+                                                      key={data.id}
+                                                      className={cx(
+                                                          'game__play-image'
+                                                      )}
+                                                      style={{
+                                                          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${data.gameImg})`,
+                                                      }}
+                                                  >
+                                                      <i
+                                                          className={cx(
+                                                              'fa-regular',
+                                                              'fa-ellipsis'
+                                                          )}
+                                                      ></i>
+                                                  </div>
+                                              ) : null;
+                                          }
+                                      )
+                                    : null}
                             </div>
                             <div className={cx('achie')}>
                                 <div className={cx('achie__item')}>

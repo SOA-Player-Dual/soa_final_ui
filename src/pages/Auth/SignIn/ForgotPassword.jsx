@@ -1,22 +1,28 @@
 import classNames from 'classnames/bind';
 import styles from './SignIn.module.scss';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-import login_bg from '@/assets/images/login-bg.png';
+import {
+    handleModalLogin,
+    handleForgotPassModal,
+} from '@/_redux/features/modal/modalSlice';
+
+// import login_bg from '@/assets/images/login-bg.png';
 
 const cx = classNames.bind(styles);
 
 function SignIn() {
+    const dispatch = useDispatch();
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
-                <div className={cx('image')}>
+                {/* <div className={cx('image')}>
                     <img
                         className={cx('image__action')}
                         src={login_bg}
                         alt='login'
                     />
-                </div>
+                </div> */}
                 <div className={cx('form')}>
                     <div className={cx('form__container')}>
                         <h3 className={cx('form__title')}>Find your account</h3>
@@ -37,10 +43,14 @@ function SignIn() {
                             Submit
                         </button>
 
-                        <div className={cx('redirect__login')}>
-                            <Link className={cx('login__direct')} to='/login'>
-                                Back to login.
-                            </Link>
+                        <div
+                            className={cx('redirect__login')}
+                            onClick={() => {
+                                dispatch(handleForgotPassModal(false));
+                                dispatch(handleModalLogin(true));
+                            }}
+                        >
+                            Back to login.
                         </div>
                     </div>
                 </div>

@@ -29,19 +29,14 @@ function Profile() {
     // );
     DynamicTitle(urlCode);
     useEffect(() => {
-        // set title dynamic
-
         if (store?.player?.urlCode && store?.player?.urlCode !== urlCode) {
             const getProfile = async () => {
                 const { data } = await userApi.get(`v1/user/${urlCode}`);
-                console.log(data);
                 dispatch(setProfile(data?.data?.user));
             };
             getProfile();
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [urlCode]);
+    }, [urlCode, store?.player?.urlCode, dispatch]);
 
     return (
         <div className={cx('wrapper')}>

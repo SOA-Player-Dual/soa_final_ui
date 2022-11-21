@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import classNames from 'classnames/bind';
-import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import jwt_decode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
@@ -14,10 +13,11 @@ import { login } from '@/_redux/features/user/userSlice';
 import {
     handleModalLogin,
     handleModalRegister,
+    handleForgotPassModal,
 } from '@/_redux/features/modal/modalSlice';
 
 import styles from './SignIn.module.scss';
-import login_bg from '@/assets/images/login-bg.png';
+import login_bg from '@/assets/images/login-bg.svg';
 import google_logo from '@/assets/icons/google.png';
 import useEnterKeyListener from '@/hooks/useEnterKeyListener';
 import LoadingIcon from '@/layouts/LoadingIcon';
@@ -31,7 +31,6 @@ const uiConfig = {
 };
 
 function SignIn() {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const usernameRef = useRef(null);
@@ -49,6 +48,10 @@ function SignIn() {
         ridirectToSignUp: () => {
             dispatch(handleModalLogin(false));
             dispatch(handleModalRegister(true));
+        },
+        redirectForgotPassword: () => {
+            dispatch(handleModalLogin(false));
+            dispatch(handleForgotPassModal(true));
         },
         Login: async () => {
             if (!username) {
@@ -133,10 +136,11 @@ function SignIn() {
                             )}
                         </div>
 
-                        <div className={cx('forgot-password')}>
-                            <Link to='/forgot-password'>
-                                <span>Forgot password?</span>
-                            </Link>
+                        <div
+                            className={cx('forgot-password')}
+                            onClick={handleClick.redirectForgotPassword}
+                        >
+                            <span>Forgot password?</span>
                         </div>
 
                         {/* 
