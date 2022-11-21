@@ -6,6 +6,8 @@ import Profile from '@/pages/Profile';
 import UserProfile from '@/pages/UserProfile';
 import Messenger from '@/pages/Messenger';
 import ErrorPage from '@/layouts/ErrorPage/ErrorPage';
+import TopUpOTP from '@/pages/Auth/TopUpOTP';
+import WithDrawOTP from '@/pages/Auth/WithDrawOTP';
 
 const publicRoutes = [
     { path: '/*', component: ErrorPage },
@@ -13,6 +15,8 @@ const publicRoutes = [
     // { path: '/login', component: SignIn, layout: null },
     // { path: '/register', component: SignUp, layout: null },
     // { path: '/forgot-password', component: ForgotPassword, layout: null },
+    { path: '/top-up-otp', component: TopUpOTP },
+    { path: '/with-draw-otp', component: WithDrawOTP },
     { path: '/user/profile/:nickname', component: UserProfile },
     { path: '/profile/:urlCode', component: Profile },
     { path: '/messenger', component: Messenger },

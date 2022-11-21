@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
@@ -18,24 +19,24 @@ import {
 
 import styles from './Home.module.scss';
 import GlobalChat from './GlobalChat';
-import Modal from '@/components/Modal';
+// import Modal from '@/components/Modal';
 import Sidebar from './Sidebar';
+// import SignIn from '@/pages/Auth/SignIn';
+// import SignUp from '@/pages/Auth/SignUp';
+import Content from './Content';
+import { DynamicTitle } from '@/layouts/DefaultLayout/DynamicTitle/DynamicTitle';
+
 import SignIn from '@/pages/Auth/SignIn';
 import SignUp from '@/pages/Auth/SignUp';
-import Content from './Content';
+import Modal from '@/components/Modal';
 
 const cx = classNames.bind(styles);
 
 function Home() {
     const dispatch = useDispatch();
+    DynamicTitle('PlayerDual');
 
     const userID = useSelector((state) => state?.user?.user.id);
-    const modalLogin = useSelector(
-        (state) => state?.modal?.modalType?.modalLogin
-    );
-    const modalRegister = useSelector(
-        (state) => state?.modal?.modalType?.modalRegister
-    );
 
     const checkPlayerPro = useSelector((state) => state?.player?.playersPro);
     const checkListGames = useSelector((state) => state?.games?.games);
@@ -63,6 +64,7 @@ function Home() {
         if (checkUser) {
             const getUserInformation = async () => {
                 if (
+                    checkUserInformation &&
                     Object.getOwnPropertyNames(checkUserInformation).length ===
                         0 &&
                     checkUser
@@ -80,7 +82,6 @@ function Home() {
                     checkUser
                 ) {
                     const { data } = await userApi.get(`v1/user/following`);
-                    console.log('Status following: ', data);
                     dispatch(setFollowing(data?.data));
                 }
             };
@@ -110,6 +111,13 @@ function Home() {
         getGameStore();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const modalLogin = useSelector(
+        (state) => state?.modal?.modalType?.modalLogin
+    );
+    const modalRegister = useSelector(
+        (state) => state?.modal?.modalType?.modalRegister
+    );
 
     return (
         <>

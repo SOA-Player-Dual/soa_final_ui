@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
 
 import ModalEditProfile from './ModalEditProfile';
-import { handleModalEditProfile } from '@/_redux/features/modal/modalSlice';
+import PostModal from './PostModal';
+import {
+    handleModalEditProfile,
+    handlePostModal,
+} from '@/_redux/features/modal/modalSlice';
 
 import styles from './Profile.module.scss';
 import Image from '@/components/Image';
@@ -13,12 +17,21 @@ const cx = classNames.bind(styles);
 function Header({ exeScrollRating }) {
     const dispatch = useDispatch();
     const user = useSelector((state) => state?.user?.user?.information);
-    const modal = useSelector(
-        (state) => state.modal.modalType.modalEditProfile
+
+    const editProfileModal = useSelector(
+        (state) => state?.modal?.modalType?.modalEditProfile
     );
 
-    const handleOpenModalEditProfile = () => {
-        dispatch(handleModalEditProfile(!modal));
+    const postModal = useSelector((state) => state?.modal?.modalType.postModal);
+
+    const handleClick = {
+        editProfileModal: () => {
+            dispatch(handleModalEditProfile(true));
+        },
+        postModal: () => {
+            console.log('Check modal post', postModal);
+            dispatch(handlePostModal(true));
+        },
     };
 
     return (
@@ -26,11 +39,14 @@ function Header({ exeScrollRating }) {
             <div className={cx('header')}>
                 <div className={cx('header__container')}>
                     <div className={cx('cover__photo')}>
-                        <ImageCover src={user.coverImage || ''} alt='' />
+                        <ImageCover
+                            src={user?.coverImage ? user.coverImage : ''}
+                            alt=''
+                        />
                     </div>
                     <div className={cx('avatar')}>
                         <div className={cx('avatar__image')}>
-                            {user?.avatar.length > 0 ? (
+                            {user?.avatar && user?.avatar.length > 0 ? (
                                 <img src={user?.avatar} alt='avatar' />
                             ) : (
                                 <Image src='' alt='avatar' />
@@ -68,17 +84,17 @@ function Header({ exeScrollRating }) {
                             <div className={cx('achie')}>
                                 <div className={cx('achie__item')}>
                                     <span>Follower</span>
-                                    <p>{user?.player?.follower}</p>
+                                    <p>{user?.player?.follower || 0}</p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Has been active</span>
-                                    <p>{user?.player?.hiredTime} hours</p>
+                                    <p>{user?.player?.hiredTime || 0} hours</p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Completion rate</span>
-                                    <p>{user?.player?.completeRate}%</p>
+                                    <p>{user?.player?.completeRate || 0}%</p>
                                 </div>
                             </div>
                         </div>
@@ -109,11 +125,22 @@ function Header({ exeScrollRating }) {
                             </div>
                             <div className={cx('info__action')}>
                                 <div
+                                    className={cx('info__action-btn')}
+                                    onClick={handleClick.postModal}
+                                >
+                                    <i
+                                        className={cx(
+                                            'fa-solid fa-circle-plus'
+                                        )}
+                                    ></i>
+                                    Add to Post
+                                </div>
+                                <div
                                     className={cx(
                                         'info__action-btn',
                                         'edit__btn'
                                     )}
-                                    onClick={handleOpenModalEditProfile}
+                                    onClick={handleClick.editProfileModal}
                                 >
                                     <i className={cx('fa-solid fa-pen')}></i>
                                     Edit profile
@@ -135,7 +162,8 @@ function Header({ exeScrollRating }) {
                     </div>
                 </div>
             </div>
-            {modal && <ModalEditProfile data={user} />}
+            {editProfileModal && <ModalEditProfile />}
+            {postModal && <PostModal />}
         </>
     );
 }
