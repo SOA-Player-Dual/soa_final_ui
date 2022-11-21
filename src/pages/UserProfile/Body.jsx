@@ -10,6 +10,7 @@ import {
 } from '@/_redux/features/previewer/previewerSlice';
 
 import ImagePreviewer from '@/components/ImagePreviewer';
+import Image from '@/components/Image';
 
 import styles from './Profile.module.scss';
 
@@ -64,9 +65,11 @@ function Body({ ratingRef }) {
                             <i className={cx('fa-thin', 'fa-cake-candles')}></i>
                             <div className={cx('info')}>
                                 <p>
-                                    {moment(user?.dateOfBirth).format(
-                                        'MMMM Do YYYY'
-                                    )}
+                                    {user?.dateOfBirth
+                                        ? moment(user?.dateOfBirth).format(
+                                              'MMMM Do YYYY'
+                                          )
+                                        : 'Not set'}
                                 </p>
                                 <span>Birthday</span>
                             </div>
@@ -205,7 +208,15 @@ function Body({ ratingRef }) {
                             <div className={cx('rating')}>
                                 <div className={cx('rating__item')}>
                                     <div className={cx('rating__item--avatar')}>
-                                        <img src={user.avatar} alt='' />
+                                        {user?.avatar &&
+                                        user?.avatar?.length > 0 ? (
+                                            <img
+                                                src={user.avatar}
+                                                alt='avatar'
+                                            />
+                                        ) : (
+                                            <Image src='' alt='avatar' />
+                                        )}
                                     </div>
                                     <div
                                         className={cx('rating__item--content')}
@@ -215,7 +226,11 @@ function Body({ ratingRef }) {
                                                 <div
                                                     className={cx('user__name')}
                                                 >
-                                                    <span>{user.name}</span>
+                                                    <span>
+                                                        {user?.name
+                                                            ? user?.name
+                                                            : 'Anonymous'}
+                                                    </span>
                                                     <div
                                                         className={cx(
                                                             'rating__time'

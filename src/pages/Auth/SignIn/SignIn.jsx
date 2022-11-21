@@ -73,7 +73,7 @@ function SignIn() {
                 dispatch(login(userID?.id));
                 dispatch(handleModalLogin(false));
                 setLoading(false);
-                navigate('/');
+                // navigate('/');
                 toast.success('Login success!');
             } catch (error) {
                 toast.error(error?.response?.data?.error);

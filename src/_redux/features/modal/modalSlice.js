@@ -10,6 +10,8 @@ const modalSlice = createSlice({
             modalRegister: false,
             modalListFollowing: false,
             rentModal: false,
+            loginRequiredModal: false,
+            postModal: false,
         },
     },
     reducers: {
@@ -31,6 +33,12 @@ const modalSlice = createSlice({
         handleRentModal: (state, action) => {
             state.modalType.rentModal = action.payload;
         },
+        handleLoginRequiredModal: (state, action) => {
+            state.modalType.loginRequiredModal = action.payload;
+        },
+        handlePostModal: (state, action) => {
+            state.modalType.postModal = action.payload;
+        },
     },
 });
 
@@ -41,6 +49,8 @@ export const {
     handleModalRegister,
     handleModalListFollowing,
     handleRentModal,
+    handleLoginRequiredModal,
+    handlePostModal,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

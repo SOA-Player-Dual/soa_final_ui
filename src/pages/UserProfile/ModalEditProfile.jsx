@@ -22,42 +22,35 @@ function ModalEditProfile() {
     const dispatch = useDispatch();
 
     const user = useSelector((state) => state?.user?.user?.information);
+    const gameList = useSelector((state) => state?.games?.games);
 
     const modal = useSelector(
         (state) => state.modal.modalType.modalEditProfile
     );
-
-    // turn off modal when reload page
-    useEffect(() => {
-        window.onbeforeunload = () => {
-            dispatch(handleModalEditProfile(false));
-        };
-
-        return () => (window.onbeforeunload = null);
-    }, [dispatch]);
 
     const [loadingNickName, setLoadingNickName] = useState(false);
     const [loadingUrlCode, setLoadingUrlCode] = useState(false);
     const [loadingAvatar, setLoadingAvatar] = useState(false);
     const [loadingDateOfBirth, setLoadingDateOfBirth] = useState(false);
     const [loadingGender, setLoadingGender] = useState(false);
+    const [loadingGame, setLoadingGame] = useState(false);
 
     const [nicknameForm, setNicknameForm] = useState(false);
     const [usernameForm, setUsernameForm] = useState(false);
     const [birthdayForm, setBirthdayForm] = useState(false);
     const [genderForm, setGenderForm] = useState(false);
     const [bioForm, setBioForm] = useState(false);
+    const [gameForm, setGameForm] = useState(false);
 
     const [avatar, setAvatar] = useState('');
-    const [urlCode, setUrlCode] = useState(user?.urlCode);
-    const [nickname, setNickname] = useState(user?.nickname);
-    const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth);
-    const [gender, setGender] = useState(user?.gender);
+    const [urlCode, setUrlCode] = useState(user?.urlCode || '');
+    const [nickname, setNickname] = useState(user?.nickname || '');
+    const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth || '');
+    const [gender, setGender] = useState(user?.gender || '');
+    const [game, setGame] = useState([]);
 
-    //
-    // const [birthday, setBirthday] = useState('');
-    // const [gender, setGender] = useState('');
-    // const [bio, setBio] = useState('');
+    console.log('game', game);
+
     const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
 
     const handleUpdateProfile = async () => {
@@ -89,6 +82,7 @@ function ModalEditProfile() {
     const handleUpdateAvatar = async () => {
         const formData = new FormData();
         formData.append('image', avatar);
+
         try {
             setLoadingAvatar(true);
             const res = await imgbbApi.post('upload', formData);
@@ -131,7 +125,8 @@ function ModalEditProfile() {
 
     const handleUpdateGender = async () => {
         try {
-            const { data } = await userApi.post('v1/user', { gender });
+            setLoadingGender(true);
+            const { data } = await userApi.put('v1/user', { gender });
             dispatch(setUserInformation(data?.data?.user));
 
             toast.success('Update gender successfully!');
@@ -177,6 +172,10 @@ function ModalEditProfile() {
 
         gender: () => {
             setGenderForm((prev) => !prev);
+        },
+
+        game: () => {
+            setGameForm((prev) => !prev);
         },
 
         bio: () => {
@@ -483,8 +482,8 @@ function ModalEditProfile() {
                                                 setGender(e.target.value)
                                             }
                                         >
-                                            <option value='male'>Male</option>
-                                            <option value='female'>
+                                            <option value='Male'>Male</option>
+                                            <option value='Female'>
                                                 Female
                                             </option>
                                         </select>
@@ -507,7 +506,107 @@ function ModalEditProfile() {
                                     </div>
                                 </div>
                             ) : (
-                                <span>Female</span>
+                                <span>{user?.gender}</span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Game */}
+                <div className={cx('form__group')}>
+                    <div className={cx('heading')}>
+                        <div className={cx('title')}>Game</div>
+                        {!loadingGame && (
+                            <div
+                                className={cx('action')}
+                                onClick={handleClickOpenForm.game}
+                            >
+                                {gameForm ? (
+                                    <span>Cancel</span>
+                                ) : (
+                                    <span
+                                        onClick={() => {
+                                            setGender(
+                                                user?.get_game
+                                                    ? user?.get_game
+                                                    : game
+                                            );
+                                        }}
+                                    >
+                                        Edit
+                                    </span>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={cx('content')}>
+                        <div className={cx('birthday')}>
+                            {gameForm ? (
+                                <div className={cx('content__edit')}>
+                                    <div className={cx('form__input')}>
+                                        <select
+                                            value={gender}
+                                            onChange={(e) =>
+                                                setGender(e.target.value)
+                                            }
+                                        >
+                                            <option value='Male'>Male</option>
+                                            <option value='Female'>
+                                                Female
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div className={cx('form__action')}>
+                                        <button
+                                            onClick={() => setGenderForm(false)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        {loadingGender ? (
+                                            <LoadingIcon />
+                                        ) : (
+                                            <button
+                                                onClick={handleUpdateGender}
+                                            >
+                                                Save
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className={cx('game')}>
+                                    {gameList
+                                        ? gameList.map((item) => {
+                                              //   console.log(item.id);
+                                              return (
+                                                  <div
+                                                      className='form-check'
+                                                      key={item.id}
+                                                  >
+                                                      <input
+                                                          className='form-check-input'
+                                                          type='checkbox'
+                                                          value={item.id}
+                                                          id='flexCheckDisabled'
+                                                          onChange={(e) => {
+                                                              setGame(
+                                                                  ...game,
+                                                                  e.target.value
+                                                              );
+                                                          }}
+                                                      />
+                                                      <label
+                                                          className='form-check-label'
+                                                          htmlFor='flexCheckDisabled'
+                                                      >
+                                                          {item.game}
+                                                      </label>
+                                                  </div>
+                                              );
+                                          })
+                                        : null}
+                                </div>
                             )}
                         </div>
                     </div>
@@ -538,7 +637,11 @@ function ModalEditProfile() {
                                         >
                                             Cancel
                                         </button>
-                                        <button>Save</button>
+                                        {loadingGender ? (
+                                            <LoadingIcon />
+                                        ) : (
+                                            <button>Save</button>
+                                        )}
                                     </div>
                                 </div>
                             ) : (

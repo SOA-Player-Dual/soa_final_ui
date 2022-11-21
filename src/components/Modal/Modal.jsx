@@ -35,9 +35,9 @@ function Modal({ title, children, show, close, size, notCloseOutside }) {
     // Disable scroll when modal is open
     useEffect(() => {
         if (show) {
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflowY = 'hidden';
         }
-        return () => (document.body.style.overflow = 'unset');
+        return () => (document.body.style.overflowY = 'unset');
     }, [show]);
 
     return (

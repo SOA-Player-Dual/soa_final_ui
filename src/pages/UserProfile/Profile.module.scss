@@ -714,3 +714,117 @@
         }
     }
 }
+
+.post__modal {
+    padding: 16px;
+
+    .heading {
+        display: flex;
+        align-items: center;
+        .heading__avatar {
+            width: 40px;
+            height: 40px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            margin-left: 12px;
+
+            .info__name {
+                font-weight: 600;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .info__faculty {
+                font-size: 0.8rem;
+                color: rgb(22, 24, 35, 0.7);
+                margin-top: -4px;
+            }
+        }
+    }
+
+    .content {
+        margin-top: 12px;
+        padding: 0 0 32px 0;
+        .content__text {
+            font-family: var(--font-family);
+            width: 100%;
+            padding: 8px;
+            resize: none;
+            height: auto;
+            font-size: 1.2rem;
+            border: none;
+            outline: none;
+            caret-color: var(--primary-color);
+        }
+    }
+
+    .feature {
+        margin-bottom: 8px;
+        padding: 12px 8px;
+        border-radius: 8px;
+        border: 1px solid rgb(22, 24, 35, 0.25);
+
+        .feature__option {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+
+            span {
+                margin-right: 5px;
+                font-weight: 500;
+            }
+        }
+
+        .feature__media {
+            display: flex;
+            align-content: center;
+            justify-content: center;
+            .input__video-link {
+                display: flex;
+                align-items: center;
+                width: 100%;
+
+                i {
+                    margin-right: 8px;
+                }
+                input {
+                    flex: 1;
+
+                    border: none;
+                    outline: none;
+                    padding: 8px;
+                    border-radius: 8px;
+                    border: 1px solid rgb(22, 24, 35, 0.25);
+                }
+            }
+        }
+    }
+
+    .footer {
+        button {
+            width: 100%;
+            border-radius: 8px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: #fff;
+            font-weight: 500;
+
+            &:hover {
+                background-color: var(--primary-color-hover);
+            }
+        }
+    }
+}

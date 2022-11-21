@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 // import { DateSelect } from 'react-ymd-date-select/dist/esm/presets/mui';
 
 import followApi from '@/api/followApi';
@@ -12,7 +12,10 @@ import contractApi from '@/api/contractApi';
 
 import { setFollowing } from '@/_redux/features/user/userSlice';
 import { updateProfile } from '@/_redux/features/player/playerSlice';
-import { handleRentModal } from '@/_redux/features/modal/modalSlice';
+import {
+    handleRentModal,
+    handleLoginRequiredModal,
+} from '@/_redux/features/modal/modalSlice';
 
 import styles from './Profile.module.scss';
 import ImageCover from '@/components/ImageCover';
@@ -35,13 +38,10 @@ function Header({ exeScrollRating }) {
         ),
         rentModal: useSelector((state) => state?.modal?.modalType?.rentModal),
         user: useSelector((state) => state?.user?.user?.information),
+        isLogin: useSelector((state) => state?.user?.user?.isLogin),
     };
 
-    const playerData = store?.player?.filter(
-        (item) => item?.urlCode === urlCode
-    );
-
-    const [time, setTime] = useState('');
+    const [time, setTime] = useState('1');
 
     const [pendingBtn, setPendingBtn] = useState(false);
 
@@ -49,14 +49,15 @@ function Header({ exeScrollRating }) {
     const [unFollowLoading, setUnFollowLoading] = useState(false);
     const [rentLoading, setRentLoading] = useState(false);
 
+    console.log(rentLoading);
+
     const handleClick = {
         follow: async () => {
             try {
                 setFollowLoading(true);
-                await followApi.post(`v1/player/${playerData[0]?.id}/follower`);
+                await followApi.post(`v1/player/${store?.player?.id}/follower`);
                 const { data } = await userApi.get(`v1/user/following`);
                 const newInfo = await userApi.get(`v1/user/${urlCode}`);
-                console.log('Check newInfo', newInfo);
                 dispatch(updateProfile(newInfo?.data?.data?.user));
                 dispatch(setFollowing(data?.data));
                 setFollowLoading(false);
@@ -68,7 +69,7 @@ function Header({ exeScrollRating }) {
         unfollow: async () => {
             try {
                 setUnFollowLoading(true);
-                await followApi.put(`v1/player/${playerData[0]?.id}/follower`);
+                await followApi.put(`v1/player/${store?.player?.id}/follower`);
                 const { data } = await userApi.get(`v1/user/following`);
                 const newInfo = await userApi.get(`v1/user/${urlCode}`);
 
@@ -82,23 +83,27 @@ function Header({ exeScrollRating }) {
             }
         },
         rentModal: () => {
+            if (store?.isLogin === false) {
+                dispatch(handleLoginRequiredModal(true));
+                return;
+            }
             dispatch(handleRentModal(true));
         },
-        rent: () => {
-            if (store?.user?.balance < playerData[0]?.player?.fee) {
+        rent: async () => {
+            if (store?.user?.balance < store?.player?.player?.fee) {
                 toast.error('Your balance is not enough, please top up!');
                 return;
             }
             try {
                 setRentLoading(true);
-                const { data } = contractApi.post(`v1/contract`, {
-                    player: playerData[0]?.id,
+                const { data } = await contractApi.post(`v1/contract`, {
+                    player: store?.player?.id,
                     time,
                 });
                 console.log('Rent data', data);
                 setRentLoading(false);
-            } catch (error) {
-                toast.error(error?.response?.data?.error);
+            } catch (e) {
+                toast.error(e?.response?.data?.error);
                 setRentLoading(false);
             }
         },
@@ -110,14 +115,14 @@ function Header({ exeScrollRating }) {
                 <div className={cx('header__container')}>
                     <div className={cx('cover__photo')}>
                         <ImageCover
-                            src={playerData[0]?.coverImage || ''}
+                            src={store?.player?.coverImage || ''}
                             alt=''
                         />
                     </div>
                     <div className={cx('avatar')}>
                         <div className={cx('avatar__image')}>
-                            {playerData[0]?.avatar ? (
-                                <img src={playerData[0]?.avatar} alt='' />
+                            {store?.player?.avatar ? (
+                                <img src={store?.player?.avatar} alt='' />
                             ) : (
                                 <Image src={''} alt='' />
                             )}
@@ -128,19 +133,19 @@ function Header({ exeScrollRating }) {
                         <div className={cx('info__left')}>
                             <div className={cx('name')}>
                                 <div className={cx('name__wrapper')}>
-                                    {playerData[0]?.nickname}
+                                    {store?.player?.nickname}
                                 </div>
 
                                 <div className={cx('follow')}>
                                     {followLoading || unFollowLoading ? (
                                         <LoadingIcon />
                                     ) : (
-                                        playerData[0]?.nickname &&
+                                        store?.player?.nickname &&
                                         (store.following ? (
                                             store.following?.filter(
                                                 (item) =>
                                                     item?.urlCode ===
-                                                    playerData[0]?.urlCode
+                                                    store?.player?.urlCode
                                             ).length === 0 ? (
                                                 <div
                                                     className={cx(
@@ -172,7 +177,7 @@ function Header({ exeScrollRating }) {
                                 </div>
                             </div>
                             <div className={cx('game__play')}>
-                                {playerData[0]?.gamePlay?.map((data, index) => {
+                                {store?.player?.gamePlay?.map((data, index) => {
                                     return index < 5 ? (
                                         <img key={index} src={data} alt='' />
                                     ) : index === 5 ? (
@@ -197,21 +202,21 @@ function Header({ exeScrollRating }) {
                                 <div className={cx('achie__item')}>
                                     <span>Follower</span>
                                     <p>
-                                        {playerData[0]?.player?.follower || 0}
+                                        {store?.player?.player?.follower || 0}
                                     </p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Has been active</span>
                                     <p>
-                                        {playerData[0]?.player?.hiredTime} hours
+                                        {store?.player?.player?.hiredTime} hours
                                     </p>
                                 </div>
 
                                 <div className={cx('achie__item')}>
                                     <span>Completion rate</span>
                                     <p>
-                                        {playerData[0]?.player?.completeRate}%
+                                        {store?.player?.player?.completeRate}%
                                     </p>
                                 </div>
                             </div>
@@ -221,7 +226,7 @@ function Header({ exeScrollRating }) {
                             <div className={cx('services')}>
                                 <div className={cx('info__price')}>
                                     <span>
-                                        {playerData[0]?.player?.fee.toLocaleString()}
+                                        {store?.player?.player?.fee.toLocaleString()}
                                         &nbsp;VND/hour
                                     </span>
                                 </div>
@@ -229,7 +234,7 @@ function Header({ exeScrollRating }) {
                                     <div className={cx('info__rating-star')}>
                                         <StarRatings
                                             rating={
-                                                playerData[0]?.player?.avgRate
+                                                store?.player?.player?.avgRate
                                             }
                                             starRatedColor='#ffcd3c'
                                             // changeRating={this.changeRating}
@@ -238,11 +243,12 @@ function Header({ exeScrollRating }) {
                                         />
                                     </div>
                                     <div>
-                                        ({playerData[0]?.player?.avgRate}
+                                        ({store?.player?.player?.avgRate}
                                         &nbsp;ratings)
                                     </div>
                                 </div>
                             </div>
+
                             <div className={cx('info__action')}>
                                 <div
                                     className={cx(
@@ -287,6 +293,7 @@ function Header({ exeScrollRating }) {
                 </div>
             </div>
 
+            {/* Rent modal */}
             {store.rentModal && (
                 <Modal
                     title='Rent player'
@@ -297,10 +304,10 @@ function Header({ exeScrollRating }) {
                     <div className={cx('rent__modal')}>
                         <div className={cx('user')}>
                             <div className={cx('user__avatar')}>
-                                <img src={playerData[0]?.avatar} alt='avatar' />
+                                <img src={store?.player?.avatar} alt='avatar' />
                             </div>
                             <div className={cx('user__name')}>
-                                {playerData[0]?.nickname}
+                                {store?.player?.nickname}
                             </div>
                         </div>
                         <div className={cx('rent__item')}>
@@ -333,7 +340,7 @@ function Header({ exeScrollRating }) {
                             <div className={cx('rent__item-title')}>Cost</div>
                             <div className={cx('rent__item-content')}>
                                 <span>
-                                    {playerData[0]?.player?.fee?.toLocaleString()}
+                                    {store?.player?.player?.fee?.toLocaleString()}
                                     &nbsp;VND
                                 </span>
                             </div>
@@ -345,7 +352,7 @@ function Header({ exeScrollRating }) {
                             </div>
                             <div className={cx('rent__item-content')}>
                                 {store?.user?.balance <
-                                    playerData[0]?.player?.fee && (
+                                    store?.player?.player?.fee && (
                                     <div className={cx('top__up-btn')}>
                                         <i
                                             className={cx(
@@ -357,7 +364,7 @@ function Header({ exeScrollRating }) {
                                 <span
                                     className={cx(
                                         store?.user?.balance >=
-                                            playerData[0]?.player?.fee
+                                            store?.player?.player?.fee
                                             ? 'user__money'
                                             : 'user__money-not-enough'
                                     )}
@@ -377,7 +384,13 @@ function Header({ exeScrollRating }) {
                             </button>
 
                             <div className={cx('form__btn-primary')}>
-                                <button onClick={handleClick.rent}>Rent</button>
+                                {rentLoading ? (
+                                    <LoadingIcon />
+                                ) : (
+                                    <button onClick={handleClick.rent}>
+                                        Rent
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
