@@ -15,12 +15,14 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+
     // overflow-x: hidden;
 }
 
 html {
     font-size: 1rem;
     scroll-behavior: smooth;
+    // overflow: hidden !important;
     overflow-x: hidden;
     margin-right: calc(-1 * (100vw - 100%));
 }
@@ -33,7 +35,6 @@ body {
     text-rendering: optimizeLegibility !important;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
-    overflow-y: overlay;
 }
 
 html *::-webkit-scrollbar {
@@ -461,5 +462,16 @@ body {
             cursor: pointer;
             text-decoration: underline;
         }
+    }
+}
+
+// Scrollbar perfect custom
+body {
+    .scrollbar-container {
+        position: static !important;
+    }
+    .ps--active-x > .ps__rail-x,
+    .ps--active-y > .ps__rail-y {
+        margin-right: calc(-1 * (100vw - 100%)) !important;
     }
 }

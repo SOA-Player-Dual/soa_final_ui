@@ -1,6 +1,8 @@
 .wrapper {
     display: flex;
     margin-top: 60px;
+    height: calc(100vh - 60px);
+    overflow: hidden;
     padding: 0 25px;
     background-color: rgb(255, 255, 255);
     @media screen and (max-width: 1023px) {
@@ -21,6 +23,12 @@
 
     .side-bar {
         flex: 1 0 20%;
+        height: calc(100vh - 60px);
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         @media screen and (min-width: 1024px) and (max-width: 1365px) {
             flex: 1 0 25%;
@@ -36,6 +44,12 @@
         padding-left: 20px;
         padding-bottom: 8px;
         flex: 2 0 80%;
+        height: calc(100vh - 60px);
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         @media screen and (min-width: 1024px) and (max-width: 1365px) {
             flex: 2 0 75%;

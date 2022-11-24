@@ -4,6 +4,7 @@ import { Wrapper as PopperWrapper } from '@/components/Popper';
 import { useDebounce } from '@/hooks';
 import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { toast } from 'react-toastify';
 
@@ -19,6 +20,10 @@ const cx = classNames.bind(styles);
 function Search() {
     const navigate = useNavigate();
 
+    const user = useSelector(
+        (state) => state?.user?.user?.information?.urlCode
+    );
+
     const searchRef = useRef(null);
 
     const [loading, setLoading] = useState(false);
@@ -32,7 +37,13 @@ function Search() {
             setFormSearchResponsive((prev) => !prev);
         },
         findPlayer: (urlCode) => {
-            navigate(`/profile/${urlCode}`);
+            searchRef.current._tippy.hide();
+            setShowResult(false);
+            if (urlCode === user) {
+                navigate(`/user/profile/${urlCode}`);
+                return;
+            }
+            navigate(`/player/profile/${urlCode}`);
         },
     };
 
@@ -44,12 +55,11 @@ function Search() {
         }
 
         const fetchApi = async () => {
+            console.log('check ref', searchRef);
             setLoading(true);
             const { data } = await playerApi.get(
                 `v1/player?searchKey=${debounce}`
             );
-
-            console.log(data);
 
             setsearchResult(data?.data?.user);
             if (data?.data?.user.length === 0) {
@@ -191,9 +201,47 @@ function Search() {
                                         </h4>
                                         {searchResult.map((result) => {
                                             return (
-                                                <>
-                                                    <p>{result.id}</p>
-                                                </>
+                                                <div
+                                                    key={result.id}
+                                                    className={cx(
+                                                        'player__item'
+                                                    )}
+                                                    onClick={() => {
+                                                        handleClick.findPlayer(
+                                                            result.urlCode
+                                                        );
+                                                    }}
+                                                >
+                                                    <div
+                                                        className={cx(
+                                                            'player__item-avatar'
+                                                        )}
+                                                    >
+                                                        {result?.avatar &&
+                                                        result?.avatar?.length >
+                                                            0 ? (
+                                                            <img
+                                                                src={
+                                                                    result?.avatar
+                                                                }
+                                                                alt='avatar'
+                                                            />
+                                                        ) : (
+                                                            <Image
+                                                                src=''
+                                                                alt='avatar'
+                                                            />
+                                                        )}
+                                                    </div>
+
+                                                    <div
+                                                        className={cx(
+                                                            'player__item-name'
+                                                        )}
+                                                    >
+                                                        {result?.nickname}
+                                                    </div>
+                                                </div>
                                             );
                                         })}
                                     </div>

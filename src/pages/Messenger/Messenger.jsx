@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import { Outlet } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import { roundArrow } from 'tippy.js';
 import 'tippy.js/themes/light.css';
@@ -134,7 +135,8 @@ function Messenger() {
                         })}
                     </div>
                 </div>
-                <div className={cx('container__right')}>
+                <Outlet />
+                {/* <div className={cx('container__right')}>
                     <div className={cx('container__right--header')}>
                         <div className={cx('user')}>
                             <div className={cx('user__avatar')}>
@@ -199,7 +201,7 @@ function Messenger() {
 
                         <button hidden>Send</button>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

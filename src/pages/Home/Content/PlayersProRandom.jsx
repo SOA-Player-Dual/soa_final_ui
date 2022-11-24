@@ -1,29 +1,67 @@
+import { useState } from 'react';
 import classNames from 'classnames/bind';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
+import { toast } from 'react-toastify';
+
+import userApi from '@/api/userApi';
+
+import { updatePlayerPro } from '@/_redux/features/player/playerSlice';
 
 import styles from './Content.module.scss';
 import Image from '@/components/Image';
+import LoadingIcon from '@/layouts/LoadingIcon';
 
 const cx = classNames.bind(styles);
 
-function PlayerCard() {
+function PlayersProRandom() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const usersPro = useSelector((state) => state?.player?.playersPro);
 
+    const [loading, setLoading] = useState(false);
+
     const handleClickToProfile = (urlCode) => {
-        navigate(`/profile/${urlCode}`);
+        navigate(`/player/profile/${urlCode}`);
+    };
+
+    const handleUpdateProStore = async () => {
+        try {
+            setLoading(true);
+            const { data } = await userApi.get('v1/player');
+            dispatch(updatePlayerPro(data?.data?.user));
+            setLoading(false);
+        } catch (err) {
+            toast.error(err?.response?.data?.error || 'Something went wrong!');
+            setLoading(false);
+        }
     };
 
     return (
         <div className={cx('player')}>
-            <span className={cx('player__title')}>VIP PLAYER</span>
+            <div className={cx('heading')}>
+                <span className={cx('player__title')}>VIP PLAYER</span>
+                <div className={cx('reload')}>
+                    {loading ? (
+                        <LoadingIcon />
+                    ) : (
+                        <div
+                            className={cx('reload__btn')}
+                            onClick={handleUpdateProStore}
+                        >
+                            <i
+                                className={cx('fa-regular fa-arrows-rotate')}
+                            ></i>
+                            <span>Reload</span>
+                        </div>
+                    )}
+                </div>
+            </div>
             <div className={cx('container')}>
                 {usersPro?.map((player, index) =>
                     index < 8 ? (
                         // <Link to={`/profile/${player.urlCode}`}>
-
                         <div
                             key={player.user.urlCode}
                             className={cx('card')}
@@ -110,4 +148,4 @@ function PlayerCard() {
     );
 }
 
-export default PlayerCard;
+export default PlayersProRandom;

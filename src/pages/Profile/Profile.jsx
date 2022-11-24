@@ -29,14 +29,16 @@ function Profile() {
     // );
     DynamicTitle(urlCode);
     useEffect(() => {
-        if (store?.player?.urlCode && store?.player?.urlCode !== urlCode) {
-            const getProfile = async () => {
-                const { data } = await userApi.get(`v1/user/${urlCode}`);
-                dispatch(setProfile(data?.data?.user));
-            };
-            getProfile();
-        }
-    }, [urlCode, store?.player?.urlCode, dispatch]);
+        // if (store?.player?.urlCode && store?.player?.urlCode !== urlCode) {
+        const getProfile = async () => {
+            const { data } = await userApi.get(`v1/user/${urlCode}`);
+            dispatch(setProfile(data?.data?.user));
+        };
+        getProfile();
+        // }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [urlCode]);
 
     return (
         <div className={cx('wrapper')}>

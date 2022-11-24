@@ -15,6 +15,7 @@ import Modal from '@/components/Modal';
 import styles from './Profile.module.scss';
 import { handleModalEditProfile } from '@/_redux/features/modal/modalSlice';
 import Image from '@/components/Image';
+import no_game from '@/assets/icons/no-game.svg';
 
 const cx = classNames.bind(styles);
 
@@ -47,11 +48,55 @@ function ModalEditProfile() {
     const [nickname, setNickname] = useState(user?.nickname || '');
     const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth || '');
     const [gender, setGender] = useState(user?.gender || '');
-    const [game, setGame] = useState([]);
+    const [game, setGame] = useState({ games: [], response: [] });
+
+    console.log('Check game', game.games);
 
     const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
 
-    const handleUpdateProfile = async () => {
+    // Multiple game
+    const handleChangeGames = (e) => {
+        const { value, checked } = e.target;
+        const { games } = game;
+
+        // Case 1 : The user checks the box
+        if (checked) {
+            setGame({
+                games: [...games, value],
+                response: [...games, value],
+            });
+        }
+
+        // Case 2  : The user unchecks the box
+        else {
+            setGame({
+                games: games.filter((e) => e !== value),
+                response: games.filter((e) => e !== value),
+            });
+        }
+    };
+
+    const handleUploadGames = () => {
+        if (game.games.length === 0) {
+            toast.error('Please get your game to update!');
+            return;
+        }
+
+        try {
+            setLoadingGame(true);
+            const { data } = userApi.put('v1/user', { get_game: game.games });
+            console.log('Check game update: ', data);
+            dispatch(setUserInformation(data?.data?.user));
+            toast.success('Update list game successfully!');
+            setLoadingGame(false);
+            setGameForm(false);
+        } catch (err) {
+            toast.error(err?.response?.data?.error);
+            setLoadingGame(false);
+        }
+    };
+
+    const handleUpdateNickName = async () => {
         if (!nickname) {
             toast.error('Nickname is required');
             return;
@@ -290,7 +335,7 @@ function ModalEditProfile() {
                                     {loadingNickName ? (
                                         <LoadingIcon />
                                     ) : (
-                                        <button onClick={handleUpdateProfile}>
+                                        <button onClick={handleUpdateNickName}>
                                             Save
                                         </button>
                                     )}
@@ -543,21 +588,37 @@ function ModalEditProfile() {
                             {gameForm ? (
                                 <div className={cx('content__edit')}>
                                     <div className={cx('form__input')}>
-                                        <select
-                                            value={gender}
-                                            onChange={(e) =>
-                                                setGender(e.target.value)
-                                            }
-                                        >
-                                            <option value='Male'>Male</option>
-                                            <option value='Female'>
-                                                Female
-                                            </option>
-                                        </select>
+                                        {gameList
+                                            ? gameList.map((item) => {
+                                                  //   console.log(item.id);
+                                                  return (
+                                                      <div
+                                                          className='form-check'
+                                                          key={item.id}
+                                                      >
+                                                          <input
+                                                              className='form-check-input'
+                                                              type='checkbox'
+                                                              value={item.id}
+                                                              id='flexCheckDisabled'
+                                                              onChange={
+                                                                  handleChangeGames
+                                                              }
+                                                          />
+                                                          <label
+                                                              className='form-check-label'
+                                                              htmlFor='flexCheckDisabled'
+                                                          >
+                                                              {item.game}
+                                                          </label>
+                                                      </div>
+                                                  );
+                                              })
+                                            : null}
                                     </div>
                                     <div className={cx('form__action')}>
                                         <button
-                                            onClick={() => setGenderForm(false)}
+                                            onClick={() => setGameForm(false)}
                                         >
                                             Cancel
                                         </button>
@@ -572,38 +633,29 @@ function ModalEditProfile() {
                                         )}
                                     </div>
                                 </div>
+                            ) : user?.get_game && user?.get_game.length > 0 ? (
+                                user?.get_game.map((item) => {
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className={cx('game')}
+                                        >
+                                            <span className={cx('game')}>
+                                                {item.game}
+                                            </span>
+                                        </div>
+                                    );
+                                })
                             ) : (
                                 <div className={cx('game')}>
-                                    {gameList
-                                        ? gameList.map((item) => {
-                                              //   console.log(item.id);
-                                              return (
-                                                  <div
-                                                      className='form-check'
-                                                      key={item.id}
-                                                  >
-                                                      <input
-                                                          className='form-check-input'
-                                                          type='checkbox'
-                                                          value={item.id}
-                                                          id='flexCheckDisabled'
-                                                          onChange={(e) => {
-                                                              setGame(
-                                                                  ...game,
-                                                                  e.target.value
-                                                              );
-                                                          }}
-                                                      />
-                                                      <label
-                                                          className='form-check-label'
-                                                          htmlFor='flexCheckDisabled'
-                                                      >
-                                                          {item.game}
-                                                      </label>
-                                                  </div>
-                                              );
-                                          })
-                                        : null}
+                                    <div className={cx('no__game')}>
+                                        <div className={cx('no__game-img')}>
+                                            <img src={no_game} alt='nogame' />
+                                        </div>
+                                        <span>
+                                            Choose your game you can play
+                                        </span>
+                                    </div>
                                 </div>
                             )}
                         </div>

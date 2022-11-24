@@ -1,6 +1,7 @@
 .wrapper {
     padding-top: 60px;
     background-color: rgb(255, 255, 255);
+    overflow: hidden;
     height: 100vh;
     width: 100%;
 
@@ -40,6 +41,10 @@
         padding: 8px;
         max-height: calc(100% - 60px);
         overflow: scroll;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         .messenger__item {
             display: flex;
@@ -141,6 +146,20 @@
     }
 }
 
+.messenger__not__selected__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 75%;
+    height: 100%;
+
+    p {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: rgba(22, 24, 35, 0.6);
+    }
+}
+
 .container__right {
     // flex: 2 0 75%;
     width: 75%;
@@ -195,7 +214,6 @@
                     border-radius: 50%;
                     object-fit: cover;
                     margin-right: 16px;
-                    cursor: none;
                 }
 
                 @media screen and (max-width: 739px) {

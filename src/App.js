@@ -1,13 +1,13 @@
 import { Route, useNavigate, Routes } from 'react-router-dom';
-import { Fragment, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from 'react-redux';
 
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+// import firebase from 'firebase/compat/app';
+// import 'firebase/compat/auth';
 
-import { publicRoutes } from '@/routes';
+// import { publicRoutes } from '@/routes';
 import { DefaultLayout } from '@/layouts';
 
 import {
@@ -25,14 +25,36 @@ import {
 } from '@/_redux/features/modal/modalSlice';
 import Modal from '@/components/Modal';
 import login_required from '@/assets/icons/login_required_bg.svg';
+import Loading from '@/layouts/Loading';
+
+import Home from '@/pages/Home/Home';
+import PlayersProRandom from '@/pages/Home/Content/PlayersProRandom';
+
+// import SignIn from '@/pages/Auth/SignIn';
+// import SignUp from '@/pages/Auth/SignUp';
+// import ForgotPassword from '@/pages/Auth/SignIn/ForgotPassword';
+import Profile from '@/pages/Profile';
+import UserProfile from '@/pages/UserProfile';
+import Messenger from '@/pages/Messenger';
+import MessengerNotSelected from '@/pages/Messenger/MessengerNotSelected';
+import MessengerContent from '@/pages/Messenger/MessengerContent';
+import MessengerNotFound from '@/pages/Messenger/MessengerNotFound';
+import ErrorPage from '@/layouts/ErrorPage/ErrorPage';
+import TopUpOTP from '@/pages/Auth/TopUpOTP';
+import WithDrawOTP from '@/pages/Auth/WithDrawOTP';
+import ForgotPassOTP from '@/pages/Auth/ForgotPassOTP';
 
 // Store
 
-const config = {
-    apiKey: 'AIzaSyDnjD8rqgAJHlrwPC-WB4hLygjnOFa4DOA',
-    authDomain: 'soa-auth-be6e5.firebaseapp.com',
-};
-firebase.initializeApp(config);
+// const config = {
+//     apiKey: 'AIzaSyDnjD8rqgAJHlrwPC-WB4hLygjnOFa4DOA',
+//     authDomain: 'soa-auth-be6e5.firebaseapp.com',
+// };
+// firebase.initializeApp(config);
+
+const PlayersProFilterByGame = React.lazy(() =>
+    import('@/pages/Home/Content/PlayersProFilterByGame')
+);
 
 function App() {
     const dispatch = useDispatch();
@@ -63,17 +85,17 @@ function App() {
         ),
     };
     // Firebase
-    useEffect(() => {
-        const unregisterAuthObserver = firebase
-            .auth()
-            .onAuthStateChanged(async (user) => {
-                if (!user) {
-                    console.log('User is not logged in');
-                    return;
-                }
-            });
-        return () => unregisterAuthObserver();
-    }, []);
+    // useEffect(() => {
+    //     const unregisterAuthObserver = firebase
+    //         .auth()
+    //         .onAuthStateChanged(async (user) => {
+    //             if (!user) {
+    //                 console.log('User is not logged in');
+    //                 return;
+    //             }
+    //         });
+    //     return () => unregisterAuthObserver();
+    // }, []);
 
     return (
         <div className='App'>
@@ -91,9 +113,14 @@ function App() {
             />
 
             <Routes>
-                {publicRoutes.map((route, index) => {
+                {/* {publicRoutes.map((route, index) => {
                     const Page = route.component;
                     let Layout = DefaultLayout;
+
+                    if(route.index === true) {
+                        Layout = Fragment;
+
+                    }
 
                     if (route.layout) {
                         Layout = route.layout;
@@ -111,7 +138,68 @@ function App() {
                             }
                         />
                     );
-                })}
+                })} */}
+
+                <Route
+                    path='*'
+                    element={
+                        <DefaultLayout>
+                            <ErrorPage />
+                        </DefaultLayout>
+                    }
+                />
+
+                <Route
+                    path='/'
+                    element={
+                        <DefaultLayout>
+                            <Home />
+                        </DefaultLayout>
+                    }
+                >
+                    <Route index element={<PlayersProRandom />} />
+                    <Route
+                        path='filter/games/:id'
+                        element={
+                            <React.Suspense
+                                fallback={console.log('Check loading...')}
+                            >
+                                <PlayersProFilterByGame />
+                            </React.Suspense>
+                        }
+                    />
+                </Route>
+                <Route
+                    path='/user/profile/:urlCode'
+                    element={
+                        <DefaultLayout>
+                            <UserProfile />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path='/player/profile/:urlCode'
+                    element={
+                        <DefaultLayout>
+                            <Profile />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path='/messengers'
+                    element={
+                        <DefaultLayout>
+                            <Messenger />
+                        </DefaultLayout>
+                    }
+                >
+                    <Route index element={<MessengerNotSelected />} />
+                    <Route exact path=':id' element={<MessengerContent />} />
+                    <Route path='*' element={<MessengerNotFound />} />
+                </Route>
+                <Route path='/top-up-otp' element={<TopUpOTP />} />
+                <Route path='/with-draw-otp' element={<WithDrawOTP />} />
+                <Route path='/forgot-pass-otp' element={<ForgotPassOTP />} />
             </Routes>
 
             {store.loginRequiredModal && (

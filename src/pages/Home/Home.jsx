@@ -25,12 +25,15 @@ import Sidebar from './Sidebar';
 // import SignIn from '@/pages/Auth/SignIn';
 // import SignUp from '@/pages/Auth/SignUp';
 import Content from './Content';
+
 import { DynamicTitle } from '@/layouts/DefaultLayout/DynamicTitle/DynamicTitle';
 
 import SignIn from '@/pages/Auth/SignIn';
 import SignUp from '@/pages/Auth/SignUp';
 import ForgotPassword from '@/pages/Auth/SignIn/ForgotPassword';
 import Modal from '@/components/Modal';
+
+// const Content = React.lazy(() => import('./Content'));
 
 const cx = classNames.bind(styles);
 
@@ -130,10 +133,15 @@ function Home() {
                 <div className={cx('global-chat')}>
                     <GlobalChat />
                 </div>
+
                 <div className={cx('side-bar')}>
+                    {/* <PerfectScrollbar> */}
                     <Sidebar />
+                    {/* </PerfectScrollbar> */}
                 </div>
+
                 <div className={cx('container')}>
+                    {/* use outlet react router-dom in here */}
                     <Content />
                 </div>
             </div>

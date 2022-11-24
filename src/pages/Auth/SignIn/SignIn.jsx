@@ -4,9 +4,9 @@ import { toast } from 'react-toastify';
 import jwt_decode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+// import firebase from 'firebase/compat/app';
+// import 'firebase/compat/auth';
 
 import authApi from '@/api/authApi';
 import { login } from '@/_redux/features/user/userSlice';
@@ -24,11 +24,11 @@ import LoadingIcon from '@/layouts/LoadingIcon';
 
 const cx = classNames.bind(styles);
 
-const uiConfig = {
-    signInFlow: 'popup',
-    signInSuccessUrl: '/',
-    signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
-};
+// const uiConfig = {
+//     signInFlow: 'popup',
+//     signInSuccessUrl: '/',
+//     signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
+// };
 
 function SignIn() {
     const dispatch = useDispatch();
@@ -152,7 +152,7 @@ function SignIn() {
                             </div>
                         </div> */}
 
-                        <div className={cx('form__footer')}>
+                        {/* <div className={cx('form__footer')}>
                             <div className={cx('form__footer-container')}>
                                 <div
                                     className={cx('google__btn')}
@@ -176,7 +176,7 @@ function SignIn() {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div
                             className={cx('auth')}

@@ -1,5 +1,6 @@
 .wrapper {
     margin-top: 60px;
+    height: calc(100vh - 60px);
 
     .header {
         background-color: rgb(255, 255, 255);
@@ -95,13 +96,14 @@
                         align-items: center;
 
                         .follow {
-                            @media screen and (max-width: 1023px) {
-                                margin-top: 8px;
-                            }
+                            width: 100px;
+                            height: 30px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
                         }
 
                         .follow__btn {
-                            margin-left: 12px;
                             width: fit-content;
                             padding: 0 8px;
                             border-radius: 12px;
@@ -121,7 +123,6 @@
                         }
 
                         .followed__btn {
-                            margin-left: 12px;
                             width: fit-content;
                             padding: 0 8px;
                             font-size: 0.8rem;
@@ -341,6 +342,70 @@
 
                             @media screen and (max-width: 739px) {
                                 width: 100%;
+                            }
+                        }
+
+                        .pending__btn {
+                            // background pending button
+                            background-color: rgba(22, 24, 35, 0.2);
+                            // disable button
+                            pointer-events: none;
+                            // disable button
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: fit-content;
+                            padding: 0 12px;
+                            height: 35px;
+                            margin-left: 8px;
+                            border: none;
+                            outline: none;
+                            border-radius: 8px;
+                            color: #fff;
+                            font-weight: 500;
+                            opacity: 0.9;
+
+                            @media screen and (max-width: 739px) {
+                                width: 100%;
+                                margin: 0;
+                            }
+
+                            @media screen and (min-width: 740px) and (max-width: 1023px) {
+                                margin: 0 auto;
+                                width: 50%;
+                            }
+                        }
+
+                        .renting__btn {
+                            // background success button
+                            background-color: #419f0f;
+                            // disable button
+                            pointer-events: none;
+                            // disable button
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: fit-content;
+                            padding: 0 12px;
+                            height: 35px;
+                            margin-left: 8px;
+                            border: none;
+                            outline: none;
+                            border-radius: 8px;
+                            color: #fff;
+                            font-weight: 500;
+                            opacity: 0.9;
+
+                            @media screen and (max-width: 739px) {
+                                width: 100%;
+                                margin: 0;
+                            }
+
+                            @media screen and (min-width: 740px) and (max-width: 1023px) {
+                                margin: 0 auto;
+                                width: 50%;
                             }
                         }
                     }

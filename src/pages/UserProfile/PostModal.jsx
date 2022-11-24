@@ -93,6 +93,15 @@ function PostModal() {
         // const {data} =
     };
 
+    const handleRemovePhoto = (index) => {
+        const uploaded = [...uploadedFiles];
+        uploaded.splice(index, 1);
+        setUploadedFiles(uploaded);
+        handleSetPreviewPhotos(uploaded);
+    };
+
+    // use handleUpdoadPhoto to upload photos to imgbb
+
     return (
         <Modal
             title='Add to information'
@@ -158,8 +167,18 @@ function PostModal() {
                                 <div
                                     className={cx('previewer__item')}
                                     key={index}
+                                    style={{ backgroundImage: `url(${photo})` }}
                                 >
-                                    <img src={photo} alt='previewer' />
+                                    <div
+                                        className={cx('remove')}
+                                        onClick={() => handleRemovePhoto(index)}
+                                    >
+                                        <i
+                                            className={cx(
+                                                'fa-regular fa-xmark'
+                                            )}
+                                        ></i>
+                                    </div>
                                 </div>
                             ))}
                         </div>

@@ -60,8 +60,8 @@ function Actions() {
     };
 
     const handleClick = {
-        redirectMessage: () => {
-            navigate('/message');
+        redirectMessenger: () => {
+            navigate('/messengers');
         },
         modalLogin: () => {
             navigate('/');
@@ -129,19 +129,15 @@ function Actions() {
                             </div>
                         </Tippy>
 
-                        <Tippy content={'Messenger'}>
-                            <div
-                                className={cx('action__item')}
-                                onClick={handleClick.redirectMessage}
-                            >
-                                <i
-                                    className={cx(
-                                        'fab',
-                                        ' fa-facebook-messenger'
-                                    )}
-                                ></i>
-                            </div>
-                        </Tippy>
+                        <div
+                            className={cx('action__item')}
+                            onClick={handleClick.redirectMessenger}
+                        >
+                            <i
+                                className={cx('fab', ' fa-facebook-messenger')}
+                            ></i>
+                        </div>
+
                         <Profile />
                     </>
                 ) : (

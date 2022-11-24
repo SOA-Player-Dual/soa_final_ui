@@ -10,6 +10,10 @@ const playerSlice = createSlice({
         setPlayersPro: (state, action) => {
             state.playersPro = action.payload;
         },
+
+        updatePlayerPro: (state, action) => {
+            state.playersPro = action.payload;
+        },
         setProfile: (state, action) => {
             state.profile = action.payload;
         },
@@ -23,6 +27,11 @@ const playerSlice = createSlice({
     },
 });
 
-export const { setPlayersPro, setProfile, updateProfile, updateFollowers } =
-    playerSlice.actions;
+export const {
+    setPlayersPro,
+    setProfile,
+    updatePlayerPro,
+    updateProfile,
+    updateFollowers,
+} = playerSlice.actions;
 export default playerSlice.reducer;

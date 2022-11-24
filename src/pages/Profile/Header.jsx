@@ -7,10 +7,12 @@ import { useParams } from 'react-router-dom';
 // import { DateSelect } from 'react-ymd-date-select/dist/esm/presets/mui';
 
 import followApi from '@/api/followApi';
-import userApi from '@/api/userApi';
 import contractApi from '@/api/contractApi';
 
-import { updateFollowing } from '@/_redux/features/user/userSlice';
+import {
+    updateFollowing,
+    updateContract,
+} from '@/_redux/features/user/userSlice';
 import { updateFollowers } from '@/_redux/features/player/playerSlice';
 import {
     handleRentModal,
@@ -40,9 +42,6 @@ function Header({ exeScrollRating }) {
         user: useSelector((state) => state?.user?.user?.information),
         isLogin: useSelector((state) => state?.user?.user?.isLogin),
     };
-
-    console.log('Following: ', store.following);
-
     const [time, setTime] = useState('1');
 
     const [pendingBtn, setPendingBtn] = useState(false);
@@ -59,8 +58,6 @@ function Header({ exeScrollRating }) {
                     `v1/player/${store?.player?.id}/follower`
                 );
 
-                console.log('Test follow', data);
-
                 dispatch(updateFollowing(data?.data?.following));
                 dispatch(updateFollowers(data?.data?.playerFollower));
 
@@ -76,8 +73,6 @@ function Header({ exeScrollRating }) {
                 const { data } = await followApi.put(
                     `v1/player/${store?.player?.id}/follower`
                 );
-
-                console.log('Test unfollow', data);
 
                 dispatch(updateFollowing(data?.data?.following));
                 dispatch(updateFollowers(data?.data?.playerFollower));
@@ -106,6 +101,10 @@ function Header({ exeScrollRating }) {
                     player: store?.player?.id,
                     time,
                 });
+
+                dispatch(updateContract(data?.data?.contract));
+
+                console.log('Check rent responsive', data);
 
                 setRentLoading(false);
             } catch (e) {
@@ -281,7 +280,23 @@ function Header({ exeScrollRating }) {
                                     Donate
                                 </div>
                                 <div
-                                    className={cx('info__action-btn')}
+                                    className={
+                                        cx('info__action-btn')
+                                        // store.user?.contract &&
+                                        //     store.user?.contract?.length > 0
+                                        //     ? store?.user?.contract?.filter(
+                                        //           (item) =>
+                                        //               item.player ===
+                                        //               store?.player?.id
+                                        //       ).length > 0
+                                        //         ? 'pending__btn'
+                                        //         : null
+                                        //     : 'info__action-btn'
+
+                                        //
+                                        // ,
+                                        // 'renting__btn'
+                                    }
                                     onClick={handleClick.rentModal}
                                 >
                                     <i
