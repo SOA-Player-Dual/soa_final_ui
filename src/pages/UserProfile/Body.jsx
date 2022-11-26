@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useClampText } from 'use-clamp-text';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
+import Youtube from 'react-youtube';
+import Tippy from '@tippyjs/react';
 
 import {
     setClickedImg,
     setCurrentIndex,
 } from '@/_redux/features/previewer/previewerSlice';
+
+import { handlePostModal } from '@/_redux/features/modal/modalSlice';
 
 import ImagePreviewer from '@/components/ImagePreviewer';
 import Image from '@/components/Image';
@@ -19,7 +23,27 @@ const cx = classNames.bind(styles);
 function Body({ ratingRef }) {
     const distpach = useDispatch();
 
+    const tippyRef = useRef(null);
+
     const user = useSelector((state) => state?.user?.user?.information);
+
+    console.log('User video link', user.post.media);
+
+    // const embedYoutobe = (url) => {
+    //     const videoId = url.split('v=')[1];
+    //     const ampersandPosition = videoId.indexOf('&');
+    //     if (ampersandPosition !== -1) {
+    //         return videoId.substring(0, ampersandPosition);
+    //     }
+    //     return videoId;
+    // };
+
+    //  get video id from youtube link format https://youtu.be/vTzT2rjA_9I
+
+    const getVideoId = (url) => {
+        const videoId = url.split('be/')[1];
+        return videoId;
+    };
 
     let albumGallery = [];
     if (user?.player?.album) {
@@ -32,6 +56,11 @@ function Body({ ratingRef }) {
     const handleClick = (item, index) => {
         distpach(setCurrentIndex(index));
         distpach(setClickedImg(item));
+    };
+
+    const handleClickOpenModalEdit = () => {
+        tippyRef.current._tippy.hide();
+        distpach(handlePostModal(true));
     };
 
     //* Truncate text
@@ -77,128 +106,250 @@ function Body({ ratingRef }) {
                     </div>
 
                     <div className={cx('content')}>
-                        <div className={cx('container__box', 'info')}>
-                            <div className={cx('info__title')}>
-                                <span className={cx('title')}>Infomation</span>
-                                <div className={cx('info__action')}>
-                                    <i
-                                        className={cx(
-                                            'fa-regular',
-                                            'fa-ellipsis'
-                                        )}
-                                    ></i>
+                        {user.post && (
+                            <div className={cx('container__box', 'info')}>
+                                <div className={cx('info__title')}>
+                                    <span className={cx('title')}>
+                                        Infomation
+                                    </span>
+                                    <Tippy
+                                        ref={tippyRef}
+                                        content={
+                                            <div
+                                                className={cx(
+                                                    'tooltip__wrapper'
+                                                )}
+                                            >
+                                                <div
+                                                    className={cx(
+                                                        'tooltip__item'
+                                                    )}
+                                                    onClick={
+                                                        handleClickOpenModalEdit
+                                                    }
+                                                >
+                                                    <i
+                                                        className={cx(
+                                                            'fa-regular fa-pen'
+                                                        )}
+                                                    ></i>
+                                                    <span>Edit</span>
+                                                </div>
+
+                                                <div
+                                                    className={cx(
+                                                        'tooltip__item'
+                                                    )}
+                                                >
+                                                    <i
+                                                        className={cx(
+                                                            'fa-regular fa-trash'
+                                                        )}
+                                                    ></i>
+                                                    <span>Delete</span>
+                                                </div>
+                                            </div>
+                                        }
+                                        placement='bottom'
+                                        theme='light'
+                                        arrow={false}
+                                        click={true}
+                                        interactive
+                                        trigger='click'
+                                        animation='scale'
+                                        delay={100}
+                                        duration={200}
+                                    >
+                                        <div className={cx('info__action')}>
+                                            <i
+                                                className={cx(
+                                                    'fa-regular',
+                                                    'fa-ellipsis'
+                                                )}
+                                            ></i>
+                                        </div>
+                                    </Tippy>
                                 </div>
-                            </div>
-                            {user?.caption && (
-                                <div
-                                    ref={ref}
-                                    key={key}
-                                    className={cx('info__caption')}
-                                >
-                                    {clampedText}
-                                    {text && (
-                                        <span
-                                            className={cx('btn-toggle')}
-                                            onClick={toggleExpanded}
-                                        >
-                                            {noClamp || `...See more`}
-                                        </span>
+                                {user?.caption && (
+                                    <div
+                                        ref={ref}
+                                        key={key}
+                                        className={cx('info__caption')}
+                                    >
+                                        {clampedText}
+                                        {text && (
+                                            <span
+                                                className={cx('btn-toggle')}
+                                                onClick={toggleExpanded}
+                                            >
+                                                {noClamp || `...See more`}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+
+                                <div className={cx('content__container')}>
+                                    {user.post.type === 'Video' ? (
+                                        <div className={cx('video__content')}>
+                                            <Youtube
+                                                videoId={
+                                                    getVideoId(
+                                                        user?.post?.media
+                                                    ) || ''
+                                                }
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                }}
+                                                loading='lazy'
+                                            />
+                                        </div>
+                                    ) : (
+                                        albumGallery !== null && (
+                                            <div
+                                                className={cx('info__gallery')}
+                                            >
+                                                {albumGallery.map(
+                                                    (data, index) => {
+                                                        const count =
+                                                            albumGallery.length -
+                                                            4;
+                                                        if (
+                                                            albumGallery.length ===
+                                                            1
+                                                        ) {
+                                                            return (
+                                                                <div
+                                                                    onClick={() =>
+                                                                        handleClick(
+                                                                            data,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                    key={index}
+                                                                    className={cx(
+                                                                        'image__1'
+                                                                    )}
+                                                                >
+                                                                    <img
+                                                                        src={
+                                                                            data
+                                                                        }
+                                                                        alt=''
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        } else if (
+                                                            albumGallery.length ===
+                                                            2
+                                                        ) {
+                                                            return (
+                                                                <div
+                                                                    onClick={() =>
+                                                                        handleClick(
+                                                                            data,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                    key={index}
+                                                                    className={cx(
+                                                                        'image__2'
+                                                                    )}
+                                                                >
+                                                                    <img
+                                                                        src={
+                                                                            data
+                                                                        }
+                                                                        alt=''
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        } else if (
+                                                            albumGallery.length ===
+                                                            3
+                                                        ) {
+                                                            return (
+                                                                <div
+                                                                    key={index}
+                                                                    className={cx(
+                                                                        'image__3'
+                                                                    )}
+                                                                >
+                                                                    <img
+                                                                        onClick={() =>
+                                                                            handleClick(
+                                                                                data,
+                                                                                index
+                                                                            )
+                                                                        }
+                                                                        src={
+                                                                            data
+                                                                        }
+                                                                        alt=''
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        } else if (index < 3) {
+                                                            return (
+                                                                <img
+                                                                    onClick={() =>
+                                                                        handleClick(
+                                                                            data,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                    key={index}
+                                                                    src={data}
+                                                                    alt=''
+                                                                />
+                                                            );
+                                                        } else if (
+                                                            index === 3
+                                                        ) {
+                                                            return (
+                                                                <div
+                                                                    onClick={() =>
+                                                                        handleClick(
+                                                                            data,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                    key={index}
+                                                                    className={cx(
+                                                                        'image__more'
+                                                                    )}
+                                                                    style={{
+                                                                        backgroundImage: `${
+                                                                            count >
+                                                                            0
+                                                                                ? 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))'
+                                                                                : 'linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))'
+                                                                        } , url(${data})`,
+                                                                    }}
+                                                                >
+                                                                    <span
+                                                                        className={cx(
+                                                                            'image__count'
+                                                                        )}
+                                                                    >
+                                                                        {count >
+                                                                        0
+                                                                            ? `+${count}`
+                                                                            : ''}
+                                                                    </span>
+                                                                </div>
+                                                            );
+                                                        } else {
+                                                            return null;
+                                                        }
+                                                    }
+                                                )}
+                                            </div>
+                                        )
                                     )}
                                 </div>
-                            )}
-                            {albumGallery !== null && (
-                                <div className={cx('info__gallery')}>
-                                    {albumGallery.map((data, index) => {
-                                        const count = albumGallery.length - 4;
-                                        if (albumGallery.length === 1) {
-                                            return (
-                                                <div
-                                                    onClick={() =>
-                                                        handleClick(data, index)
-                                                    }
-                                                    key={index}
-                                                    className={cx('image__1')}
-                                                >
-                                                    <img src={data} alt='' />
-                                                </div>
-                                            );
-                                        } else if (albumGallery.length === 2) {
-                                            return (
-                                                <div
-                                                    onClick={() =>
-                                                        handleClick(data, index)
-                                                    }
-                                                    key={index}
-                                                    className={cx('image__2')}
-                                                >
-                                                    <img src={data} alt='' />
-                                                </div>
-                                            );
-                                        } else if (albumGallery.length === 3) {
-                                            return (
-                                                <div
-                                                    key={index}
-                                                    className={cx('image__3')}
-                                                >
-                                                    <img
-                                                        onClick={() =>
-                                                            handleClick(
-                                                                data,
-                                                                index
-                                                            )
-                                                        }
-                                                        src={data}
-                                                        alt=''
-                                                    />
-                                                </div>
-                                            );
-                                        } else if (index < 3) {
-                                            return (
-                                                <img
-                                                    onClick={() =>
-                                                        handleClick(data, index)
-                                                    }
-                                                    key={index}
-                                                    src={data}
-                                                    alt=''
-                                                />
-                                            );
-                                        } else if (index === 3) {
-                                            return (
-                                                <div
-                                                    onClick={() =>
-                                                        handleClick(data, index)
-                                                    }
-                                                    key={index}
-                                                    className={cx(
-                                                        'image__more'
-                                                    )}
-                                                    style={{
-                                                        backgroundImage: `${
-                                                            count > 0
-                                                                ? 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))'
-                                                                : 'linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))'
-                                                        } , url(${data})`,
-                                                    }}
-                                                >
-                                                    <span
-                                                        className={cx(
-                                                            'image__count'
-                                                        )}
-                                                    >
-                                                        {count > 0
-                                                            ? `+${count}`
-                                                            : ''}
-                                                    </span>
-                                                </div>
-                                            );
-                                        } else {
-                                            return null;
-                                        }
-                                    })}
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
 
                         <div
                             ref={ratingRef}

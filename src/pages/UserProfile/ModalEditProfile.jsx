@@ -9,7 +9,10 @@ import LoadingIcon from '@/layouts/LoadingIcon';
 import userApi from '@/api/userApi';
 import imgbbApi from '@/api/imgbbApi';
 
-import { setUserInformation } from '@/_redux/features/user/userSlice';
+import {
+    setUserInformation,
+    updateGame,
+} from '@/_redux/features/user/userSlice';
 
 import Modal from '@/components/Modal';
 import styles from './Profile.module.scss';
@@ -76,7 +79,7 @@ function ModalEditProfile() {
         }
     };
 
-    const handleUploadGames = () => {
+    const handleUploadGames = async () => {
         if (game.games.length === 0) {
             toast.error('Please get your game to update!');
             return;
@@ -84,12 +87,14 @@ function ModalEditProfile() {
 
         try {
             setLoadingGame(true);
-            const { data } = userApi.put('v1/user', { get_game: game.games });
-            console.log('Check game update: ', data);
-            dispatch(setUserInformation(data?.data?.user));
-            toast.success('Update list game successfully!');
+            const { data } = await userApi.put('v1/user', {
+                get_game: game.games,
+            });
+            console.log('Check game update: ', data?.data?.user?.get_game);
+            // dispatch(setUserInformation(das?.data?.user));
+            // toast.success('Update list game successfully!');
             setLoadingGame(false);
-            setGameForm(false);
+            // setGameForm(false);
         } catch (err) {
             toast.error(err?.response?.data?.error);
             setLoadingGame(false);
@@ -622,12 +627,10 @@ function ModalEditProfile() {
                                         >
                                             Cancel
                                         </button>
-                                        {loadingGender ? (
+                                        {loadingGame ? (
                                             <LoadingIcon />
                                         ) : (
-                                            <button
-                                                onClick={handleUpdateGender}
-                                            >
+                                            <button onClick={handleUploadGames}>
                                                 Save
                                             </button>
                                         )}

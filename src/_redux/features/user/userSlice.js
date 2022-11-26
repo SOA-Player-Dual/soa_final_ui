@@ -23,7 +23,9 @@ const userSlice = createSlice({
         setFollowing: (state, action) => {
             state.user.following = action.payload;
         },
-
+        updateGame: (state, action) => {
+            state.user.information.get_game = action.payload;
+        },
         updateFollowing: (state, action) => {
             console.log('updateFollowing', action.payload);
             state.user.following.followingData = action.payload;
@@ -48,5 +50,6 @@ export const {
     setFollowing,
     updateFollowing,
     updateContract,
+    updateGame,
 } = userSlice.actions;
 export default userSlice.reducer;

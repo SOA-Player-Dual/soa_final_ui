@@ -124,17 +124,19 @@ function Header({ exeScrollRating }) {
                                 </div>
                             </div>
                             <div className={cx('info__action')}>
-                                <div
-                                    className={cx('info__action-btn')}
-                                    onClick={handleClick.postModal}
-                                >
-                                    <i
-                                        className={cx(
-                                            'fa-solid fa-circle-plus'
-                                        )}
-                                    ></i>
-                                    Add to information
-                                </div>
+                                {user?.post === 0 && (
+                                    <div
+                                        className={cx('info__action-btn')}
+                                        onClick={handleClick.postModal}
+                                    >
+                                        <i
+                                            className={cx(
+                                                'fa-solid fa-circle-plus'
+                                            )}
+                                        ></i>
+                                        Add to information
+                                    </div>
+                                )}
                                 <div
                                     className={cx(
                                         'info__action-btn',

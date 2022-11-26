@@ -35,9 +35,11 @@ function PostModal() {
     const [videoLink, setVideoLink] = useState('');
     const [caption, setCaption] = useState('');
 
-    console.log('check photos imgbb', photosImgbb);
+    console.log('Log post user: ', user.post);
 
-    console.log('check video link', videoLink);
+    // console.log('check photos imgbb', photosImgbb);
+
+    // console.log('check video link', videoLink);
 
     //     Upload multiple files
     const handleSetPreviewPhotos = (files) => {

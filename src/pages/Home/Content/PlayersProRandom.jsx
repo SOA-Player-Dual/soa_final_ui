@@ -24,9 +24,6 @@ function PlayersProRandom() {
     const [gender, setGender] = useState('');
     const [loading, setLoading] = useState(false);
 
-    console.log('usersPro', usersPro.length);
-    console.log('Gender', gender.length);
-
     const [loadmore, setLoadmore] = useState(8);
 
     const handleClickToProfile = (urlCode) => {
@@ -124,6 +121,14 @@ function PlayersProRandom() {
                                       ) : (
                                           <Image src='' alt='avatar' />
                                       )}
+                                      {player.fee ? (
+                                          <div className={cx('fee')}>
+                                              <span>
+                                                  {player.fee.toLocaleString()}{' '}
+                                                  VND/hour
+                                              </span>
+                                          </div>
+                                      ) : null}
                                   </div>
 
                                   <div className={cx('card__content')}>
@@ -203,13 +208,12 @@ function PlayersProRandom() {
                                           </div>
                                           <div className={cx('rating')}>
                                               <StarRatings
-                                                  rating={5}
+                                                  rating={player.avgRate}
                                                   starRatedColor='#ffcd3c'
                                                   // changeRating={this.changeRating}
                                                   numberOfStars={5}
                                                   name='rating'
                                               />
-                                              <span>{5}</span>
                                           </div>
                                       </div>
                                   </div>
@@ -218,11 +222,15 @@ function PlayersProRandom() {
                       )
                     : null}
                 {/* Load more button */}
-                <div className={cx('load-more')}>
-                    <span onClick={handleLoadMore}>
-                        {loadmore < usersPro.length ? 'Load more' : 'Show less'}
-                    </span>
-                </div>
+                {usersPro.length > 8 && (
+                    <div className={cx('load-more')}>
+                        <span onClick={handleLoadMore}>
+                            {loadmore < usersPro.length
+                                ? 'Load more'
+                                : 'Show less'}
+                        </span>
+                    </div>
+                )}
             </div>
         </div>
     );

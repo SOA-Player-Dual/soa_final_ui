@@ -59,6 +59,14 @@ function PlayersProFilterByGame() {
                                       ) : (
                                           <Image src='' alt='avatar' />
                                       )}
+                                      {player.fee ? (
+                                          <div className={cx('fee')}>
+                                              <span>
+                                                  {player.fee.toLocaleString()}{' '}
+                                                  VND/hour
+                                              </span>
+                                          </div>
+                                      ) : null}
                                   </div>
 
                                   <div className={cx('card__content')}>
@@ -66,14 +74,26 @@ function PlayersProFilterByGame() {
                                           <div className={cx('user__name')}>
                                               <span>{player?.name}</span>
                                           </div>
-                                          <div className={cx('is-active')}>
-                                              <i
-                                                  className={cx(
-                                                      'fa-solid',
-                                                      'fa-circle'
+                                          {player?.user && (
+                                              <div className={cx('gender')}>
+                                                  {player.user.gender ===
+                                                  'female' ? (
+                                                      <span
+                                                          className={cx(
+                                                              'female'
+                                                          )}
+                                                      >
+                                                          Female
+                                                      </span>
+                                                  ) : (
+                                                      <span
+                                                          className={cx('male')}
+                                                      >
+                                                          Male
+                                                      </span>
                                                   )}
-                                              ></i>
-                                          </div>
+                                              </div>
+                                          )}
                                       </div>
 
                                       <div className={cx('bio')}>
@@ -132,7 +152,6 @@ function PlayersProFilterByGame() {
                                                   numberOfStars={5}
                                                   name='rating'
                                               />
-                                              <span>{5}</span>
                                           </div>
                                       </div>
                                   </div>
