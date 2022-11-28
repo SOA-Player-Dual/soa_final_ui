@@ -26,6 +26,14 @@
         }
     }
 
+    .sidebar__response {
+        display: none;
+
+        @media screen and (max-width: 1023px) {
+            display: block;
+        }
+    }
+
     .content {
         margin-top: 32px;
         width: 100%;
@@ -361,7 +369,7 @@
                                 position: relative;
                             }
 
-                            .game-count {
+                            .game__count {
                                 width: 23px;
                                 height: 23px;
                                 position: relative;

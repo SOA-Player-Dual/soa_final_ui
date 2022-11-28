@@ -76,6 +76,8 @@ function Home() {
                 ) {
                     const { data } = await userApi.get(`v1/user/id/${userID}`);
                     dispatch(setUserInformation(data?.data?.user));
+
+                    console.log("Get user's information", data?.data?.user);
                 }
             };
 
@@ -93,6 +95,7 @@ function Home() {
 
             getUserInformation();
             getFollowing();
+            // reload page
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkUser]);
@@ -104,7 +107,6 @@ function Home() {
                 dispatch(setPlayersPro(data?.data?.user));
             }
         };
-        getProUsersFunc();
 
         const getGameStore = async () => {
             if (!checkListGames.length) {
@@ -112,8 +114,9 @@ function Home() {
                 dispatch(setGames(data?.data?.data));
             }
         };
-
+        getProUsersFunc();
         getGameStore();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

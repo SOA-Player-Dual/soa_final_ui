@@ -53,8 +53,6 @@ function ModalEditProfile() {
     const [gender, setGender] = useState(user?.gender || '');
     const [game, setGame] = useState({ games: [], response: [] });
 
-    console.log('Check game', game.games);
-
     const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
 
     // Multiple game
@@ -87,14 +85,14 @@ function ModalEditProfile() {
 
         try {
             setLoadingGame(true);
-            const { data } = await userApi.put('v1/user', {
-                get_game: game.games,
+            const { data } = await userApi.put('v1/user/game', {
+                game: game.games,
             });
-            console.log('Check game update: ', data?.data?.user?.get_game);
-            // dispatch(setUserInformation(das?.data?.user));
-            // toast.success('Update list game successfully!');
+            console.log('Check game', data);
+            dispatch(updateGame(data?.data?.user?.get_game));
             setLoadingGame(false);
-            // setGameForm(false);
+            setGameForm(false);
+            toast.success('Update list game successfully!');
         } catch (err) {
             toast.error(err?.response?.data?.error);
             setLoadingGame(false);
@@ -589,7 +587,7 @@ function ModalEditProfile() {
                     </div>
 
                     <div className={cx('content')}>
-                        <div className={cx('birthday')}>
+                        <div className={cx('game__container')}>
                             {gameForm ? (
                                 <div className={cx('content__edit')}>
                                     <div className={cx('form__input')}>
@@ -605,14 +603,15 @@ function ModalEditProfile() {
                                                               className='form-check-input'
                                                               type='checkbox'
                                                               value={item.id}
-                                                              id='flexCheckDisabled'
+                                                              id={item.id}
                                                               onChange={
                                                                   handleChangeGames
                                                               }
                                                           />
+
                                                           <label
                                                               className='form-check-label'
-                                                              htmlFor='flexCheckDisabled'
+                                                              htmlFor={item.id}
                                                           >
                                                               {item.game}
                                                           </label>
@@ -641,11 +640,9 @@ function ModalEditProfile() {
                                     return (
                                         <div
                                             key={item.id}
-                                            className={cx('game')}
+                                            className={cx('game__item')}
                                         >
-                                            <span className={cx('game')}>
-                                                {item.game}
-                                            </span>
+                                            <span>{item.game}</span>
                                         </div>
                                     );
                                 })

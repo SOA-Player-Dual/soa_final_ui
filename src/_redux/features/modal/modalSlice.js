@@ -15,6 +15,8 @@ const modalSlice = createSlice({
             changePassModal: false,
             forgotPassModal: false,
             topupModal: false,
+            donateModal: false,
+            donateHistoryModal: false,
         },
     },
     reducers: {
@@ -51,6 +53,12 @@ const modalSlice = createSlice({
         handleTopupModal: (state, action) => {
             state.modalType.topupModal = action.payload;
         },
+        handleDonateModal: (state, action) => {
+            state.modalType.donateModal = action.payload;
+        },
+        handleDonateHistoryModal: (state, action) => {
+            state.modalType.donateHistoryModal = action.payload;
+        },
     },
 });
 
@@ -66,6 +74,8 @@ export const {
     handleChangePassModal,
     handleForgotPassModal,
     handleTopupModal,
+    handleDonateModal,
+    handleDonateHistoryModal,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

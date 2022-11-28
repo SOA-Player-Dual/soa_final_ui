@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const username = useSelector(
-        (state) => state?.user?.user?.information?.nickname
+        (state) => state?.user?.user?.information?.urlCode
     );
 
     DynamicTitle(username ? username : 'Profile');

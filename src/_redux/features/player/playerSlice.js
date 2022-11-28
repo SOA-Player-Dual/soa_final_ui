@@ -5,6 +5,8 @@ const playerSlice = createSlice({
     initialState: {
         playersPro: [],
         profile: {},
+        donate: [],
+        ratings: [],
     },
     reducers: {
         setPlayersPro: (state, action) => {
@@ -21,8 +23,13 @@ const playerSlice = createSlice({
             state.profile = action.payload;
         },
         updateFollowers: (state, action) => {
-            console.log('updateFollowers', action.payload);
             state.profile.player.follower = action.payload;
+        },
+        setDonate: (state, action) => {
+            state.donate = action.payload;
+        },
+        setRatings: (state, action) => {
+            state.ratings = action.payload;
         },
     },
 });
@@ -33,5 +40,7 @@ export const {
     updatePlayerPro,
     updateProfile,
     updateFollowers,
+    setDonate,
+    setRatings,
 } = playerSlice.actions;
 export default playerSlice.reducer;

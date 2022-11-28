@@ -1,5 +1,5 @@
 import { Route, useNavigate, Routes } from 'react-router-dom';
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,14 +25,10 @@ import {
 } from '@/_redux/features/modal/modalSlice';
 import Modal from '@/components/Modal';
 import login_required from '@/assets/icons/login_required_bg.svg';
-import Loading from '@/layouts/Loading';
 
 import Home from '@/pages/Home/Home';
 import PlayersProRandom from '@/pages/Home/Content/PlayersProRandom';
-
-// import SignIn from '@/pages/Auth/SignIn';
-// import SignUp from '@/pages/Auth/SignUp';
-// import ForgotPassword from '@/pages/Auth/SignIn/ForgotPassword';
+import PlayersProFilterByGame from '@/pages/Home/Content/PlayersProFilterByGame';
 import Profile from '@/pages/Profile';
 import UserProfile from '@/pages/UserProfile';
 import Messenger from '@/pages/Messenger';
@@ -51,10 +47,6 @@ import ForgotPassOTP from '@/pages/Auth/ForgotPassOTP';
 //     authDomain: 'soa-auth-be6e5.firebaseapp.com',
 // };
 // firebase.initializeApp(config);
-
-const PlayersProFilterByGame = React.lazy(() =>
-    import('@/pages/Home/Content/PlayersProFilterByGame')
-);
 
 function App() {
     const dispatch = useDispatch();
@@ -160,13 +152,7 @@ function App() {
                     <Route index element={<PlayersProRandom />} />
                     <Route
                         path='filter/games/:id'
-                        element={
-                            <React.Suspense
-                                fallback={console.log('Check loading...')}
-                            >
-                                <PlayersProFilterByGame />
-                            </React.Suspense>
-                        }
+                        element={<PlayersProFilterByGame />}
                     />
                 </Route>
                 <Route
@@ -178,7 +164,7 @@ function App() {
                     }
                 />
                 <Route
-                    path='/player/profile/:urlCode'
+                    path='/player/profile/:id'
                     element={
                         <DefaultLayout>
                             <Profile />

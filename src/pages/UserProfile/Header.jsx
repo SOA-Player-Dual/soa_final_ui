@@ -29,7 +29,6 @@ function Header({ exeScrollRating }) {
             dispatch(handleModalEditProfile(true));
         },
         postModal: () => {
-            console.log('Check modal post', postModal);
             dispatch(handlePostModal(true));
         },
     };
@@ -81,6 +80,36 @@ function Header({ exeScrollRating }) {
                                     ) : null;
                                 })}
                             </div>
+                            <div className={cx('game__play')}>
+                                {user?.get_game && user?.get_game?.length > 0
+                                    ? user?.get_game?.map((data, index) => {
+                                          return index < 5 ? (
+                                              <img
+                                                  key={data.id}
+                                                  src={data.gameImg}
+                                                  alt='game'
+                                              />
+                                          ) : index === 5 ? (
+                                              <div
+                                                  key={data.id}
+                                                  className={cx(
+                                                      'game__play-image'
+                                                  )}
+                                                  style={{
+                                                      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${data.gameImg})`,
+                                                  }}
+                                              >
+                                                  <i
+                                                      className={cx(
+                                                          'fa-regular',
+                                                          'fa-ellipsis'
+                                                      )}
+                                                  ></i>
+                                              </div>
+                                          ) : null;
+                                      })
+                                    : null}
+                            </div>
                             <div className={cx('achie')}>
                                 <div className={cx('achie__item')}>
                                     <span>Follower</span>
@@ -124,19 +153,21 @@ function Header({ exeScrollRating }) {
                                 </div>
                             </div>
                             <div className={cx('info__action')}>
-                                {user?.post === 0 && (
-                                    <div
-                                        className={cx('info__action-btn')}
-                                        onClick={handleClick.postModal}
-                                    >
-                                        <i
-                                            className={cx(
-                                                'fa-solid fa-circle-plus'
-                                            )}
-                                        ></i>
-                                        Add to information
-                                    </div>
-                                )}
+                                {user?.post &&
+                                    user?.post?.content === null &&
+                                    user?.post?.media === null && (
+                                        <div
+                                            className={cx('info__action-btn')}
+                                            onClick={handleClick.postModal}
+                                        >
+                                            <i
+                                                className={cx(
+                                                    'fa-solid fa-circle-plus'
+                                                )}
+                                            ></i>
+                                            Add to information
+                                        </div>
+                                    )}
                                 <div
                                     className={cx(
                                         'info__action-btn',

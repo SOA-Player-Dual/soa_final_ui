@@ -55,7 +55,6 @@ function Search() {
         }
 
         const fetchApi = async () => {
-            console.log('check ref', searchRef);
             setLoading(true);
             const { data } = await playerApi.get(
                 `v1/player?searchKey=${debounce}`

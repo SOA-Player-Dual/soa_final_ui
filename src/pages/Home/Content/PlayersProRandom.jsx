@@ -19,15 +19,25 @@ function PlayersProRandom() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const player = useSelector((state) => state?.player?.playersPro);
+    const user = useSelector((state) => state?.user?.user?.information);
 
     const [usersPro, setUsersPro] = useState(player);
     const [gender, setGender] = useState('');
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        setUsersPro(player);
+    }, [player]);
+
     const [loadmore, setLoadmore] = useState(8);
 
-    const handleClickToProfile = (urlCode) => {
-        navigate(`/player/profile/${urlCode}`);
+    const handleClickToProfile = (id) => {
+        if (id === user.id) {
+            navigate(`/user/profile/${id}`);
+            return;
+        }
+
+        navigate(`/player/profile/${id}`);
     };
 
     // filter by gendef
@@ -44,16 +54,9 @@ function PlayersProRandom() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [gender]);
 
-    const handleUpdateProStore = async () => {
-        try {
-            setLoading(true);
-            const { data } = await userApi.get('v1/player');
-            dispatch(updatePlayerPro(data?.data?.user));
-            setLoading(false);
-        } catch (err) {
-            toast.error(err?.response?.data?.error || 'Something went wrong!');
-            setLoading(false);
-        }
+    const handleUpdateProStore = () => {
+        //    reload page
+        window.location.reload();
     };
 
     const handleLoadMore = () => {
@@ -104,11 +107,9 @@ function PlayersProRandom() {
                           index < loadmore ? (
                               <div
                                   className={cx('card')}
-                                  key={player?.user?.urlCode}
+                                  key={player?.id}
                                   onClick={() =>
-                                      handleClickToProfile(
-                                          player?.user?.urlCode
-                                      )
+                                      handleClickToProfile(player?.id)
                                   }
                               >
                                   <div className={cx('card__image')}>

@@ -13,6 +13,8 @@ function PlayersProFilterByGame() {
     const { id } = useParams();
     const navigate = useNavigate();
 
+    const user = useSelector((state) => state?.user?.user?.information);
+
     const player = useSelector((state) => state.player.playersPro);
     const games = useSelector((state) => state?.games?.games);
 
@@ -23,8 +25,13 @@ function PlayersProFilterByGame() {
         return user.get_game.find((game) => game.id === id) !== undefined;
     });
 
-    const handleClickToProfile = (urlCode) => {
-        navigate(`/player/profile/${urlCode}`);
+    const handleClickToProfile = (id) => {
+        if (id === user.id) {
+            navigate(`/user/profile/${id}`);
+            return;
+        }
+
+        navigate(`/player/profile/${id}`);
     };
 
     return (
@@ -44,9 +51,9 @@ function PlayersProFilterByGame() {
                         ? usersPro.map((player, index) => (
                               <div
                                   className={cx('card')}
-                                  key={player.user.urlCode}
+                                  key={player?.id}
                                   onClick={() =>
-                                      handleClickToProfile(player.user.urlCode)
+                                      handleClickToProfile(player?.id)
                                   }
                               >
                                   <div className={cx('card__image')}>

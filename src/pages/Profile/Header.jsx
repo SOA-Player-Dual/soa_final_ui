@@ -4,20 +4,29 @@ import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
+import VNnum2words from 'vn-num2words';
+import Tippy from '@tippyjs/react';
 // import { DateSelect } from 'react-ymd-date-select/dist/esm/presets/mui';
 
 import followApi from '@/api/followApi';
 import contractApi from '@/api/contractApi';
+import ratingApi from '@/api/ratingApi';
+import donateApi from '@/api/donateApi';
 
 import {
     updateFollowing,
     updateContract,
+    updateBalance,
+    updateDonateHistory,
 } from '@/_redux/features/user/userSlice';
 import { updateFollowers } from '@/_redux/features/player/playerSlice';
 import {
     handleRentModal,
     handleLoginRequiredModal,
+    handleDonateModal,
 } from '@/_redux/features/modal/modalSlice';
+
+import { setDonate } from '@/_redux/features/player/playerSlice';
 
 import styles from './Profile.module.scss';
 import ImageCover from '@/components/ImageCover';
@@ -27,7 +36,7 @@ import Modal from '@/components/Modal';
 
 const cx = classNames.bind(styles);
 
-function Header({ exeScrollRating }) {
+function Header() {
     const dispatch = useDispatch();
 
     let { urlCode } = useParams();
@@ -38,10 +47,17 @@ function Header({ exeScrollRating }) {
         following: useSelector(
             (state) => state?.user?.user?.following?.followingData
         ),
+        userContract: useSelector(
+            (state) => state?.user?.user?.information?.contract
+        ),
         rentModal: useSelector((state) => state?.modal?.modalType?.rentModal),
+        donateModal: useSelector(
+            (state) => state?.modal?.modalType?.donateModal
+        ),
         user: useSelector((state) => state?.user?.user?.information),
         isLogin: useSelector((state) => state?.user?.user?.isLogin),
     };
+
     const [time, setTime] = useState('1');
 
     const [pendingBtn, setPendingBtn] = useState(false);
@@ -49,6 +65,18 @@ function Header({ exeScrollRating }) {
     const [followLoading, setFollowLoading] = useState(false);
     const [unFollowLoading, setUnFollowLoading] = useState(false);
     const [rentLoading, setRentLoading] = useState(false);
+
+    // Donate
+    const [money, setMoney] = useState('');
+    const [donateLoading, setDonateLoading] = useState(false);
+    const [displayName, setDisplayName] = useState('');
+    const [message, setMessage] = useState('');
+
+    const exeScrollRating = () => {
+        const rating = document.getElementById('rating__container');
+
+        rating.scrollIntoView();
+    };
 
     const handleClick = {
         follow: async () => {
@@ -102,16 +130,74 @@ function Header({ exeScrollRating }) {
                     time,
                 });
 
+                console.log('Check rent data', data);
+
                 dispatch(updateContract(data?.data?.contract));
-
-                console.log('Check rent responsive', data);
-
                 setRentLoading(false);
+                dispatch(handleRentModal(false));
+                toast.success('Rent successfully!');
             } catch (e) {
                 toast.error(e?.response?.data?.error);
                 setRentLoading(false);
             }
         },
+        donateModal: () => {
+            dispatch(handleDonateModal(true));
+        },
+
+        donate: async () => {
+            if (store?.user?.balance < money) {
+                toast.error('Your balance is not enough, please top up!');
+                return;
+            }
+            if (
+                money === '' ||
+                money === 0 ||
+                money === '0' ||
+                money === '0.0' ||
+                money === '0.00'
+            ) {
+                toast.error('Please enter a valid amount');
+                return;
+            }
+
+            if (displayName === '') {
+                toast.error('Please enter a display name');
+                return;
+            }
+
+            try {
+                console.log('money', money);
+                console.log('displayName', displayName);
+                console.log('message', message);
+                const { data } = await donateApi.post(
+                    `v1/player/${store?.profile?.id}/donate`,
+                    {
+                        money,
+                        displayName,
+                        message,
+                    }
+                );
+                console.log('Donate check', data);
+                dispatch(updateBalance(data?.data?.balance));
+                dispatch(updateDonateHistory(data?.data?.donateHistory));
+                dispatch(setDonate(data?.data?.topDonate));
+                toast.success(
+                    `Donate ${money} for ${store?.player?.nickname} successfully!`
+                );
+                dispatch(handleDonateModal(false));
+                setDisplayName('');
+                setMoney('');
+                setMessage('');
+            } catch (err) {
+                toast.error(err?.response?.data?.error);
+            }
+        },
+    };
+
+    const formatNumberOnChange = (value) => {
+        const number = Number(value.replace(/\D/g, ''));
+        setMoney(number);
     };
 
     return (
@@ -271,6 +357,7 @@ function Header({ exeScrollRating }) {
                                         'info__action-btn',
                                         'donate__btn'
                                     )}
+                                    onClick={handleClick.donateModal}
                                 >
                                     <i
                                         className={cx(
@@ -280,23 +367,24 @@ function Header({ exeScrollRating }) {
                                     Donate
                                 </div>
                                 <div
-                                    className={
-                                        cx('info__action-btn')
-                                        // store.user?.contract &&
-                                        //     store.user?.contract?.length > 0
-                                        //     ? store?.user?.contract?.filter(
-                                        //           (item) =>
-                                        //               item.player ===
-                                        //               store?.player?.id
-                                        //       ).length > 0
-                                        //         ? 'pending__btn'
-                                        //         : null
-                                        //     : 'info__action-btn'
-
-                                        //
-                                        // ,
-                                        // 'renting__btn'
-                                    }
+                                    className={cx(
+                                        store.userContract &&
+                                            store.userContract.length > 0 &&
+                                            store.userContract.filter(
+                                                (item) =>
+                                                    item?.player ===
+                                                    store?.player?.id
+                                            ).length > 0
+                                            ? store.userContract.filter(
+                                                  (item) =>
+                                                      item.player ===
+                                                          store?.player?.id &&
+                                                      item.status === 'Pending'
+                                              ).length > 0
+                                                ? 'pending__btn'
+                                                : 'renting__btn'
+                                            : 'info__action-btn'
+                                    )}
                                     onClick={handleClick.rentModal}
                                 >
                                     <i
@@ -305,21 +393,63 @@ function Header({ exeScrollRating }) {
                                             'fa-rectangle-history-circle-user'
                                         )}
                                     ></i>
-                                    Rent
+                                    {store.userContract &&
+                                    store.userContract.length > 0
+                                        ? store.userContract.filter(
+                                              (item) =>
+                                                  item.player ===
+                                                      store?.player?.id &&
+                                                  item.status === 'Pending'
+                                          ).length > 0
+                                            ? 'Pending...'
+                                            : 'Renting'
+                                        : 'Rent'}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <hr />
                     <div className={cx('navigation')}>
-                        <div className={cx('navigation__item')}>
-                            Introduction
+                        <div className={cx('navigation__left')}>
+                            <div className={cx('navigation__item')}>
+                                Introduction
+                            </div>
+                            <div
+                                className={cx('navigation__item')}
+                                onClick={exeScrollRating}
+                            >
+                                Rating
+                            </div>
                         </div>
-                        <div
-                            className={cx('navigation__item')}
-                            onClick={exeScrollRating}
-                        >
-                            Rating
+                        <div className={cx('navigation__right')}>
+                            <Tippy
+                                content={
+                                    <div className={cx('header__tooltip')}>
+                                        <div
+                                            className={cx(
+                                                'header__tooltip-item'
+                                            )}
+                                        >
+                                            <i
+                                                className={cx(
+                                                    'fa-regular fa-bug'
+                                                )}
+                                            ></i>
+                                            <span>Report</span>
+                                        </div>
+                                    </div>
+                                }
+                                placement='bottom'
+                                interactive={true}
+                                trigger='click'
+                                theme='light'
+                            >
+                                <div className={cx('item')}>
+                                    <i
+                                        className={cx('fa-solid fa-ellipsis')}
+                                    ></i>
+                                </div>
+                            </Tippy>
                         </div>
                     </div>
                 </div>
@@ -423,6 +553,109 @@ function Header({ exeScrollRating }) {
                                         Rent
                                     </button>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {/* Donate modal */}
+            {store.donateModal && (
+                <Modal
+                    title='Donate'
+                    show={store.donateModal}
+                    close={() => dispatch(handleDonateModal(false))}
+                    size={'medium'}
+                >
+                    <div className={cx('donate__modal')}>
+                        <div className={cx('donate__item')}>
+                            <div className={cx('donate__item-title')}>
+                                Receiver:
+                            </div>
+                            <div className={cx('donate__item-content')}>
+                                <span className={cx('name__player')}>
+                                    {store?.player?.nickname}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className={cx('donate__item')}>
+                            <div className={cx('donate__item-title')}>
+                                Current balance:
+                            </div>
+                            <div className={cx('donate__item-content')}>
+                                {store?.user?.balance?.toLocaleString()} VND
+                            </div>
+                        </div>
+
+                        <div className={cx('donate__item')}>
+                            <div className={cx('donate__item-title')}>
+                                The amount to Donate:
+                            </div>
+                            <div className={cx('donate__item-content')}>
+                                <div>
+                                    <input
+                                        value={money}
+                                        type='number'
+                                        required
+                                        onChange={(e) =>
+                                            setMoney(e.target.value)
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={cx('donate__item')}>
+                            <div className={cx('donate__item-title')}>
+                                Display name:
+                            </div>
+                            <div className={cx('donate__item-content')}>
+                                <input
+                                    value={displayName}
+                                    type='text'
+                                    required
+                                    onChange={(e) =>
+                                        setDisplayName(e.target.value)
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className={cx('display')}>
+                            <span>Total donate: </span>
+                            <span className={cx('display__money')}>
+                                {money && money > 0
+                                    ? VNnum2words(money) + ' đồng'
+                                    : null}
+                            </span>
+                        </div>
+
+                        <div className={cx('donate__messenger')}>
+                            <textarea
+                                value={message}
+                                className={cx('text__area')}
+                                name=''
+                                id=''
+                                placeholder='Type your message here...'
+                                onChange={(e) => setMessage(e.target.value)}
+                            ></textarea>
+                        </div>
+
+                        <div className={cx('form__action')}>
+                            <button
+                                className={cx('form__btn-close')}
+                                onClick={() =>
+                                    dispatch(handleDonateModal(false))
+                                }
+                            >
+                                Close
+                            </button>
+
+                            <div className={cx('form__btn-primary')}>
+                                <button onClick={handleClick.donate}>
+                                    Donate
+                                </button>
                             </div>
                         </div>
                     </div>

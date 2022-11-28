@@ -21,9 +21,7 @@ function GlobalChat() {
 
     const [valueMess, setValueMess] = useState('');
 
-    const handleSubmit = (e) => {
-        e.console.log(valueMess);
-    };
+    const handleSubmit = (e) => {};
 
     const handleInputChange = (e) => {
         setValueMess(e.target.value);

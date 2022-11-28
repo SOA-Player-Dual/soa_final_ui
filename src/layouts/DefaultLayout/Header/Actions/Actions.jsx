@@ -5,12 +5,23 @@ import 'tippy.js/dist/tippy.css';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import {
+    CTable,
+    CTableHead,
+    CTableRow,
+    CTableHeaderCell,
+    CTableBody,
+    CTableDataCell,
+} from '@coreui/react';
+import '@coreui/coreui/dist/css/coreui.min.css';
+import moment from 'moment';
 
 import userApi from '@/api/userApi';
 
 import {
     handleModalWithdraw,
     handleModalListFollowing,
+    handleDonateHistoryModal,
 } from '@/_redux/features/modal/modalSlice';
 import {
     handleModalLogin,
@@ -26,6 +37,7 @@ import Modal from '@/components/Modal';
 import Image from '@/components/Image';
 import LoadingIcon from '@/layouts/LoadingIcon';
 import no_following from '@/assets/icons/no_following.svg';
+import donate_empty from '@/assets/icons/donate_empty.svg';
 
 const cx = classNames.bind(styles);
 
@@ -43,6 +55,8 @@ function Actions() {
     const store = {
         isLogin: useSelector((state) => state?.user?.user?.isLogin),
         listFollowing: useSelector((state) => state?.user?.user?.following),
+        user: useSelector((state) => state?.user?.user?.information),
+        player: useSelector((state) => state?.player?.playersPro),
         modalLogin: useSelector((state) => state?.modal?.modalType?.modalLogin),
         modalRegister: useSelector(
             (state) => state?.modal?.modalType?.modalRegister
@@ -56,7 +70,17 @@ function Actions() {
         changePassModal: useSelector(
             (state) => state?.modal?.modalType?.changePassModal
         ),
+
         topupModal: useSelector((state) => state?.modal?.modalType?.topupModal),
+        donateHitoryModal: useSelector(
+            (state) => state?.modal?.modalType?.donateHistoryModal
+        ),
+    };
+
+    const findPlayerById = (id) => {
+        // find and return nickname of player
+        const player = store.player.find((player) => player.id === id);
+        return player?.name;
     };
 
     const handleClick = {
@@ -91,12 +115,11 @@ function Actions() {
 
             try {
                 setChangePassLoading(true);
-                const { data } = await userApi.post('v1/auth/password', {
+                await userApi.post('v1/auth/password', {
                     password: currentPass,
                     newPassword: confirmPass,
                 });
 
-                console.log('Check data: ', data);
                 toast.success('Change password successfully!');
                 setChangePassLoading(false);
                 dispatch(handleChangePassModal(false));
@@ -303,6 +326,88 @@ function Actions() {
                     <div className={'modal'}></div>
                 </Modal>
             )}
+
+            {/* Donate history */}
+
+            {store.donateHitoryModal && (
+                <Modal
+                    title={'Donate history'}
+                    show={store.donateHitoryModal}
+                    close={() => dispatch(handleDonateHistoryModal(false))}
+                    size={'large'}
+                >
+                    <div className={cx('donate-history__modal')}>
+                        {store?.user && store.user.donate_history.length > 0 ? (
+                            <CTable>
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell scope='col'>
+                                            ID
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Beneficiary
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Amount donated
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Display name
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Message
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Donated time
+                                        </CTableHeaderCell>
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {store.user.donate_history.map(
+                                        (item, index) => {
+                                            return (
+                                                <CTableRow key={item.id}>
+                                                    <CTableHeaderCell scope='row'>
+                                                        {index + 1}
+                                                    </CTableHeaderCell>
+                                                    <CTableDataCell>
+                                                        {findPlayerById(
+                                                            item.player
+                                                        )}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell>
+                                                        {item.money}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell>
+                                                        {item.displayName}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell>
+                                                        {item.message}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell>
+                                                        {moment(
+                                                            item.created_at
+                                                        ).calendar()}
+                                                    </CTableDataCell>
+                                                </CTableRow>
+                                            );
+                                        }
+                                    )}
+                                </CTableBody>
+                            </CTable>
+                        ) : (
+                            <div className={cx('donate__empty')}>
+                                <div className={cx('donate__empty-img')}>
+                                    {' '}
+                                    <img src={donate_empty} alt='empty' />
+                                </div>
+                                <span>You have not donated to anyone yet</span>
+                            </div>
+                        )}
+                    </div>
+                </Modal>
+            )}
+
+            {/* List following modal */}
             {store.modalListFollowing && (
                 <Modal
                     title='Following'

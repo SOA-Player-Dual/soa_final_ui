@@ -8,6 +8,7 @@ import {
     handleModalListFollowing,
     handleChangePassModal,
     handleTopupModal,
+    handleDonateHistoryModal,
 } from '@/_redux/features/modal/modalSlice';
 import { logout } from '@/_redux/features/user/userSlice';
 
@@ -35,6 +36,9 @@ function Tooltipes({ profileHref }) {
         changePassModal: () => {
             dispatch(handleChangePassModal(true));
         },
+        donateHistoryModal: () => {
+            dispatch(handleDonateHistoryModal(true));
+        },
         logout: () => {
             localStorage.removeItem('accessToken');
             dispatch(logout());
@@ -50,7 +54,7 @@ function Tooltipes({ profileHref }) {
         <div className={cx('tooltip')}>
             <div className={cx('tooltip-container')}>
                 <Link
-                    to={`/user/profile/${user?.nickname}`}
+                    to={`/user/profile/${user?.urlCode}`}
                     onClick={profileHref.current._tippy.hide()}
                 >
                     <div className={cx('tooltip-item', 'profile')}>
@@ -101,6 +105,22 @@ function Tooltipes({ profileHref }) {
                         <i className={cx('fa-regular', 'fa-credit-card')}></i>
                     </div>
                     <span className={cx('tooltip-item__label')}>Top up</span>
+                </div>
+
+                <div
+                    className={cx('tooltip-item')}
+                    onClick={handleClick.donateHistoryModal}
+                >
+                    <div className={cx('label__icon')}>
+                        <i
+                            className={cx(
+                                'fa-regular fa-rectangle-history-circle-user'
+                            )}
+                        ></i>
+                    </div>
+                    <span className={cx('tooltip-item__label')}>
+                        Donate history
+                    </span>
                 </div>
 
                 <div

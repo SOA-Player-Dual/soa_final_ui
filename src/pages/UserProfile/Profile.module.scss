@@ -158,8 +158,8 @@
                                 left: 50%;
                                 transform: translate(-50%, -50%);
                                 color: #fff;
-                                font-size: 1.3rem;
-                                font-weight: 800;
+                                font-size: 1.2rem;
+                                font-weight: 500;
 
                                 @media screen and (max-width: 1023px) {
                                     font-size: 1rem;
@@ -652,6 +652,24 @@
                 margin-top: 8px;
             }
 
+            .game__container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+
+                .game__item {
+                    display: flex;
+
+                    span {
+                        display: flex;
+                        align-items: center;
+
+                        // font-weight: 500;
+                    }
+                }
+            }
+
             .game {
                 .no__game {
                     .no__game-img {
@@ -945,10 +963,14 @@
     }
 
     .footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
         button {
             width: 100%;
             border-radius: 8px;
-            height: 40px;
+            height: 100%;
             background-color: var(--primary-color);
             color: #fff;
             font-weight: 500;

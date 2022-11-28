@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { toast } from 'react-toastify';
-
 import imgbbApi from '@/api/imgbbApi';
-
 import { CFormCheck } from '@coreui/react';
 
+import userApi from '@/api/userApi';
+
 import { handlePostModal } from '@/_redux/features/modal/modalSlice';
+import { updatePost } from '@/_redux/features/user/userSlice';
 
 import Modal from '@/components/Modal';
 import Image from '@/components/Image';
+import LoadingIcon from '@/layouts/LoadingIcon';
 
 import styles from './Profile.module.scss';
 
@@ -26,20 +27,21 @@ function PostModal() {
 
     const [mediaOption, setMediaOption] = useState('video');
 
+    const [loading, setLoading] = useState(false);
+
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [fileLimit, setFileLimit] = useState(false);
 
     const [previewPhotos, setPreviewPhotos] = useState([]);
 
-    const [photosImgbb, setPhotosImgbb] = useState([]);
-    const [videoLink, setVideoLink] = useState('');
-    const [caption, setCaption] = useState('');
+    const [videoLink, setVideoLink] = useState(
+        user?.post && user?.post?.type === 'video' ? user?.post?.media : ''
+    );
+    const [caption, setCaption] = useState(user?.post?.content || '');
 
-    console.log('Log post user: ', user.post);
+    // console.log('Log post user: ', user.post);
 
     // console.log('check photos imgbb', photosImgbb);
-
-    // console.log('check video link', videoLink);
 
     //     Upload multiple files
     const handleSetPreviewPhotos = (files) => {
@@ -90,9 +92,7 @@ function PostModal() {
         });
         const res = await Promise.all(photos);
         let urlPhotos = res.map((r) => r?.data?.data?.display_url);
-        setPhotosImgbb(urlPhotos);
-
-        // const {data} =
+        return urlPhotos;
     };
 
     const handleRemovePhoto = (index) => {
@@ -103,6 +103,55 @@ function PostModal() {
     };
 
     // use handleUpdoadPhoto to upload photos to imgbb
+
+    const handlePost = async () => {
+        // if (mediaOption === 'photo') {
+        //     try {
+        //         setLoading(true);
+
+        //         console.log('check photos imgbb 2', photosImgbb);
+
+        //         const { data } = await userApi.put('v1/user/bio', {
+        //             content: caption,
+        //             media: photosImgbb,
+        //             type: 'photo',
+        //         });
+
+        //         dispatch(updatePost(data?.data?.post));
+
+        //         console.log('Log post photo: ', data);
+        //         toast.success('Update post successfully');
+        //         dispatch(handlePostModal(false));
+        //         setLoading(false);
+        //     } catch (error) {
+        //         toast.error(error?.response?.data?.error);
+        //         setLoading(false);
+        //     }
+        //     return;
+        // }
+
+        try {
+            setLoading(true);
+            let upLoadToImgbb;
+
+            if (mediaOption === 'photo') {
+                upLoadToImgbb = await handleUpdoadPhoto();
+            }
+
+            const { data } = await userApi.put('v1/user/bio', {
+                content: caption,
+                media: mediaOption === 'video' ? videoLink : upLoadToImgbb,
+                type: mediaOption,
+            });
+            dispatch(updatePost(data?.data?.post));
+            toast.success('Update post successfully');
+            dispatch(handlePostModal(false));
+            setLoading(false);
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+            setLoading(false);
+        }
+    };
 
     return (
         <Modal
@@ -121,8 +170,12 @@ function PostModal() {
                         )}
                     </div>
                     <div className={cx('info')}>
-                        <span className={cx('info__name')}>Ton Duc Thang</span>
-                        <span className={cx('info__faculty')}>Faculty</span>
+                        <span className={cx('info__name')}>
+                            {user?.nickname}
+                        </span>
+                        <span className={cx('info__faculty')}>
+                            {user?.role}
+                        </span>
                     </div>
                 </div>
 
@@ -145,16 +198,15 @@ function PostModal() {
                             id='video'
                             onChange={(e) => {
                                 setMediaOption(e.target.value);
-                                setPhotosImgbb([]);
                             }}
                             label='Video link (Youtube)'
                             defaultChecked
                         />
                         <CFormCheck
-                            value={'photos'}
+                            value={'photo'}
                             type='radio'
                             name='media'
-                            id='photos'
+                            id='Photos'
                             label='Photos'
                             onChange={(e) => {
                                 setMediaOption(e.target.value);
@@ -223,7 +275,15 @@ function PostModal() {
                 </div>
 
                 <div className={cx('footer')}>
-                    <button onClick={handleUpdoadPhoto}>Post</button>
+                    {loading ? (
+                        <LoadingIcon />
+                    ) : (
+                        <button onClick={handlePost}>
+                            {user?.post && Object.keys(user.post).length > 0
+                                ? 'Update'
+                                : 'Create'}
+                        </button>
+                    )}
                 </div>
             </div>
         </Modal>

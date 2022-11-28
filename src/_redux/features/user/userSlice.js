@@ -27,12 +27,19 @@ const userSlice = createSlice({
             state.user.information.get_game = action.payload;
         },
         updateFollowing: (state, action) => {
-            console.log('updateFollowing', action.payload);
             state.user.following.followingData = action.payload;
         },
         updateContract: (state, action) => {
-            console.log('updateContract', action.payload);
             state.user.information.contract = action.payload;
+        },
+        updatePost: (state, action) => {
+            state.user.information.post = action.payload;
+        },
+        updateBalance: (state, action) => {
+            state.user.information.balance = action.payload;
+        },
+        updateDonateHistory: (state, action) => {
+            state.user.information.donate_history = action.payload;
         },
         logout: (state) => {
             state.user.id = '';
@@ -51,5 +58,8 @@ export const {
     updateFollowing,
     updateContract,
     updateGame,
+    updatePost,
+    updateBalance,
+    updateDonateHistory,
 } = userSlice.actions;
 export default userSlice.reducer;
