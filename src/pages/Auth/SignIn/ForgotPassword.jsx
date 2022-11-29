@@ -1,18 +1,54 @@
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SignIn.module.scss';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
+import authApi from '@/api/authApi';
 
 import {
     handleModalLogin,
     handleForgotPassModal,
 } from '@/_redux/features/modal/modalSlice';
 
+import LoadingIcon from '@/layouts/LoadingIcon';
+
 // import login_bg from '@/assets/images/login-bg.png';
 
 const cx = classNames.bind(styles);
 
-function SignIn() {
+function ForgotPassword() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [username, setUsername] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    // function isValidEmail(email) {
+    //     return /\S+@\S+\.\S+/.test(email);
+    // }
+
+    const handleSubmitForm = async () => {
+        if (!username) {
+            toast.error('Username is required!');
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            await authApi.post(`v1/auth/recover`, {
+                username,
+            });
+            setLoading(false);
+            navigate(`/forgot-pass-otp/${username}`);
+            toast.success('Please check your email!');
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+            setLoading(false);
+        }
+    };
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
@@ -36,12 +72,20 @@ function SignIn() {
                         <input
                             className={cx('form-control')}
                             type='text'
-                            placeholder='Email'
+                            placeholder='Username'
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
 
-                        <button className={cx('form-control', 'form-btn')}>
-                            Submit
-                        </button>
+                        <div className={cx('forgot__btn')}>
+                            {loading ? (
+                                <LoadingIcon />
+                            ) : (
+                                <button onClick={handleSubmitForm}>
+                                    Submit
+                                </button>
+                            )}
+                        </div>
 
                         <div
                             className={cx('redirect__login')}
@@ -59,4 +103,4 @@ function SignIn() {
     );
 }
 
-export default SignIn;
+export default ForgotPassword;

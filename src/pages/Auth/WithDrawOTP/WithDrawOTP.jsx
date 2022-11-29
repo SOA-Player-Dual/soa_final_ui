@@ -1,15 +1,21 @@
 import classNames from 'classnames/bind';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import OtpInput from 'react-otp-input';
 import { useDispatch } from 'react-redux';
+
+import transactionApi from '@/api/transactionApi';
+
+import { updateBalance } from '@/_redux/features/user/userSlice';
 
 import LoadingIcon from '@/layouts/LoadingIcon';
 
 import styles from './OTP.module.scss';
 
 import useEnterKeyListener from '@/hooks/useEnterKeyListener';
+
+import { DynamicTitle } from '@/layouts/DefaultLayout/DynamicTitle/DynamicTitle';
 
 const cx = classNames.bind(styles);
 
@@ -32,6 +38,10 @@ function WithDrawOTP() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const { amount } = useParams();
+
+    DynamicTitle('Withdraw OTP');
+
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
     const [loadingResend, setLoadingResend] = useState(false);
@@ -50,16 +60,34 @@ function WithDrawOTP() {
             return;
         }
 
-        setLoading(true);
+        try {
+            setLoading(true);
 
-        navigate('/');
-        setLoading(false);
+            const { data } = await transactionApi.put(`v1/transaction`, {
+                otp,
+            });
+
+            dispatch(updateBalance(data?.data?.balance));
+            navigate('/');
+            toast.success(`You have successfully withdrawn ${amount} VND`);
+        } catch (err) {
+            toast.error(err.response.data.error || 'Something went wrong');
+            setLoading(false);
+        }
     };
 
     const handleResendOTP = async () => {
-        setLoadingResend(true);
-        toast.success('OTP re-sent successfully!');
-        setLoadingResend(false);
+        try {
+            setLoadingResend(true);
+            await transactionApi.post('v1/transaction', {
+                amount: -amount,
+            });
+            setLoadingResend(false);
+            toast.success('Resend OTP successfully');
+        } catch (error) {
+            toast.error(error.response.data.error || 'Something went wrong');
+            setLoadingResend(false);
+        }
     };
 
     return (
@@ -68,12 +96,12 @@ function WithDrawOTP() {
                 <div className={cx('container')}>
                     <div className={cx('header')}>
                         <div className={cx('header__title')}>
-                            Email verification
+                            Withdraw verification
                         </div>
                         <p className={cx('header__des')}>
                             We have sent a verification code to your email
-                            &nbsp;
-                            <span>hehe</span>.
+                            address. Please enter the code below to verify your
+                            withdraw.
                         </p>
                     </div>
 

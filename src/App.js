@@ -22,6 +22,8 @@ import {
     handleChangePassModal,
     handleForgotPassModal,
     handleTopupModal,
+    handleDonateModal,
+    handleDonateHistoryModal,
 } from '@/_redux/features/modal/modalSlice';
 import Modal from '@/components/Modal';
 import login_required from '@/assets/icons/login_required_bg.svg';
@@ -39,6 +41,9 @@ import ErrorPage from '@/layouts/ErrorPage/ErrorPage';
 import TopUpOTP from '@/pages/Auth/TopUpOTP';
 import WithDrawOTP from '@/pages/Auth/WithDrawOTP';
 import ForgotPassOTP from '@/pages/Auth/ForgotPassOTP';
+import Transaction from '@/pages/Transaction';
+import Topup from '@/pages/Transaction/Topup';
+import Withdraw from '@/pages/Transaction/Withdraw';
 
 // Store
 
@@ -66,6 +71,8 @@ function App() {
             dispatch(handleChangePassModal(false));
             dispatch(handleForgotPassModal(false));
             dispatch(handleTopupModal(false));
+            dispatch(handleDonateModal(false));
+            dispatch(handleDonateHistoryModal(false));
         };
 
         return () => (window.onbeforeunload = null);
@@ -183,9 +190,29 @@ function App() {
                     <Route exact path=':id' element={<MessengerContent />} />
                     <Route path='*' element={<MessengerNotFound />} />
                 </Route>
-                <Route path='/top-up-otp' element={<TopUpOTP />} />
-                <Route path='/with-draw-otp' element={<WithDrawOTP />} />
-                <Route path='/forgot-pass-otp' element={<ForgotPassOTP />} />
+
+                <Route
+                    path='/transaction-history'
+                    element={
+                        <DefaultLayout>
+                            <Transaction />
+                        </DefaultLayout>
+                    }
+                >
+                    <Route index element={<Topup />} />
+                    <Route path='topup' element={<Topup />} />
+                    <Route path='withdraw' element={<Withdraw />} />
+                </Route>
+
+                <Route path='/top-up-otp/:amount' element={<TopUpOTP />} />
+                <Route
+                    path='/with-draw-otp/:amount'
+                    element={<WithDrawOTP />}
+                />
+                <Route
+                    path='/forgot-pass-otp/:username'
+                    element={<ForgotPassOTP />}
+                />
             </Routes>
 
             {store.loginRequiredModal && (

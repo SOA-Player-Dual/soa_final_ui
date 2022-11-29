@@ -88,7 +88,6 @@ function ModalEditProfile() {
             const { data } = await userApi.put('v1/user/game', {
                 game: game.games,
             });
-            console.log('Check game', data);
             dispatch(updateGame(data?.data?.user?.get_game));
             setLoadingGame(false);
             setGameForm(false);

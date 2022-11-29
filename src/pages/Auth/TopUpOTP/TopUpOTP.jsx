@@ -1,15 +1,20 @@
 import classNames from 'classnames/bind';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import OtpInput from 'react-otp-input';
 import { useDispatch } from 'react-redux';
+
+import transactionApi from '@/api/transactionApi';
+
+import { updateBalance } from '@/_redux/features/user/userSlice';
 
 import LoadingIcon from '@/layouts/LoadingIcon';
 
 import styles from './OTP.module.scss';
 
 import useEnterKeyListener from '@/hooks/useEnterKeyListener';
+import { DynamicTitle } from '@/layouts/DefaultLayout/DynamicTitle/DynamicTitle';
 
 const cx = classNames.bind(styles);
 
@@ -32,6 +37,10 @@ function TopUpOTP() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    DynamicTitle('Top Up OTP');
+
+    const { amount } = useParams();
+
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
     const [loadingResend, setLoadingResend] = useState(false);
@@ -49,17 +58,38 @@ function TopUpOTP() {
             toast.error('OTP must be 6 digits');
             return;
         }
+        try {
+            setLoading(true);
 
-        setLoading(true);
-
-        navigate('/');
-        setLoading(false);
+            const { data } = await transactionApi.put(`v1/transaction`, {
+                otp,
+            });
+            dispatch(updateBalance(data?.data?.balance));
+            setLoading(false);
+            navigate('/');
+            toast.success(`You have successfully topped up ${amount} VND`);
+        } catch (error) {
+            toast.error(error?.response?.data?.error || 'Something went wrong');
+            setLoading(false);
+            setOtp('');
+        }
     };
 
     const handleResendOTP = async () => {
-        setLoadingResend(true);
-        toast.success('OTP re-sent successfully!');
-        setLoadingResend(false);
+        try {
+            setLoadingResend(true);
+
+            const { data } = await transactionApi.post(`v1/transaction`, {
+                amount,
+            });
+
+            console.log('check data', data);
+            toast.success('OTP has been sent');
+            setLoadingResend(false);
+        } catch (err) {
+            toast.error(err?.response?.data?.error || 'Something went wrong');
+            setLoadingResend(false);
+        }
     };
 
     return (
@@ -68,12 +98,11 @@ function TopUpOTP() {
                 <div className={cx('container')}>
                     <div className={cx('header')}>
                         <div className={cx('header__title')}>
-                            Email verification
+                            Top up verification
                         </div>
                         <p className={cx('header__des')}>
-                            We have sent a verification code to your email
-                            &nbsp;
-                            <span>hehe</span>.
+                            We have sent a verification code to your email.
+                            Please enter the code below to verify your email.
                         </p>
                     </div>
 
@@ -91,13 +120,17 @@ function TopUpOTP() {
                     </div>
 
                     <div className={cx('btn__confirm')}>
-                        <button
-                            id={'btn_veryfy_otp'}
-                            onClick={handleConfirmOTP}
-                            disabled={loading}
-                        >
-                            Confirm
-                        </button>
+                        {loading ? (
+                            <LoadingIcon />
+                        ) : (
+                            <button
+                                id={'btn_veryfy_otp'}
+                                onClick={handleConfirmOTP}
+                                disabled={loading}
+                            >
+                                Confirm
+                            </button>
+                        )}
                     </div>
 
                     <div className={cx('footer')}>

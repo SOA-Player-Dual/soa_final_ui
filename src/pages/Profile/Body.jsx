@@ -4,6 +4,7 @@ import { useClampText } from 'use-clamp-text';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
+import StarRatings from 'react-star-ratings';
 
 import {
     setClickedImg,
@@ -22,6 +23,7 @@ function Body({ ratingRef }) {
 
     const store = {
         player: useSelector((state) => state?.player?.profile),
+        playerRatings: useSelector((state) => state?.player?.ratings),
         playerDonate: useSelector((state) => state?.player?.donate),
     };
 
@@ -551,98 +553,111 @@ function Body({ ratingRef }) {
                         </div>
                         {/* )} */}
 
-                        <div
-                            id={'rating__container'}
-                            ref={ratingRef}
-                            className={cx('container__box', 'info__rating')}
-                        >
-                            <div className={cx('title')}>Rating</div>
-                            <div className={cx('rating')}>
-                                <div className={cx('rating__item')}>
-                                    <div className={cx('rating__item--avatar')}>
-                                        <Image
-                                            src={store?.player?.avatar || ''}
-                                            alt=''
-                                        />
-                                    </div>
-                                    <div
-                                        className={cx('rating__item--content')}
-                                    >
-                                        <div className={cx('user')}>
-                                            <div className={cx('header__user')}>
-                                                <div
-                                                    className={cx('user__name')}
-                                                >
-                                                    <span>
-                                                        {store?.player?.name}
-                                                    </span>
-                                                    <div
-                                                        className={cx(
-                                                            'rating__time'
-                                                        )}
-                                                    >
-                                                        8/3/2022, 6:14:45 PM
-                                                    </div>
-                                                </div>
-
-                                                <div className={cx('ratings')}>
-                                                    <div
-                                                        className={cx(
-                                                            'ratings__star'
-                                                        )}
-                                                    >
-                                                        <i
-                                                            className={cx(
-                                                                'fa-solid',
-                                                                'fa-star'
-                                                            )}
-                                                        ></i>
-                                                        <i
-                                                            className={cx(
-                                                                'fa-solid',
-                                                                'fa-star'
-                                                            )}
-                                                        ></i>
-                                                        <i
-                                                            className={cx(
-                                                                'fa-solid',
-                                                                'fa-star'
-                                                            )}
-                                                        ></i>
-                                                        <i
-                                                            className={cx(
-                                                                'fa-solid',
-                                                                'fa-star'
-                                                            )}
-                                                        ></i>
-                                                        <i
-                                                            className={cx(
-                                                                'fa-solid',
-                                                                'fa-star'
-                                                            )}
-                                                        ></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-
+                        {store.playerRatings &&
+                        store.playerRatings.length > 0 ? (
+                            <div
+                                id={'rating__container'}
+                                ref={ratingRef}
+                                className={cx('container__box', 'info__rating')}
+                            >
+                                <div className={cx('title')}>Rating</div>
+                                <div className={cx('rating')}>
+                                    {store.playerRatings.map((data, index) => {
+                                        return (
                                             <div
-                                                className={cx('user__comment')}
+                                                key={index}
+                                                className={cx('rating__item')}
                                             >
-                                                In publishing and graphic
-                                                design, Lorem ipsum is a
-                                                placeholder text commonly used
-                                                to demonstrate the visual form
-                                                of a document or a typeface
-                                                without relying on meaningful
-                                                content. Lorem ipsum may be used
-                                                as a placeholder before final
-                                                copy is available.
+                                                <div
+                                                    className={cx(
+                                                        'rating__item--avatar'
+                                                    )}
+                                                >
+                                                    <Image
+                                                        src={data.avatar || ''}
+                                                        alt='avatar'
+                                                    />
+                                                </div>
+
+                                                <div
+                                                    className={cx(
+                                                        'rating__content'
+                                                    )}
+                                                >
+                                                    <div className={cx('user')}>
+                                                        <div
+                                                            className={cx(
+                                                                'user__name'
+                                                            )}
+                                                        >
+                                                            <span>
+                                                                {data?.nickname}
+                                                            </span>
+                                                            <div
+                                                                className={cx(
+                                                                    'rating__time'
+                                                                )}
+                                                            >
+                                                                {moment(
+                                                                    data?.created_at
+                                                                ).calendar()}
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            className={cx(
+                                                                'ratings'
+                                                            )}
+                                                        >
+                                                            <StarRatings
+                                                                rating={
+                                                                    data?.rate
+                                                                }
+                                                                starRatedColor='#ffcd3c'
+                                                                // changeRating={this.changeRating}
+                                                                numberOfStars={
+                                                                    5
+                                                                }
+                                                                name='rating'
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        {data?.comment}
+                                                        {/* Lorem Ipsum is simply
+                                                        dummy text of the
+                                                        printing and typesetting
+                                                        industry. Lorem Ipsum
+                                                        has been the industry's
+                                                        standard dummy text ever
+                                                        since the 1500s, when an
+                                                        unknown printer took a
+                                                        galley of type and
+                                                        scrambled it to make a
+                                                        type specimen book. It
+                                                        has survived not only
+                                                        five centuries, but also
+                                                        the leap into electronic
+                                                        typesetting, remaining
+                                                        essentially unchanged.
+                                                        It was popularised in
+                                                        the 1960s with the
+                                                        release of Letraset
+                                                        sheets containing Lorem
+                                                        Ipsum passages, and more
+                                                        recently with desktop
+                                                        publishing software like
+                                                        Aldus PageMaker
+                                                        including versions of
+                                                        Lorem Ipsum */}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
-                        </div>
+                        ) : null}
                     </div>
                 </div>
             </div>

@@ -417,7 +417,7 @@ function Body({ ratingRef }) {
                                 </div>
                             )}
 
-                        <div
+                        {/* <div
                             ref={ratingRef}
                             className={cx('container__box', 'info__rating')}
                         >
@@ -514,7 +514,7 @@ function Body({ ratingRef }) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

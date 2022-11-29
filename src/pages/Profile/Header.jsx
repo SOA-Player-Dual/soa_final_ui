@@ -60,8 +60,6 @@ function Header() {
 
     const [time, setTime] = useState('1');
 
-    const [pendingBtn, setPendingBtn] = useState(false);
-
     const [followLoading, setFollowLoading] = useState(false);
     const [unFollowLoading, setUnFollowLoading] = useState(false);
     const [rentLoading, setRentLoading] = useState(false);
@@ -130,8 +128,6 @@ function Header() {
                     time,
                 });
 
-                console.log('Check rent data', data);
-
                 dispatch(updateContract(data?.data?.contract));
                 setRentLoading(false);
                 dispatch(handleRentModal(false));
@@ -167,9 +163,7 @@ function Header() {
             }
 
             try {
-                console.log('money', money);
-                console.log('displayName', displayName);
-                console.log('message', message);
+                setDonateLoading(true);
                 const { data } = await donateApi.post(
                     `v1/player/${store?.profile?.id}/donate`,
                     {
@@ -178,27 +172,29 @@ function Header() {
                         message,
                     }
                 );
-                console.log('Donate check', data);
                 dispatch(updateBalance(data?.data?.balance));
                 dispatch(updateDonateHistory(data?.data?.donateHistory));
                 dispatch(setDonate(data?.data?.topDonate));
+                setDonateLoading(false);
                 toast.success(
                     `Donate ${money} for ${store?.player?.nickname} successfully!`
                 );
+
                 dispatch(handleDonateModal(false));
                 setDisplayName('');
                 setMoney('');
                 setMessage('');
             } catch (err) {
                 toast.error(err?.response?.data?.error);
+                setDonateLoading(false);
             }
         },
     };
 
-    const formatNumberOnChange = (value) => {
-        const number = Number(value.replace(/\D/g, ''));
-        setMoney(number);
-    };
+    // const formatNumberOnChange = (value) => {
+    //     const number = Number(value.replace(/\D/g, ''));
+    //     setMoney(number);
+    // };
 
     return (
         <>
@@ -394,14 +390,18 @@ function Header() {
                                         )}
                                     ></i>
                                     {store.userContract &&
-                                    store.userContract.length > 0
+                                    store.userContract.length > 0 &&
+                                    store.userContract.filter(
+                                        (item) =>
+                                            item?.player === store?.player?.id
+                                    ).length > 0
                                         ? store.userContract.filter(
                                               (item) =>
                                                   item.player ===
                                                       store?.player?.id &&
                                                   item.status === 'Pending'
                                           ).length > 0
-                                            ? 'Pending...'
+                                            ? 'Pending'
                                             : 'Renting'
                                         : 'Rent'}
                                 </div>
@@ -653,9 +653,13 @@ function Header() {
                             </button>
 
                             <div className={cx('form__btn-primary')}>
-                                <button onClick={handleClick.donate}>
-                                    Donate
-                                </button>
+                                {donateLoading ? (
+                                    <LoadingIcon />
+                                ) : (
+                                    <button onClick={handleClick.donate}>
+                                        Donate
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

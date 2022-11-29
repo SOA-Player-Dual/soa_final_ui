@@ -5,10 +5,13 @@ import classNames from 'classnames/bind';
 
 import gameApi from '@/api/gameApi';
 import userApi from '@/api/userApi';
+import transactionApi from '@/api/transactionApi';
 
 import {
     setUserInformation,
     setFollowing,
+    setTopup,
+    setWithdraw,
 } from '@/_redux/features/user/userSlice';
 import { setGames } from '@/_redux/features/games/gamesSlice';
 import { setPlayersPro } from '@/_redux/features/player/playerSlice';
@@ -48,6 +51,11 @@ function Home() {
     const checkListFollowing = useSelector(
         (state) => state?.user?.user?.following
     );
+    const checkListTopup = useSelector((state) => state?.user?.user?.topup);
+    const checkListWithdraw = useSelector(
+        (state) => state?.user?.user?.withdraw
+    );
+
     const checkUserInformation = useSelector(
         (state) => state?.user?.user?.information
     );
@@ -76,8 +84,6 @@ function Home() {
                 ) {
                     const { data } = await userApi.get(`v1/user/id/${userID}`);
                     dispatch(setUserInformation(data?.data?.user));
-
-                    console.log("Get user's information", data?.data?.user);
                 }
             };
 
@@ -93,8 +99,23 @@ function Home() {
                 }
             };
 
+            const getTransactions = async () => {
+                if (
+                    checkListTopup &&
+                    checkListTopup.length === 0 &&
+                    checkListWithdraw &&
+                    checkListWithdraw.length === 0 &&
+                    checkUser
+                ) {
+                    const { data } = await transactionApi.get(`v1/transaction`);
+                    dispatch(setTopup(data?.data?.topup));
+                    dispatch(setWithdraw(data?.data?.withdraw));
+                }
+            };
+
             getUserInformation();
             getFollowing();
+            getTransactions();
             // reload page
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

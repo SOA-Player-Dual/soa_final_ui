@@ -45,6 +45,15 @@
     }
 
     .header {
+        .hello {
+            margin-top: 32px;
+            font-weight: 500;
+            font-size: 1.2rem;
+            span {
+                color: var(--primary-color);
+            }
+        }
+
         .header__title {
             font-size: 24px;
             font-weight: 600;
@@ -53,7 +62,7 @@
         }
 
         .header__des {
-            padding: 16px 0;
+            padding: 0 0 16px 0;
             span {
                 color: var(--primary-color);
                 font-weight: 500;

@@ -731,10 +731,11 @@
             }
 
             .info__rating {
+                margin-bottom: 16px;
                 .rating {
                     .rating__item {
                         display: flex;
-                        margin-bottom: 12px;
+                        margin-top: 12px;
 
                         .rating__item--avatar {
                             margin-right: 8px;
@@ -746,43 +747,41 @@
                             }
                         }
 
-                        .rating__item--content {
+                        .rating__content {
                             display: flex;
+                            flex-direction: column;
                             flex: 1;
+                        }
+
+                        .user {
+                            // flex: 1 !important;
+                            display: flex;
+                            align-items: center;
                             justify-content: space-between;
-
-                            .user {
-                                .header__user {
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: space-between;
-                                }
-
-                                .ratings {
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: center;
-                                    .ratings__star {
-                                        i {
-                                            color: #ffe234;
-                                        }
+                            .ratings {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                .ratings__star {
+                                    i {
+                                        color: #ffe234;
                                     }
-                                }
-
-                                .user__name {
-                                    font-size: 1.2rem;
-                                    font-weight: 500;
-
-                                    .rating__time {
-                                        font-size: 0.8rem;
-                                        color: rgba(22, 24, 35, 0.5);
-                                    }
-                                }
-
-                                .user__comment {
-                                    font-size: 0.9rem;
                                 }
                             }
+
+                            .user__name {
+                                font-size: 1.2rem;
+                                font-weight: 500;
+
+                                .rating__time {
+                                    font-size: 0.8rem;
+                                    color: rgba(22, 24, 35, 0.5);
+                                }
+                            }
+                        }
+
+                        .user__comment {
+                            font-size: 0.9rem;
                         }
                     }
                 }

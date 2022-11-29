@@ -4,6 +4,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
+import VNnum2words from 'vn-num2words';
 import { toast } from 'react-toastify';
 import {
     CTable,
@@ -17,6 +18,7 @@ import '@coreui/coreui/dist/css/coreui.min.css';
 import moment from 'moment';
 
 import userApi from '@/api/userApi';
+import transactionApi from '@/api/transactionApi';
 
 import {
     handleModalWithdraw,
@@ -51,6 +53,12 @@ function Actions() {
     const [currentPass, setCurrentPass] = useState('');
     const [newPass, setNewPass] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
+
+    const [amountTopUp, setAmountTopUp] = useState('');
+    const [topUpLoading, setTopUpLoading] = useState(false);
+
+    const [withdrawLoading, setWithdrawLoading] = useState(false);
+    const [amountWithdraw, setAmountWithdraw] = useState('');
 
     const store = {
         isLogin: useSelector((state) => state?.user?.user?.isLogin),
@@ -129,6 +137,68 @@ function Actions() {
                         "Something's wrong, please try later!"
                 );
                 setChangePassLoading(false);
+            }
+        },
+        topup: async () => {
+            if (!amountTopUp) {
+                toast.error('Please fill all fields');
+
+                return;
+            }
+
+            if (amountTopUp < 100000) {
+                toast.error('Minimum top up is 100,000 VND');
+                return;
+            }
+
+            try {
+                setTopUpLoading(true);
+                const { data } = await transactionApi.post('v1/transaction', {
+                    amount: amountTopUp,
+                });
+
+                console.log(data);
+                setTopUpLoading(false);
+                dispatch(handleTopupModal(false));
+                navigate(`/top-up-otp/${amountTopUp}`);
+                toast.success('Please check your email for OTP!');
+            } catch (err) {
+                toast.error(
+                    err?.response?.data?.error ||
+                        "Something's wrong, please try later!"
+                );
+                setTopUpLoading(false);
+            }
+        },
+        withdraw: async () => {
+            if (!amountWithdraw) {
+                toast.error('Please fill all fields');
+                return;
+            }
+
+            if (amountWithdraw < 100000) {
+                toast.error('Minimum withdraw is 100,000 VND');
+                return;
+            }
+
+            try {
+                setWithdrawLoading(true);
+                // add minus sign to amount
+
+                await transactionApi.post('v1/transaction', {
+                    amount: -amountWithdraw,
+                });
+
+                dispatch(handleModalWithdraw(false));
+                setWithdrawLoading(false);
+                navigate(`/with-draw-otp/${amountWithdraw}`);
+                toast.success('OTP has been sent to your email!');
+            } catch (err) {
+                toast.error(
+                    err?.response?.data?.error ||
+                        "Something's wrong, please try later!"
+                );
+                setWithdrawLoading(false);
             }
         },
     };
@@ -293,21 +363,41 @@ function Actions() {
                                 <div className={cx('form__role__item')}>
                                     <span>
                                         <i
-                                            className={cx('fa-regular fa-lock')}
+                                            className={cx(
+                                                'fa-regular fa-money-bill-transfer'
+                                            )}
                                         ></i>
-                                        Current password
+                                        Top up amount (VND)
                                     </span>
                                     <input
-                                        value={currentPass}
+                                        value={amountTopUp}
                                         className={cx('form-control')}
-                                        type='password'
-                                        placeholder='Password'
+                                        type='number'
+                                        placeholder='Amount'
                                         onChange={(e) =>
-                                            setCurrentPass(
+                                            setAmountTopUp(
                                                 e.target.value.trim()
                                             )
                                         }
                                     />
+                                </div>
+                            </div>
+
+                            {amountTopUp > 0 && (
+                                <div className={cx('amount__display')}>
+                                    Amount:{' '}
+                                    <span>{VNnum2words(amountTopUp)} đồng</span>
+                                </div>
+                            )}
+                            <div className={cx('form__role')}>
+                                <div className={cx('top-up__btn')}>
+                                    {topUpLoading ? (
+                                        <LoadingIcon />
+                                    ) : (
+                                        <button onClick={handleClick.topup}>
+                                            Submit
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -323,7 +413,54 @@ function Actions() {
                     show={store.modalWithdraw}
                     close={() => dispatch(handleModalWithdraw(false))}
                 >
-                    <div className={'modal'}></div>
+                    <div className={cx('modal__topup')}>
+                        <div className={cx('form-control-modal')}>
+                            <div className={cx('form__role')}>
+                                <div className={cx('form__role__item')}>
+                                    <span className={cx('withdraw__label')}>
+                                        <i
+                                            className={cx(
+                                                'fa-regular',
+                                                'fa-sack-dollar'
+                                            )}
+                                        ></i>
+                                        Withdraw amount (VND)
+                                    </span>
+                                    <input
+                                        value={amountWithdraw}
+                                        className={cx('form-control')}
+                                        type='number'
+                                        placeholder='Withdraw'
+                                        onChange={(e) =>
+                                            setAmountWithdraw(
+                                                e.target.value.trim()
+                                            )
+                                        }
+                                    />
+                                </div>
+                            </div>
+
+                            {amountWithdraw > 0 && (
+                                <div className={cx('amount__display')}>
+                                    Amount:{' '}
+                                    <span className={cx('withdraw__label')}>
+                                        {VNnum2words(amountWithdraw)} đồng
+                                    </span>
+                                </div>
+                            )}
+                            <div className={cx('form__role')}>
+                                <div className={cx('top-up__btn')}>
+                                    {withdrawLoading ? (
+                                        <LoadingIcon />
+                                    ) : (
+                                        <button onClick={handleClick.withdraw}>
+                                            Withdraw
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </Modal>
             )}
 

@@ -317,6 +317,10 @@
     .form__role__item {
         width: 100%;
 
+        .withdraw__label {
+            color: rgb(161, 52, 161);
+        }
+
         select {
             outline: none;
         }
@@ -367,6 +371,44 @@
 
 .modal__topup {
     padding: 8px 12px;
+
+    .amount__display {
+        span {
+            // color display amount money
+
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .withdraw__label {
+            color: rgb(161, 52, 161);
+        }
+    }
+
+    .top-up__btn {
+        width: 100%;
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        button {
+            width: 30%;
+            height: 100%;
+            outline: none;
+            border: none;
+            color: #fff;
+            font-weight: 500;
+            border-radius: 8px;
+
+            background-color: var(--primary-color);
+
+            &:hover {
+                cursor: pointer;
+                background-color: var(--primary-color-hover);
+            }
+        }
+    }
 }
 
 .donate-history__modal {

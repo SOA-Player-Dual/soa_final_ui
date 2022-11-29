@@ -475,3 +475,13 @@ body {
         margin-right: calc(-1 * (100vw - 100%)) !important;
     }
 }
+
+// active link
+body {
+    .active {
+        // css underline button active
+        border-bottom: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        // animation underline button active
+    }
+}

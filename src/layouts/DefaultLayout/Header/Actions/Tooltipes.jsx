@@ -39,6 +39,9 @@ function Tooltipes({ profileHref }) {
         donateHistoryModal: () => {
             dispatch(handleDonateHistoryModal(true));
         },
+        transactionHistory: () => {
+            navigate('/transaction-history');
+        },
         logout: () => {
             localStorage.removeItem('accessToken');
             dispatch(logout());
@@ -89,6 +92,16 @@ function Tooltipes({ profileHref }) {
 
                 <div
                     className={cx('tooltip-item')}
+                    onClick={handleClick.topupModal}
+                >
+                    <div className={cx('label__icon')}>
+                        <i className={cx('fa-regular', 'fa-credit-card')}></i>
+                    </div>
+                    <span className={cx('tooltip-item__label')}>Top up</span>
+                </div>
+
+                <div
+                    className={cx('tooltip-item')}
                     onClick={handleClick.withDrawModal}
                 >
                     <div className={cx('label__icon')}>
@@ -99,12 +112,14 @@ function Tooltipes({ profileHref }) {
 
                 <div
                     className={cx('tooltip-item')}
-                    onClick={handleClick.topupModal}
+                    onClick={handleClick.transactionHistory}
                 >
                     <div className={cx('label__icon')}>
-                        <i className={cx('fa-regular', 'fa-credit-card')}></i>
+                        <i className={cx('fa-regular fa-cloud')}></i>
                     </div>
-                    <span className={cx('tooltip-item__label')}>Top up</span>
+                    <span className={cx('tooltip-item__label')}>
+                        Transaction history
+                    </span>
                 </div>
 
                 <div

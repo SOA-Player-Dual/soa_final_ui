@@ -1,9 +1,11 @@
 import classNames from 'classnames/bind';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import OtpInput from 'react-otp-input';
 import { useDispatch } from 'react-redux';
+
+import authApi from '@/api/authApi';
 
 import LoadingIcon from '@/layouts/LoadingIcon';
 
@@ -32,6 +34,8 @@ function ForgotPassOTP() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const { username } = useParams();
+
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
     const [loadingResend, setLoadingResend] = useState(false);
@@ -50,16 +54,33 @@ function ForgotPassOTP() {
             return;
         }
 
-        setLoading(true);
+        try {
+            setLoading(true);
+            const { data } = await authApi.post(
+                `v1/auth/recover/verification`,
+                {
+                    username,
+                    otp,
+                }
+            );
+            setLoading(false);
 
-        navigate('/');
-        setLoading(false);
+            console.log('check response', data);
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+            setLoading(false);
+        }
     };
 
     const handleResendOTP = async () => {
-        setLoadingResend(true);
-        toast.success('OTP re-sent successfully!');
-        setLoadingResend(false);
+        try {
+            setLoadingResend(true);
+            await authApi.post(`v1/auth/recover`, { username });
+            setLoadingResend(false);
+            toast.success('Please check your email again!');
+        } catch (error) {
+            toast.error(error?.response?.data?.error);
+        }
     };
 
     return (
@@ -70,8 +91,12 @@ function ForgotPassOTP() {
                         <div className={cx('header__title')}>
                             Forgot password
                         </div>
+                        <div className={cx('hello')}>
+                            Hi, <span>{username}</span>!
+                        </div>
                         <p className={cx('header__des')}>
                             We have sent a verification code to your email.
+                            Please check your email and enter the code below.
                         </p>
                     </div>
 
@@ -89,13 +114,17 @@ function ForgotPassOTP() {
                     </div>
 
                     <div className={cx('btn__confirm')}>
-                        <button
-                            id={'btn_veryfy_otp'}
-                            onClick={handleConfirmOTP}
-                            disabled={loading}
-                        >
-                            Confirm
-                        </button>
+                        {loading ? (
+                            <LoadingIcon />
+                        ) : (
+                            <button
+                                id={'btn_veryfy_otp'}
+                                onClick={handleConfirmOTP}
+                                disabled={loading}
+                            >
+                                Confirm
+                            </button>
+                        )}
                     </div>
 
                     <div className={cx('footer')}>
