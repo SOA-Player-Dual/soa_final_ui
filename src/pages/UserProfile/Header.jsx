@@ -153,21 +153,21 @@ function Header({ exeScrollRating }) {
                                 </div>
                             </div>
                             <div className={cx('info__action')}>
-                                {user?.post &&
-                                    user?.post?.content === null &&
-                                    user?.post?.media === null && (
-                                        <div
-                                            className={cx('info__action-btn')}
-                                            onClick={handleClick.postModal}
-                                        >
-                                            <i
-                                                className={cx(
-                                                    'fa-solid fa-circle-plus'
-                                                )}
-                                            ></i>
-                                            Add to information
-                                        </div>
-                                    )}
+                                {(user?.post === null ||
+                                    (user?.post &&
+                                        user?.post?.type === null)) && (
+                                    <div
+                                        className={cx('info__action-btn')}
+                                        onClick={handleClick.postModal}
+                                    >
+                                        <i
+                                            className={cx(
+                                                'fa-solid fa-circle-plus'
+                                            )}
+                                        ></i>
+                                        Add to information
+                                    </div>
+                                )}
                                 <div
                                     className={cx(
                                         'info__action-btn',

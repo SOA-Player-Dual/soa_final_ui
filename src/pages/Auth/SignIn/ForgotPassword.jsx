@@ -45,7 +45,9 @@ function ForgotPassword() {
             navigate(`/forgot-pass-otp/${username}`);
             toast.success('Please check your email!');
         } catch (error) {
-            toast.error(error?.response?.data?.error);
+            toast.error(
+                error?.response?.data?.error || 'Something went wrong!'
+            );
             setLoading(false);
         }
     };

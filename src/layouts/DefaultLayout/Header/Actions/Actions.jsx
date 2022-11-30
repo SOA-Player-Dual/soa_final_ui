@@ -103,8 +103,8 @@ function Actions() {
             navigate('/');
             dispatch(handleModalRegister(true));
         },
-        redirectUserProfile: (urlCode) => {
-            navigate(`/profile/${urlCode}`);
+        redirectUserProfile: (id) => {
+            navigate(`/player/profile/${id}`);
             dispatch(handleModalListFollowing(false));
         },
         changePassword: async () => {
@@ -563,13 +563,13 @@ function Actions() {
                                     (item, index) => {
                                         return (
                                             <div
-                                                key={item?.urlCode}
+                                                key={item?.id}
                                                 className={cx(
                                                     'modal__following-list__item'
                                                 )}
                                                 onClick={() =>
                                                     handleClick.redirectUserProfile(
-                                                        item?.urlCode
+                                                        item?.id
                                                     )
                                                 }
                                             >

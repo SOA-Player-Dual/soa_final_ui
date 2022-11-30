@@ -33,7 +33,7 @@ function SignUp() {
     const [nickname, setNickname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [gender, setGender] = useState('male');
+    const [gender, setGender] = useState('Male');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [language, setLanguage] = useState('');
     const [nation, setNation] = useState('');
@@ -106,7 +106,9 @@ function SignUp() {
                 dispatch(handleModalRegister(false));
                 dispatch(handleModalLogin(true));
             } catch (error) {
-                toast.error(error?.response?.data?.error);
+                toast.error(
+                    error?.response?.data?.error || 'Something went wrong!'
+                );
                 setLoading(false);
             }
         },
@@ -227,7 +229,7 @@ function SignUp() {
                                 Gender
                             </span>
                             <CFormCheck
-                                value={'male'}
+                                value={'Male'}
                                 type='radio'
                                 name='gender'
                                 id='male'
@@ -236,7 +238,7 @@ function SignUp() {
                                 defaultChecked
                             />
                             <CFormCheck
-                                value={'female'}
+                                value={'Female'}
                                 type='radio'
                                 name='gender'
                                 id='female'

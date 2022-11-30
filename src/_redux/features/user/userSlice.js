@@ -7,9 +7,10 @@ const userSlice = createSlice({
             id: '',
             information: {},
             following: {},
-
             topup: [],
             withdraw: [],
+            isTopupData: false,
+            isWithdrawData: false,
             isLogin: false,
         },
     },
@@ -50,6 +51,17 @@ const userSlice = createSlice({
         setWithdraw: (state, action) => {
             state.user.withdraw = action.payload;
         },
+        setIsTopupData: (state, action) => {
+            state.user.isTopupData = action.payload;
+        },
+        setIsWithdrawData: (state, action) => {
+            state.user.isWithdrawData = action.payload;
+        },
+
+        setRemovePost: (state, action) => {
+            state.user.information.post = action.payload;
+        },
+
         logout: (state) => {
             state.user.id = '';
             state.user.information = {};
@@ -57,6 +69,8 @@ const userSlice = createSlice({
             state.user.isLogin = false;
             state.user.topup = [];
             state.user.withdraw = [];
+            state.user.isTopupData = false;
+            state.user.isWithdrawData = false;
         },
     },
 });
@@ -74,5 +88,8 @@ export const {
     updateDonateHistory,
     setTopup,
     setWithdraw,
+    setIsTopupData,
+    setIsWithdrawData,
+    setRemovePost,
 } = userSlice.actions;
 export default userSlice.reducer;

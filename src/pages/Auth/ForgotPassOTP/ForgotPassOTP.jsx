@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import OtpInput from 'react-otp-input';
 import { useDispatch } from 'react-redux';
+import jwt_decode from 'jwt-decode';
+
+import { login } from '@/_redux/features/user/userSlice';
 
 import authApi from '@/api/authApi';
 
@@ -65,9 +68,19 @@ function ForgotPassOTP() {
             );
             setLoading(false);
 
-            console.log('check response', data);
+            console.log('data', data);
+
+            localStorage.setItem('accessToken', data?.accessToken);
+            const userID = jwt_decode(data?.accessToken);
+            dispatch(login(userID?.id));
+            setLoading(false);
+            // navigate('/');
+            navigate('/reset-password');
+            toast.success(
+                'Reset password successful, please change your password!'
+            );
         } catch (error) {
-            toast.error(error?.response?.data?.error);
+            toast.error(error?.response?.data?.error || 'Something went wrong');
             setLoading(false);
         }
     };
@@ -79,7 +92,7 @@ function ForgotPassOTP() {
             setLoadingResend(false);
             toast.success('Please check your email again!');
         } catch (error) {
-            toast.error(error?.response?.data?.error);
+            toast.error(error?.response?.data?.error || 'Something went wrong');
         }
     };
 

@@ -25,7 +25,7 @@ function PostModal() {
     const modal = useSelector((state) => state?.modal?.modalType.postModal);
     const user = useSelector((state) => state?.user?.user?.information);
 
-    const [mediaOption, setMediaOption] = useState('video');
+    const [mediaOption, setMediaOption] = useState('Video');
 
     const [loading, setLoading] = useState(false);
 
@@ -35,7 +35,7 @@ function PostModal() {
     const [previewPhotos, setPreviewPhotos] = useState([]);
 
     const [videoLink, setVideoLink] = useState(
-        user?.post && user?.post?.type === 'video' ? user?.post?.media : ''
+        user?.post && user?.post?.type === 'Video' ? user?.post?.media : ''
     );
     const [caption, setCaption] = useState(user?.post?.content || '');
 
@@ -102,6 +102,9 @@ function PostModal() {
         handleSetPreviewPhotos(uploaded);
     };
 
+    const regexYoutubeUrl =
+        /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
+
     // use handleUpdoadPhoto to upload photos to imgbb
 
     const handlePost = async () => {
@@ -130,17 +133,30 @@ function PostModal() {
         //     return;
         // }
 
+        if (
+            mediaOption === 'Video' &&
+            (videoLink === '' || videoLink === undefined || videoLink === null)
+        ) {
+            toast.error('Please add media');
+            return;
+        }
+
+        if (mediaOption === 'Video' && !regexYoutubeUrl.test(videoLink)) {
+            toast.error('Youtube link is invalid');
+            return;
+        }
+
         try {
             setLoading(true);
             let upLoadToImgbb;
 
-            if (mediaOption === 'photo') {
+            if (mediaOption === 'Image') {
                 upLoadToImgbb = await handleUpdoadPhoto();
             }
 
             const { data } = await userApi.put('v1/user/bio', {
                 content: caption,
-                media: mediaOption === 'video' ? videoLink : upLoadToImgbb,
+                media: mediaOption === 'Video' ? videoLink : upLoadToImgbb,
                 type: mediaOption,
             });
             dispatch(updatePost(data?.data?.post));
@@ -148,7 +164,7 @@ function PostModal() {
             dispatch(handlePostModal(false));
             setLoading(false);
         } catch (error) {
-            toast.error(error?.response?.data?.error);
+            toast.error(error?.response?.data?.error || 'Something went wrong');
             setLoading(false);
         }
     };
@@ -192,10 +208,10 @@ function PostModal() {
                     <div className={cx('feature__option')}>
                         <span>Media option</span>
                         <CFormCheck
-                            value={'video'}
+                            value={'Video'}
                             type='radio'
                             name='media'
-                            id='video'
+                            id='Video'
                             onChange={(e) => {
                                 setMediaOption(e.target.value);
                             }}
@@ -203,11 +219,11 @@ function PostModal() {
                             defaultChecked
                         />
                         <CFormCheck
-                            value={'photo'}
+                            value={'Image'}
                             type='radio'
                             name='media'
-                            id='Photos'
-                            label='Photos'
+                            id='Image'
+                            label='Image'
                             onChange={(e) => {
                                 setMediaOption(e.target.value);
                                 setVideoLink('');
@@ -239,7 +255,7 @@ function PostModal() {
                     ) : null}
 
                     <div className={cx('feature__media')}>
-                        {mediaOption === 'video' ? (
+                        {mediaOption === 'Video' ? (
                             <div className={cx('input__video-link')}>
                                 <i className={cx('fa-regular fa-paste')}></i>
                                 <input

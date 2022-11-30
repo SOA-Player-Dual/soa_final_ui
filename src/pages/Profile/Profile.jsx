@@ -17,6 +17,7 @@ import styles from './Profile.module.scss';
 import Header from './Header';
 import BodyContent from './Body';
 import { DynamicTitle } from '@/layouts/DefaultLayout/DynamicTitle/DynamicTitle';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -45,26 +46,33 @@ function Profile() {
     }, [store.player.nickname]);
 
     useEffect(() => {
-        // if (store?.player?.urlCode && store?.player?.urlCode !== urlCode) {
-        const getProfile = async () => {
-            const { data } = await userApi.get(`v1/user/id/${id}`);
-            dispatch(setProfile(data?.data?.user));
-        };
+        if (store?.player?.id !== id) {
+            const getProfile = async () => {
+                try {
+                    const { data } = await userApi.get(`v1/user/id/${id}`);
+                    dispatch(setProfile(data?.data?.user));
+                } catch (err) {
+                    toast.error(
+                        err?.response?.data?.error || 'Something went wrong'
+                    );
+                }
+            };
 
-        const getTopDonator = async () => {
-            const { data } = await donateApi.get(`v1/player/${id}/donate`);
+            const getTopDonator = async () => {
+                const { data } = await donateApi.get(`v1/player/${id}/donate`);
 
-            dispatch(setDonate(data?.data?.donate));
-        };
+                dispatch(setDonate(data?.data?.donate));
+            };
 
-        const getRatingList = async () => {
-            const { data } = await ratingApi.get(`v1/player/${id}/rating`);
-            dispatch(setRatings(data?.data?.rating));
-        };
+            const getRatingList = async () => {
+                const { data } = await ratingApi.get(`v1/player/${id}/rating`);
+                dispatch(setRatings(data?.data?.rating));
+            };
 
-        getProfile();
-        getTopDonator();
-        getRatingList();
+            getProfile();
+            getTopDonator();
+            getRatingList();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 

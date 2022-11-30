@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import Tippy from '@tippyjs/react';
 
-import { updatePost } from '@/_redux/features/user/userSlice';
+import { setRemovePost, updatePost } from '@/_redux/features/user/userSlice';
 import userApi from '@/api/userApi';
 
 import {
@@ -90,7 +90,9 @@ function Body({ ratingRef }) {
                 dispatch(updatePost(data?.data?.post));
                 toast.success('Delete post successfully');
             } catch (error) {
-                toast.error(error?.response?.data?.error);
+                toast.error(
+                    error?.response?.data?.error || 'Something went wrong'
+                );
             }
             return;
         }
@@ -153,8 +155,8 @@ function Body({ ratingRef }) {
                     <div className={cx('content')}>
                         {user?.post &&
                             Object.keys(user?.post).length > 0 &&
-                            user?.post?.content !== null &&
-                            user?.post?.media !== null && (
+                            (user?.post?.content !== null ||
+                                user?.post?.media !== null) && (
                                 <div className={cx('container__box', 'info')}>
                                     <div className={cx('info__title')}>
                                         <span className={cx('title')}>
@@ -226,7 +228,8 @@ function Body({ ratingRef }) {
                                     )}
 
                                     <div className={cx('content__container')}>
-                                        {user.post.type === 'video' ? (
+                                        {user?.post &&
+                                        user.post.type === 'Video' ? (
                                             <div
                                                 className={cx('video__content')}
                                             >

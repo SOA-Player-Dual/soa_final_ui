@@ -20,9 +20,7 @@ const cx = classNames.bind(styles);
 function Search() {
     const navigate = useNavigate();
 
-    const user = useSelector(
-        (state) => state?.user?.user?.information?.urlCode
-    );
+    const user = useSelector((state) => state?.user?.user?.information?.id);
 
     const searchRef = useRef(null);
 
@@ -36,14 +34,14 @@ function Search() {
         openSearchResponsive: () => {
             setFormSearchResponsive((prev) => !prev);
         },
-        findPlayer: (urlCode) => {
+        findPlayer: (id) => {
             searchRef.current._tippy.hide();
             setShowResult(false);
-            if (urlCode === user) {
-                navigate(`/user/profile/${urlCode}`);
+            if (id === user) {
+                navigate(`/user/profile/${id}`);
                 return;
             }
-            navigate(`/player/profile/${urlCode}`);
+            navigate(`/player/profile/${id}`);
         },
     };
 
@@ -105,7 +103,7 @@ function Search() {
                                             className={cx('player__item')}
                                             onClick={() => {
                                                 handleClick.findPlayer(
-                                                    result.urlCode
+                                                    result.id
                                                 );
                                             }}
                                         >
@@ -207,7 +205,7 @@ function Search() {
                                                     )}
                                                     onClick={() => {
                                                         handleClick.findPlayer(
-                                                            result.urlCode
+                                                            result.id
                                                         );
                                                     }}
                                                 >

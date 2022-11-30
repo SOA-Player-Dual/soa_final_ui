@@ -44,6 +44,7 @@ import ForgotPassOTP from '@/pages/Auth/ForgotPassOTP';
 import Transaction from '@/pages/Transaction';
 import Topup from '@/pages/Transaction/Topup';
 import Withdraw from '@/pages/Transaction/Withdraw';
+import ChangeNewPassword from '@/pages/Auth/SignIn/ChangeNewPassword';
 
 // Store
 
@@ -212,6 +213,15 @@ function App() {
                 <Route
                     path='/forgot-pass-otp/:username'
                     element={<ForgotPassOTP />}
+                />
+
+                <Route
+                    path='/reset-password'
+                    element={
+                        <DefaultLayout>
+                            <ChangeNewPassword />
+                        </DefaultLayout>
+                    }
                 />
             </Routes>
 

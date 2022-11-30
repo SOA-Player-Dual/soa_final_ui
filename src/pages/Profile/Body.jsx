@@ -27,6 +27,8 @@ function Body({ ratingRef }) {
         playerDonate: useSelector((state) => state?.player?.donate),
     };
 
+    console.log('media', store?.player?.post?.media);
+
     const imgPreviewer = useSelector((state) => state.previewer.previewer);
     // * Image preview
 
@@ -129,7 +131,9 @@ function Body({ ratingRef }) {
                                             <span>
                                                 Total donated:{' '}
                                                 <i>
-                                                    {item?.donateTotal.toLocaleString()}{' '}
+                                                    {parseInt(
+                                                        item?.donateTotal
+                                                    ).toLocaleString()}{' '}
                                                     VND
                                                 </i>
                                             </span>
@@ -165,7 +169,7 @@ function Body({ ratingRef }) {
 
                             <div className={cx('content__container')}>
                                 {store?.player?.post ? (
-                                    store?.player?.post?.type === 'video' ? (
+                                    store?.player?.post?.type === 'Video' ? (
                                         <div className={cx('video__content')}>
                                             <iframe
                                                 src={

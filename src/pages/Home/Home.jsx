@@ -12,6 +12,8 @@ import {
     setFollowing,
     setTopup,
     setWithdraw,
+    setIsTopupData,
+    setIsWithdrawData,
 } from '@/_redux/features/user/userSlice';
 import { setGames } from '@/_redux/features/games/gamesSlice';
 import { setPlayersPro } from '@/_redux/features/player/playerSlice';
@@ -51,9 +53,11 @@ function Home() {
     const checkListFollowing = useSelector(
         (state) => state?.user?.user?.following
     );
-    const checkListTopup = useSelector((state) => state?.user?.user?.topup);
+    const checkListTopup = useSelector(
+        (state) => state?.user?.user?.isTopupData
+    );
     const checkListWithdraw = useSelector(
-        (state) => state?.user?.user?.withdraw
+        (state) => state?.user?.user?.isWithdrawData
     );
 
     const checkUserInformation = useSelector(
@@ -72,7 +76,6 @@ function Home() {
         };
     }, [dispatch]);
 
-    // Get all games
     useEffect(() => {
         if (checkUser) {
             const getUserInformation = async () => {
@@ -100,16 +103,14 @@ function Home() {
             };
 
             const getTransactions = async () => {
-                if (
-                    checkListTopup &&
-                    checkListTopup.length === 0 &&
-                    checkListWithdraw &&
-                    checkListWithdraw.length === 0 &&
-                    checkUser
-                ) {
+                if (checkUser && (!checkListTopup || !checkListWithdraw)) {
                     const { data } = await transactionApi.get(`v1/transaction`);
+
                     dispatch(setTopup(data?.data?.topup));
+                    dispatch(setIsTopupData(true));
+
                     dispatch(setWithdraw(data?.data?.withdraw));
+                    dispatch(setIsWithdrawData(true));
                 }
             };
 

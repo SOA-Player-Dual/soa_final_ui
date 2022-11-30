@@ -38,12 +38,13 @@ function ModalEditProfile() {
     const [loadingDateOfBirth, setLoadingDateOfBirth] = useState(false);
     const [loadingGender, setLoadingGender] = useState(false);
     const [loadingGame, setLoadingGame] = useState(false);
+    const [loadingDescription, setLoadingDescription] = useState(false);
 
     const [nicknameForm, setNicknameForm] = useState(false);
     const [usernameForm, setUsernameForm] = useState(false);
     const [birthdayForm, setBirthdayForm] = useState(false);
     const [genderForm, setGenderForm] = useState(false);
-    const [bioForm, setBioForm] = useState(false);
+    const [descriptionForm, setDescriptionForm] = useState(false);
     const [gameForm, setGameForm] = useState(false);
 
     const [avatar, setAvatar] = useState('');
@@ -52,6 +53,9 @@ function ModalEditProfile() {
     const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth || '');
     const [gender, setGender] = useState(user?.gender || '');
     const [game, setGame] = useState({ games: [], response: [] });
+    const [description, setDescription] = useState(
+        user?.player?.description || ''
+    );
 
     const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
 
@@ -93,7 +97,7 @@ function ModalEditProfile() {
             setGameForm(false);
             toast.success('Update list game successfully!');
         } catch (err) {
-            toast.error(err?.response?.data?.error);
+            toast.error(err?.response?.data?.error || 'Something went wrong!');
             setLoadingGame(false);
         }
     };
@@ -112,8 +116,32 @@ function ModalEditProfile() {
             setLoadingNickName(false);
             setNicknameForm(false);
         } catch (error) {
-            toast.error(error?.response?.data?.error);
+            toast.error(
+                error?.response?.data?.error || 'Something went wrong!'
+            );
             setLoadingNickName(false);
+        }
+    };
+
+    console.log('description', description);
+
+    const handleUpdateDescription = async () => {
+        if (!description) {
+            toast.error('Description is required');
+            return;
+        }
+        try {
+            setLoadingDescription(true);
+            const { data } = await userApi.put('v1/user', { description });
+            dispatch(setUserInformation(data?.data?.user));
+            toast.success('Update description successfully!');
+            setLoadingDescription(false);
+            setDescriptionForm(false);
+        } catch (error) {
+            toast.error(
+                error?.response?.data?.error || 'Something went wrong!'
+            );
+            setLoadingDescription(false);
         }
     };
 
@@ -135,6 +163,8 @@ function ModalEditProfile() {
             const { data } = await userApi.put('v1/user', {
                 avatar: res?.data?.data?.display_url,
             });
+
+            console.log('Chek data', data);
 
             dispatch(setUserInformation(data?.data?.user));
             setLoadingAvatar(false);
@@ -163,7 +193,9 @@ function ModalEditProfile() {
             setLoadingUrlCode(false);
             setUsernameForm(false);
         } catch (error) {
-            toast.error(error?.response?.data?.error);
+            toast.error(
+                error?.response?.data?.error || 'Something went wrong!'
+            );
             setLoadingUrlCode(false);
         }
     };
@@ -223,8 +255,8 @@ function ModalEditProfile() {
             setGameForm((prev) => !prev);
         },
 
-        bio: () => {
-            setBioForm((prev) => !prev);
+        description: () => {
+            setDescriptionForm((prev) => !prev);
         },
     };
 
@@ -238,7 +270,7 @@ function ModalEditProfile() {
                 setUsernameForm(false);
                 setBirthdayForm(false);
                 setGenderForm(false);
-                setBioForm(false);
+                setDescriptionForm(false);
                 dispatch(handleModalEditProfile(false));
             }}
         >
@@ -661,40 +693,62 @@ function ModalEditProfile() {
                     </div>
                 </div>
 
-                {/* Bio */}
+                {/* Description */}
                 <div className={cx('form__group')}>
                     <div className={cx('heading')}>
                         <div className={cx('title')}>Bio</div>
                         <div
                             className={cx('action')}
-                            onClick={handleClickOpenForm.bio}
+                            onClick={handleClickOpenForm.description}
                         >
-                            {bioForm ? <span>Cancel</span> : <span>Edit</span>}
+                            {descriptionForm ? (
+                                <span>Cancel</span>
+                            ) : (
+                                <span>Edit</span>
+                            )}
                         </div>
                     </div>
 
                     <div className={cx('content')}>
                         <div className={cx('bio')}>
-                            {bioForm ? (
+                            {descriptionForm ? (
                                 <div className={cx('content__edit')}>
                                     <div className={cx('form__input')}>
-                                        <input type='text' value={'Female'} />
+                                        <input
+                                            type='text'
+                                            value={description}
+                                            onChange={(e) =>
+                                                setDescription(e.target.value)
+                                            }
+                                        />
                                     </div>
                                     <div className={cx('form__action')}>
                                         <button
-                                            onClick={() => setBioForm(false)}
+                                            onClick={() =>
+                                                setDescriptionForm(false)
+                                            }
                                         >
                                             Cancel
                                         </button>
-                                        {loadingGender ? (
+                                        {loadingDescription ? (
                                             <LoadingIcon />
                                         ) : (
-                                            <button>Save</button>
+                                            <button
+                                                onClick={
+                                                    handleUpdateDescription
+                                                }
+                                            >
+                                                Save
+                                            </button>
                                         )}
                                     </div>
                                 </div>
                             ) : (
-                                <span>Rose love jungjung</span>
+                                <span>
+                                    {description === 'Blank description'
+                                        ? 'Add bio'
+                                        : description}
+                                </span>
                             )}
                         </div>
                     </div>

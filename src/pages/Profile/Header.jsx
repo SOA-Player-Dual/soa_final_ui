@@ -10,7 +10,6 @@ import Tippy from '@tippyjs/react';
 
 import followApi from '@/api/followApi';
 import contractApi from '@/api/contractApi';
-import ratingApi from '@/api/ratingApi';
 import donateApi from '@/api/donateApi';
 
 import {
@@ -24,6 +23,7 @@ import {
     handleRentModal,
     handleLoginRequiredModal,
     handleDonateModal,
+    handleTopupModal,
 } from '@/_redux/features/modal/modalSlice';
 
 import { setDonate } from '@/_redux/features/player/playerSlice';
@@ -38,8 +38,6 @@ const cx = classNames.bind(styles);
 
 function Header() {
     const dispatch = useDispatch();
-
-    let { urlCode } = useParams();
 
     const store = {
         profile: useSelector((state) => state.player.profile),
@@ -89,7 +87,9 @@ function Header() {
 
                 setFollowLoading(false);
             } catch (error) {
-                toast.error(error?.response?.data?.error);
+                toast.error(
+                    error?.response?.data?.error || "Something's wrong"
+                );
                 setFollowLoading(false);
             }
         },
@@ -138,12 +138,18 @@ function Header() {
             }
         },
         donateModal: () => {
+            if (store?.isLogin === false) {
+                dispatch(handleLoginRequiredModal(true));
+                return;
+            }
             dispatch(handleDonateModal(true));
         },
 
         donate: async () => {
             if (store?.user?.balance < money) {
                 toast.error('Your balance is not enough, please top up!');
+                dispatch(handleDonateModal(false));
+                dispatch(handleTopupModal(true));
                 return;
             }
             if (
@@ -185,7 +191,9 @@ function Header() {
                 setMoney('');
                 setMessage('');
             } catch (err) {
-                toast.error(err?.response?.data?.error);
+                toast.error(
+                    err?.response?.data?.error || 'Something went wrong'
+                );
                 setDonateLoading(false);
             }
         },
