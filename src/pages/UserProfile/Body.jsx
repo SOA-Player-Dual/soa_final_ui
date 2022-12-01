@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import Tippy from '@tippyjs/react';
 
-import { setRemovePost, updatePost } from '@/_redux/features/user/userSlice';
+import { updatePost } from '@/_redux/features/user/userSlice';
 import userApi from '@/api/userApi';
 
 import {
@@ -18,7 +18,6 @@ import {
 import { handlePostModal } from '@/_redux/features/modal/modalSlice';
 
 import ImagePreviewer from '@/components/ImagePreviewer';
-import Image from '@/components/Image';
 
 import styles from './Profile.module.scss';
 
@@ -30,17 +29,6 @@ function Body({ ratingRef }) {
     const tippyRef = useRef(null);
 
     const user = useSelector((state) => state?.user?.user?.information);
-
-    // const embedYoutobe = (url) => {
-    //     const videoId = url.split('v=')[1];
-    //     const ampersandPosition = videoId.indexOf('&');
-    //     if (ampersandPosition !== -1) {
-    //         return videoId.substring(0, ampersandPosition);
-    //     }
-    //     return videoId;
-    // };
-
-    //  get video id from youtube link format https://youtu.be/vTzT2rjA_9I
 
     const getVideoId = (url) => {
         let videoId;
@@ -58,11 +46,6 @@ function Body({ ratingRef }) {
 
         return `https://www.youtube.com/embed/${videoId}`;
     };
-
-    // let user?.post?.media = [];
-    // if (user?.player?.album) {
-    //     user?.post?.media = JSON.parse(`${user?.player?.album}`);
-    // }
 
     const imgPreviewer = useSelector((state) => state.previewer.previewer);
     // * Image preview
@@ -109,20 +92,6 @@ function Body({ ratingRef }) {
             toast.error(error?.response?.data?.error);
         }
     };
-
-    //* Truncate text
-    // const _text = `💬 Hi mn. Tôi tên Chi 🤍`;
-    // const [text] = useState(_text);
-    // const [expanded, setExpanded] = useState(false);
-    // const [ref, { noClamp, clampedText, key }] = useClampText({
-    //     text,
-    //     lines: 6,
-    //     ellipsis: 100,
-    //     expanded,
-    // });
-    // const toggleExpanded = () => setExpanded((state) => !state);
-
-    //* Scroll to Rating
 
     return (
         <>

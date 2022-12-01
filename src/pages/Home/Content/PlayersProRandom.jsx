@@ -3,15 +3,11 @@ import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
-import { toast } from 'react-toastify';
 
-import userApi from '@/api/userApi';
-
-import { updatePlayerPro } from '@/_redux/features/player/playerSlice';
+import { resetProfile } from '@/_redux/features/player/playerSlice';
 
 import styles from './Content.module.scss';
 import Image from '@/components/Image';
-import LoadingIcon from '@/layouts/LoadingIcon';
 
 const cx = classNames.bind(styles);
 
@@ -23,7 +19,6 @@ function PlayersProRandom() {
 
     const [usersPro, setUsersPro] = useState(player);
     const [gender, setGender] = useState('');
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setUsersPro(player);
@@ -32,6 +27,7 @@ function PlayersProRandom() {
     const [loadmore, setLoadmore] = useState(8);
 
     const handleClickToProfile = (id) => {
+        dispatch(resetProfile());
         if (id === user.id) {
             navigate(`/user/profile/${id}`);
             return;
@@ -82,21 +78,15 @@ function PlayersProRandom() {
                         </select>
                     </div>
                     <div className={cx('reload')}>
-                        {loading ? (
-                            <LoadingIcon />
-                        ) : (
-                            <div
-                                className={cx('reload__btn')}
-                                onClick={handleUpdateProStore}
-                            >
-                                <i
-                                    className={cx(
-                                        'fa-regular fa-arrows-rotate'
-                                    )}
-                                ></i>
-                                <span>Reload</span>
-                            </div>
-                        )}
+                        <div
+                            className={cx('reload__btn')}
+                            onClick={handleUpdateProStore}
+                        >
+                            <i
+                                className={cx('fa-regular fa-arrows-rotate')}
+                            ></i>
+                            <span>Reload</span>
+                        </div>
                     </div>
                 </div>
             </div>

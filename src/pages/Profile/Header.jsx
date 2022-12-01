@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
 import VNnum2words from 'vn-num2words';
 import Tippy from '@tippyjs/react';
 // import { DateSelect } from 'react-ymd-date-select/dist/esm/presets/mui';

@@ -4,9 +4,10 @@ import { Wrapper as PopperWrapper } from '@/components/Popper';
 import { useDebounce } from '@/hooks';
 import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { toast } from 'react-toastify';
+import { resetProfile } from '@/_redux/features/player/playerSlice';
 
 import playerApi from '@/api/searchApi';
 
@@ -19,6 +20,7 @@ const cx = classNames.bind(styles);
 
 function Search() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const user = useSelector((state) => state?.user?.user?.information?.id);
 
@@ -36,6 +38,7 @@ function Search() {
         },
         findPlayer: (id) => {
             searchRef.current._tippy.hide();
+            dispatch(resetProfile());
             setShowResult(false);
             if (id === user) {
                 navigate(`/user/profile/${id}`);

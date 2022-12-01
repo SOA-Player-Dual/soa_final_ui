@@ -31,6 +31,11 @@ const playerSlice = createSlice({
         setRatings: (state, action) => {
             state.ratings = action.payload;
         },
+        resetProfile: (state) => {
+            state.profile = {};
+            state.donate = [];
+            state.ratings = [];
+        },
     },
 });
 
@@ -42,5 +47,6 @@ export const {
     updateFollowers,
     setDonate,
     setRatings,
+    resetProfile,
 } = playerSlice.actions;
 export default playerSlice.reducer;

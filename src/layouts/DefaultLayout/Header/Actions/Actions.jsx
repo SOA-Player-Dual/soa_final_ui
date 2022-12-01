@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
-import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
@@ -34,7 +33,7 @@ import {
 
 import styles from './Actions.module.scss';
 import Profile from './Profile';
-import Notifications from './Notifications';
+// import Notifications from './Notifications';
 import Modal from '@/components/Modal';
 import Image from '@/components/Image';
 import LoadingIcon from '@/layouts/LoadingIcon';
@@ -153,11 +152,10 @@ function Actions() {
 
             try {
                 setTopUpLoading(true);
-                const { data } = await transactionApi.post('v1/transaction', {
+                await transactionApi.post('v1/transaction', {
                     amount: amountTopUp,
                 });
 
-                console.log(data);
                 setTopUpLoading(false);
                 dispatch(handleTopupModal(false));
                 navigate(`/top-up-otp/${amountTopUp}`);
@@ -208,7 +206,7 @@ function Actions() {
             <div className={cx('wrapper')}>
                 {store.isLogin ? (
                     <>
-                        <Tippy
+                        {/* <Tippy
                             content={<Notifications />}
                             trigger='click'
                             placement='bottom-start'
@@ -220,7 +218,7 @@ function Actions() {
                             <div className={cx('action__item')}>
                                 <i className={cx('fa-solid', 'fa-bell')}></i>
                             </div>
-                        </Tippy>
+                        </Tippy> */}
 
                         <div
                             className={cx('action__item')}

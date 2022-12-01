@@ -79,11 +79,10 @@ function TopUpOTP() {
         try {
             setLoadingResend(true);
 
-            const { data } = await transactionApi.post(`v1/transaction`, {
+            await transactionApi.post(`v1/transaction`, {
                 amount,
             });
 
-            console.log('check data', data);
             toast.success('OTP has been sent');
             setLoadingResend(false);
         } catch (err) {

@@ -4,10 +4,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from 'react-redux';
 
-// import firebase from 'firebase/compat/app';
-// import 'firebase/compat/auth';
-
-// import { publicRoutes } from '@/routes';
 import { DefaultLayout } from '@/layouts';
 
 import {
@@ -46,14 +42,6 @@ import Topup from '@/pages/Transaction/Topup';
 import Withdraw from '@/pages/Transaction/Withdraw';
 import ChangeNewPassword from '@/pages/Auth/SignIn/ChangeNewPassword';
 
-// Store
-
-// const config = {
-//     apiKey: 'AIzaSyDnjD8rqgAJHlrwPC-WB4hLygjnOFa4DOA',
-//     authDomain: 'soa-auth-be6e5.firebaseapp.com',
-// };
-// firebase.initializeApp(config);
-
 function App() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -84,18 +72,6 @@ function App() {
             (state) => state.modal.modalType.loginRequiredModal
         ),
     };
-    // Firebase
-    // useEffect(() => {
-    //     const unregisterAuthObserver = firebase
-    //         .auth()
-    //         .onAuthStateChanged(async (user) => {
-    //             if (!user) {
-    //                 console.log('User is not logged in');
-    //                 return;
-    //             }
-    //         });
-    //     return () => unregisterAuthObserver();
-    // }, []);
 
     return (
         <div className='App'>

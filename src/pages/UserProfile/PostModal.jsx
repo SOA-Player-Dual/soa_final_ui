@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -38,10 +38,6 @@ function PostModal() {
         user?.post && user?.post?.type === 'Video' ? user?.post?.media : ''
     );
     const [caption, setCaption] = useState(user?.post?.content || '');
-
-    // console.log('Log post user: ', user.post);
-
-    // console.log('check photos imgbb', photosImgbb);
 
     //     Upload multiple files
     const handleSetPreviewPhotos = (files) => {
@@ -103,36 +99,11 @@ function PostModal() {
     };
 
     const regexYoutubeUrl =
-        /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
+        /^(https?:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
 
     // use handleUpdoadPhoto to upload photos to imgbb
 
     const handlePost = async () => {
-        // if (mediaOption === 'photo') {
-        //     try {
-        //         setLoading(true);
-
-        //         console.log('check photos imgbb 2', photosImgbb);
-
-        //         const { data } = await userApi.put('v1/user/bio', {
-        //             content: caption,
-        //             media: photosImgbb,
-        //             type: 'photo',
-        //         });
-
-        //         dispatch(updatePost(data?.data?.post));
-
-        //         console.log('Log post photo: ', data);
-        //         toast.success('Update post successfully');
-        //         dispatch(handlePostModal(false));
-        //         setLoading(false);
-        //     } catch (error) {
-        //         toast.error(error?.response?.data?.error);
-        //         setLoading(false);
-        //     }
-        //     return;
-        // }
-
         if (
             mediaOption === 'Video' &&
             (videoLink === '' || videoLink === undefined || videoLink === null)

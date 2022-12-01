@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom';
 import classNames from 'classnames/bind';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
+
+import { resetProfile } from '@/_redux/features/player/playerSlice';
 
 import styles from './Content.module.scss';
 import Image from '@/components/Image';
@@ -12,6 +14,7 @@ const cx = classNames.bind(styles);
 function PlayersProFilterByGame() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const user = useSelector((state) => state?.user?.user?.information);
 
@@ -26,6 +29,7 @@ function PlayersProFilterByGame() {
     });
 
     const handleClickToProfile = (id) => {
+        dispatch(resetProfile());
         if (id === user.id) {
             navigate(`/user/profile/${id}`);
             return;

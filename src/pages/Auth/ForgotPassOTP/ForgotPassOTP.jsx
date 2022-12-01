@@ -68,8 +68,6 @@ function ForgotPassOTP() {
             );
             setLoading(false);
 
-            console.log('data', data);
-
             localStorage.setItem('accessToken', data?.accessToken);
             const userID = jwt_decode(data?.accessToken);
             dispatch(login(userID?.id));

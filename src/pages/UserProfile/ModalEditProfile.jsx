@@ -123,8 +123,6 @@ function ModalEditProfile() {
         }
     };
 
-    console.log('description', description);
-
     const handleUpdateDescription = async () => {
         if (!description) {
             toast.error('Description is required');
@@ -163,8 +161,6 @@ function ModalEditProfile() {
             const { data } = await userApi.put('v1/user', {
                 avatar: res?.data?.data?.display_url,
             });
-
-            console.log('Chek data', data);
 
             dispatch(setUserInformation(data?.data?.user));
             setLoadingAvatar(false);
@@ -624,7 +620,6 @@ function ModalEditProfile() {
                                     <div className={cx('form__input')}>
                                         {gameList
                                             ? gameList.map((item) => {
-                                                  //   console.log(item.id);
                                                   return (
                                                       <div
                                                           className='form-check'

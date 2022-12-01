@@ -35,9 +35,6 @@ function ChangeNewPassword() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    console.log('password', password);
-    console.log('confirmPassword', confirmPassword);
-
     DynamicTitle('Reset password');
 
     const userID = useSelector((state) => state?.user?.user.id);
