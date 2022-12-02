@@ -9,6 +9,7 @@ import {
     handleChangePassModal,
     handleTopupModal,
     handleDonateHistoryModal,
+    handleContractManagementModal,
 } from '@/_redux/features/modal/modalSlice';
 import { logout } from '@/_redux/features/user/userSlice';
 
@@ -43,7 +44,8 @@ function Tooltipes({ profileHref }) {
             navigate('/transaction-history');
         },
         contractManagement: () => {
-            navigate('/contract-management');
+            // navigate('/contract-management');
+            dispatch(handleContractManagementModal(true));
         },
         logout: () => {
             localStorage.removeItem('accessToken');

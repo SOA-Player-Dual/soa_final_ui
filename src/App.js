@@ -41,7 +41,6 @@ import Transaction from '@/pages/Transaction';
 import Topup from '@/pages/Transaction/Topup';
 import Withdraw from '@/pages/Transaction/Withdraw';
 import ChangeNewPassword from '@/pages/Auth/SignIn/ChangeNewPassword';
-import RentManage from '@/pages/RentManage';
 import ContractManagement from '@/pages/ContractManagement';
 
 function App() {
@@ -198,15 +197,6 @@ function App() {
                     element={
                         <DefaultLayout>
                             <ChangeNewPassword />
-                        </DefaultLayout>
-                    }
-                />
-
-                <Route
-                    path='/rent-manage/:id'
-                    element={
-                        <DefaultLayout>
-                            <RentManage />
                         </DefaultLayout>
                     }
                 />

@@ -119,7 +119,7 @@ function Home() {
                 const { data } = await userApi.get(
                     `v1/contract/player/${userID}`
                 );
-                console.log('data contract', data);
+
                 dispatch(setPlayerContract(data?.data?.data));
             };
 

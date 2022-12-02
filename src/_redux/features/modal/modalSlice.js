@@ -19,6 +19,7 @@ const modalSlice = createSlice({
             donateHistoryModal: false,
             acceptRentModal: false,
             acceptRentModalData: '',
+            contractManagementModal: false,
         },
     },
     reducers: {
@@ -67,6 +68,9 @@ const modalSlice = createSlice({
         handleAcceptRentModalData: (state, action) => {
             state.modalType.acceptRentModalData = action.payload;
         },
+        handleContractManagementModal: (state, action) => {
+            state.modalType.contractManagementModal = action.payload;
+        },
     },
 });
 
@@ -86,6 +90,7 @@ export const {
     handleDonateHistoryModal,
     handleAcceptRentModal,
     handleAcceptRentModalData,
+    handleContractManagementModal,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

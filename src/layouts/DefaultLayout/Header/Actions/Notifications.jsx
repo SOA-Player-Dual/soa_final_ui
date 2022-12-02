@@ -21,15 +21,10 @@ function NoticationTT({ notiRef }) {
     //     (state) => state?.user?.user?.playerContract
     // );
 
-    console.log('playerContract', user?.playerContract);
-    console.log('UserContracr', user?.information?.contract);
-
     // concat 2 array
     const newContract = user?.playerContract?.concat(
         user?.information?.contract
     );
-
-    console.log('newContract', newContract);
 
     const handleClickNotiItem = (id) => {
         notiRef.current._tippy.hide();

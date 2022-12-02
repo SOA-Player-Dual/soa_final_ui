@@ -27,6 +27,7 @@ import {
     handleDonateHistoryModal,
     handleAcceptRentModal,
     handleAcceptRentModalData,
+    handleContractManagementModal,
 } from '@/_redux/features/modal/modalSlice';
 import {
     handleModalLogin,
@@ -47,10 +48,6 @@ import no_following from '@/assets/icons/no_following.svg';
 import donate_empty from '@/assets/icons/donate_empty.svg';
 
 const cx = classNames.bind(styles);
-
-const notifications = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-];
 
 function Actions() {
     const navigate = useNavigate();
@@ -105,13 +102,14 @@ function Actions() {
         playerContract: useSelector(
             (state) => state?.user?.user?.playerContract
         ),
+        contractManagementModal: useSelector(
+            (state) => state?.modal?.modalType?.contractManagementModal
+        ),
     };
 
     const contract = store?.playerContract?.find(
         (item) => item.id === store?.acceptRentModalData
     );
-
-    console.log('Rent', store.acceptRentModalData);
 
     const findPlayerById = (id) => {
         // find and return nickname of player
@@ -722,7 +720,7 @@ function Actions() {
                         </div>
                         <div className={cx('item')}>
                             <div className={cx('item__title')}>
-                                Rental hours:{' '}
+                                Rental time:{' '}
                             </div>
                             <div className={cx('item__content')}>
                                 {contract?.time}{' '}
@@ -758,6 +756,100 @@ function Actions() {
                                 )}
                             </div>
                         </div>
+                    </div>
+                </Modal>
+            )}
+
+            {/* Contract managenent */}
+            {store.contractManagementModal && (
+                <Modal
+                    title={'Contract management'}
+                    show={store.contractManagementModal}
+                    size={'medium'}
+                    close={() => dispatch(handleContractManagementModal(false))}
+                >
+                    <div className={cx('contract-manage__modal')}>
+                        {store?.user?.contract &&
+                        store?.user?.contract.length > 0 ? (
+                            <CTable>
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell scope='col'>
+                                            ID
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Player
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Rental time
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Rental fee
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Status
+                                        </CTableHeaderCell>
+
+                                        <CTableHeaderCell scope='col'>
+                                            Requested at
+                                        </CTableHeaderCell>
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {store?.user?.contract?.map(
+                                        (item, index) => {
+                                            return (
+                                                <CTableRow>
+                                                    <CTableHeaderCell scope='row'>
+                                                        {index + 1}
+                                                    </CTableHeaderCell>
+                                                    <CTableDataCell>
+                                                        {findPlayerById(
+                                                            item.player
+                                                        )}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell>
+                                                        {item.time}{' '}
+                                                        {item.time > 1
+                                                            ? 'hours'
+                                                            : 'hour'}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell>
+                                                        {item.fee}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell
+                                                        style={{
+                                                            fontWeight: 'bold',
+
+                                                            color:
+                                                                item.status ===
+                                                                'Pending'
+                                                                    ? 'grey'
+                                                                    : 'green',
+                                                        }}
+                                                    >
+                                                        {item.status}
+                                                        {item.status ===
+                                                        'Pending'
+                                                            ? '...'
+                                                            : null}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell>
+                                                        {moment(
+                                                            item?.created_at
+                                                        ).calendar()}
+                                                    </CTableDataCell>
+                                                </CTableRow>
+                                            );
+                                        }
+                                    )}
+                                </CTableBody>
+                            </CTable>
+                        ) : (
+                            <div className={cx('not__following')}>
+                                You have no contract!
+                            </div>
+                        )}
                     </div>
                 </Modal>
             )}

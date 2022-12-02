@@ -648,10 +648,28 @@ function Header() {
                         </div>
 
                         <div className={cx('display')}>
-                            <span>Total donate: </span>
+                            <span>Money number: </span>
+                            <span className={cx('display__money')}>
+                                {money && money > 0
+                                    ? parseInt(money).toLocaleString() + 'VND'
+                                    : null}
+                            </span>
+                        </div>
+
+                        <div className={cx('display')}>
+                            <span>Money text: </span>
                             <span className={cx('display__money')}>
                                 {money && money > 0
                                     ? VNnum2words(money) + ' đồng'
+                                    : null}
+                            </span>
+                        </div>
+
+                        <div className={cx('display')}>
+                            <span>Service fee: </span>
+                            <span className={cx('display__money')}>
+                                {money && money > 0
+                                    ? (money * 0.1).toLocaleString() + 'VND'
                                     : null}
                             </span>
                         </div>

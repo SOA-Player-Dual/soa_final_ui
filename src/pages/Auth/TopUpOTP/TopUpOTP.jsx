@@ -65,7 +65,6 @@ function TopUpOTP() {
                 otp,
             });
 
-            console.log('data', data);
             dispatch(updateBalance(data?.data?.balance));
             dispatch(setTopup(data?.data?.transaction?.topup));
             setLoading(false);
