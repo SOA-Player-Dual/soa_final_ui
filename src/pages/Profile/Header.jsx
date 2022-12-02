@@ -73,6 +73,8 @@ function Header() {
         rating.scrollIntoView();
     };
 
+    const moneyRent = store?.player?.player?.fee * parseInt(time);
+
     const handleClick = {
         follow: async () => {
             try {
@@ -118,6 +120,13 @@ function Header() {
         rent: async () => {
             if (store?.user?.balance < store?.player?.player?.fee) {
                 toast.error('Your balance is not enough, please top up!');
+                dispatch(handleTopupModal(true));
+                return;
+            }
+
+            if (moneyRent > store?.user?.balance) {
+                toast.error('Your balance is not enough, please top up!');
+                dispatch(handleTopupModal(true));
                 return;
             }
             try {
@@ -128,6 +137,7 @@ function Header() {
                 });
 
                 dispatch(updateContract(data?.data?.contract));
+                dispatch(handleTopupModal(false));
                 setRentLoading(false);
                 dispatch(handleRentModal(false));
                 toast.success('Rent successfully!');
@@ -182,7 +192,9 @@ function Header() {
                 dispatch(setDonate(data?.data?.topDonate));
                 setDonateLoading(false);
                 toast.success(
-                    `Donate ${money} for ${store?.player?.nickname} successfully!`
+                    `Donate ${parseInt(money).toLocaleString()} VND for ${
+                        store?.player?.nickname
+                    } successfully!`
                 );
 
                 dispatch(handleDonateModal(false));
@@ -499,8 +511,8 @@ function Header() {
                                     <option value='8'>8 hours</option>
                                     <option value='9'>9 hours</option>
                                     <option value='10'>10 hours</option>
-                                    <option value='11'>20 hours</option>
-                                    <option value='12'>24 hours</option>
+                                    <option value='11'>11 hours</option>
+                                    <option value='12'>12 hours</option>
                                 </select>
                             </div>
                         </div>
@@ -509,7 +521,7 @@ function Header() {
                             <div className={cx('rent__item-title')}>Cost</div>
                             <div className={cx('rent__item-content')}>
                                 <span>
-                                    {store?.player?.player?.fee?.toLocaleString()}
+                                    {moneyRent.toLocaleString()}
                                     &nbsp;VND
                                 </span>
                             </div>
@@ -522,7 +534,13 @@ function Header() {
                             <div className={cx('rent__item-content')}>
                                 {store?.user?.balance <
                                     store?.player?.player?.fee && (
-                                    <div className={cx('top__up-btn')}>
+                                    <div
+                                        className={cx('top__up-btn')}
+                                        onClick={() => {
+                                            dispatch(handleRentModal(false));
+                                            dispatch(handleTopupModal(true));
+                                        }}
+                                    >
                                         <i
                                             className={cx(
                                                 'fa-regular fa-circle-plus'

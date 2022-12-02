@@ -9,6 +9,7 @@ const userSlice = createSlice({
             following: {},
             topup: [],
             withdraw: [],
+            playerContract: [],
             isTopupData: false,
             isWithdrawData: false,
             isLogin: false,
@@ -61,7 +62,9 @@ const userSlice = createSlice({
         setRemovePost: (state, action) => {
             state.user.information.post = action.payload;
         },
-
+        setPlayerContract: (state, action) => {
+            state.user.playerContract = action.payload;
+        },
         logout: (state) => {
             state.user.id = '';
             state.user.information = {};
@@ -69,6 +72,7 @@ const userSlice = createSlice({
             state.user.isLogin = false;
             state.user.topup = [];
             state.user.withdraw = [];
+            state.user.playerContract = [];
             state.user.isTopupData = false;
             state.user.isWithdrawData = false;
         },
@@ -91,5 +95,6 @@ export const {
     setIsTopupData,
     setIsWithdrawData,
     setRemovePost,
+    setPlayerContract,
 } = userSlice.actions;
 export default userSlice.reducer;

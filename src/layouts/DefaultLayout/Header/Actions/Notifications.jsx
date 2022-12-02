@@ -1,122 +1,98 @@
 import classNames from 'classnames/bind';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import {
+    handleAcceptRentModal,
+    handleAcceptRentModalData,
+} from '@/_redux/features/modal/modalSlice';
 
 import Image from '@/components/Image';
 import styles from './Actions.module.scss';
 
 const cx = classNames.bind(styles);
 
-const notification = [
-    {
-        id: 1,
-        auth: 'System',
-        title: 'you have a new message need to read.',
-        time: '1 hour ago',
-    },
-    {
-        id: 2,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 3,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 4,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 5,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 6,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 7,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 8,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 9,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-    {
-        id: 10,
-        auth: 'Hoa',
-        title: 'accept your follow.',
-        time: '2 hour ago',
-    },
-];
+function NoticationTT({ notiRef }) {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state?.user?.user);
 
-function NoticationTT() {
+    // const playerContract = useSelector(
+    //     (state) => state?.user?.user?.playerContract
+    // );
+
+    console.log('playerContract', user?.playerContract);
+    console.log('UserContracr', user?.information?.contract);
+
+    // concat 2 array
+    const newContract = user?.playerContract?.concat(
+        user?.information?.contract
+    );
+
+    console.log('newContract', newContract);
+
+    const handleClickNotiItem = (id) => {
+        notiRef.current._tippy.hide();
+
+        dispatch(handleAcceptRentModal(true));
+        dispatch(handleAcceptRentModalData(id));
+
+        // navigate(`/rent-manage/${id}`);
+    };
+
     return (
         <div className={cx('tooltip-container-notification')}>
             <span className={cx('title')}>Notifications</span>
-            {notification ? (
-                <>
-                    {notification.map((noti) => {
-                        return (
-                            <div key={noti.id} className={cx('tooltip-item')}>
-                                <div>
-                                    <Image
-                                        className={cx('tooltip-item__avatar')}
-                                        src=''
-                                    />
-                                </div>
-                                <div className={cx('container')}>
-                                    <div className={cx('content')}>
-                                        <div>
-                                            <span
-                                                className={cx('info-content')}
-                                            >
-                                                {noti.auth}
-                                            </span>
-                                            {noti.title}
-                                        </div>
 
+            {user?.playerContract && user?.playerContract?.length > 0 ? (
+                user?.playerContract.map((noti) => {
+                    return (
+                        <div
+                            key={noti.id}
+                            className={cx('tooltip-item')}
+                            onClick={() => handleClickNotiItem(noti?.id)}
+                        >
+                            <div>
+                                <Image
+                                    className={cx('tooltip-item__avatar')}
+                                    src={noti?.avatar}
+                                />
+                            </div>
+                            <div className={cx('container')}>
+                                <div className={cx('content')}>
+                                    <div>
+                                        <span className={cx('info-content')}>
+                                            {noti.user_name}
+                                        </span>
+                                        {noti.title}
+                                    </div>
+                                    {noti.status === 'Pending' ? (
                                         <span
                                             className={cx('tooltip-item__time')}
                                         >
-                                            {noti.time}
+                                            This user has sent you a contract
                                         </span>
-                                    </div>
+                                    ) : (
+                                        <span
+                                            className={cx('tooltip-item__time')}
+                                        >
+                                            This user has accepted your contract
+                                        </span>
+                                    )}
+                                </div>
 
-                                    <div className={cx('tooltip-item__check')}>
-                                        <i
-                                            className={cx(
-                                                'fa-solid',
-                                                'fa-circle'
-                                            )}
-                                        ></i>
-                                    </div>
+                                <div className={cx('tooltip-item__check')}>
+                                    <i
+                                        className={cx('fa-solid', 'fa-circle')}
+                                    ></i>
                                 </div>
                             </div>
-                        );
-                    })}
-                </>
+                        </div>
+                    );
+                })
             ) : (
                 <div className={cx('no-notification')}>
-                    <span>No notifications</span>
+                    <span>No notification</span>
                 </div>
             )}
         </div>

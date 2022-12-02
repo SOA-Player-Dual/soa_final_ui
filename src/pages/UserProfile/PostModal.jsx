@@ -131,9 +131,9 @@ function PostModal() {
                 type: mediaOption,
             });
             dispatch(updatePost(data?.data?.post));
-            toast.success('Update post successfully');
             dispatch(handlePostModal(false));
             setLoading(false);
+            toast.success('Update post successfully');
         } catch (error) {
             toast.error(error?.response?.data?.error || 'Something went wrong');
             setLoading(false);

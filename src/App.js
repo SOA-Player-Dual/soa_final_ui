@@ -41,6 +41,8 @@ import Transaction from '@/pages/Transaction';
 import Topup from '@/pages/Transaction/Topup';
 import Withdraw from '@/pages/Transaction/Withdraw';
 import ChangeNewPassword from '@/pages/Auth/SignIn/ChangeNewPassword';
+import RentManage from '@/pages/RentManage';
+import ContractManagement from '@/pages/ContractManagement';
 
 function App() {
     const dispatch = useDispatch();
@@ -196,6 +198,24 @@ function App() {
                     element={
                         <DefaultLayout>
                             <ChangeNewPassword />
+                        </DefaultLayout>
+                    }
+                />
+
+                <Route
+                    path='/rent-manage/:id'
+                    element={
+                        <DefaultLayout>
+                            <RentManage />
+                        </DefaultLayout>
+                    }
+                />
+
+                <Route
+                    path='/contract-management'
+                    element={
+                        <DefaultLayout>
+                            <ContractManagement />
                         </DefaultLayout>
                     }
                 />

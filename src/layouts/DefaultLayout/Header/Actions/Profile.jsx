@@ -15,6 +15,7 @@ const cx = classNames.bind(styles);
 function Profile() {
     const profileHref = useRef();
     const user = useSelector((state) => state?.user?.user?.information);
+
     return (
         <div className={cx('profile__wrapper')}>
             <Tippy
@@ -23,7 +24,7 @@ function Profile() {
                 trigger='click'
                 placement='bottom-start'
                 interactive
-                arrow
+                arrow={false}
                 animation='scale'
                 theme='light'
             >

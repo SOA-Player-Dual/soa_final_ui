@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 
 import transactionApi from '@/api/transactionApi';
 
-import { updateBalance } from '@/_redux/features/user/userSlice';
+import { updateBalance, setTopup } from '@/_redux/features/user/userSlice';
 
 import LoadingIcon from '@/layouts/LoadingIcon';
 
@@ -64,10 +64,17 @@ function TopUpOTP() {
             const { data } = await transactionApi.put(`v1/transaction`, {
                 otp,
             });
+
+            console.log('data', data);
             dispatch(updateBalance(data?.data?.balance));
+            dispatch(setTopup(data?.data?.transaction?.topup));
             setLoading(false);
             navigate('/');
-            toast.success(`You have successfully topped up ${amount} VND`);
+            toast.success(
+                `You have successfully topped up ${parseInt(
+                    amount
+                ).toLocaleString()} VND`
+            );
         } catch (error) {
             toast.error(error?.response?.data?.error || 'Something went wrong');
             setLoading(false);

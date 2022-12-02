@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
+import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,11 +19,14 @@ import moment from 'moment';
 
 import userApi from '@/api/userApi';
 import transactionApi from '@/api/transactionApi';
+import contractApi from '@/api/contractApi';
 
 import {
     handleModalWithdraw,
     handleModalListFollowing,
     handleDonateHistoryModal,
+    handleAcceptRentModal,
+    handleAcceptRentModalData,
 } from '@/_redux/features/modal/modalSlice';
 import {
     handleModalLogin,
@@ -31,9 +35,11 @@ import {
     handleTopupModal,
 } from '@/_redux/features/modal/modalSlice';
 
+import { setPlayerContract } from '@/_redux/features/user/userSlice';
+
 import styles from './Actions.module.scss';
 import Profile from './Profile';
-// import Notifications from './Notifications';
+import Notifications from './Notifications';
 import Modal from '@/components/Modal';
 import Image from '@/components/Image';
 import LoadingIcon from '@/layouts/LoadingIcon';
@@ -42,11 +48,16 @@ import donate_empty from '@/assets/icons/donate_empty.svg';
 
 const cx = classNames.bind(styles);
 
+const notifications = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+];
+
 function Actions() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const confirmPassRef = useRef(null);
+    const notiRef = useRef(null);
 
     const [changePassLoading, setChangePassLoading] = useState(false);
     const [currentPass, setCurrentPass] = useState('');
@@ -58,6 +69,9 @@ function Actions() {
 
     const [withdrawLoading, setWithdrawLoading] = useState(false);
     const [amountWithdraw, setAmountWithdraw] = useState('');
+
+    const [acceptRentLoading, setAcceptRentLoading] = useState(false);
+    const [declineRentLoading, setDeclineRentLoading] = useState(false);
 
     const store = {
         isLogin: useSelector((state) => state?.user?.user?.isLogin),
@@ -82,7 +96,22 @@ function Actions() {
         donateHitoryModal: useSelector(
             (state) => state?.modal?.modalType?.donateHistoryModal
         ),
+        acceptRentModal: useSelector(
+            (state) => state?.modal?.modalType?.acceptRentModal
+        ),
+        acceptRentModalData: useSelector(
+            (state) => state?.modal?.modalType?.acceptRentModalData
+        ),
+        playerContract: useSelector(
+            (state) => state?.user?.user?.playerContract
+        ),
     };
+
+    const contract = store?.playerContract?.find(
+        (item) => item.id === store?.acceptRentModalData
+    );
+
+    console.log('Rent', store.acceptRentModalData);
 
     const findPlayerById = (id) => {
         // find and return nickname of player
@@ -179,6 +208,11 @@ function Actions() {
                 return;
             }
 
+            if (amountWithdraw > store.user.balance) {
+                toast.error('Your balance is not enough');
+                return;
+            }
+
             try {
                 setWithdrawLoading(true);
                 // add minus sign to amount
@@ -199,6 +233,55 @@ function Actions() {
                 setWithdrawLoading(false);
             }
         },
+        acceptRent: async () => {
+            try {
+                setAcceptRentLoading(true);
+                const { data } = await contractApi.put(
+                    `v1/contract/${store.acceptRentModalData}`,
+                    {
+                        status: 'Processing',
+                    }
+                );
+
+                dispatch(setPlayerContract(data?.data?.data));
+                setAcceptRentLoading(false);
+                dispatch(handleAcceptRentModal(false));
+                toast.success(
+                    `You have accepted ${contract?.user_name}'s rent request!`
+                );
+            } catch (err) {
+                toast.error(
+                    err?.response?.data?.error ||
+                        "Something's wrong, please try later!"
+                );
+                setAcceptRentLoading(false);
+            }
+        },
+
+        declineRent: async () => {
+            try {
+                setDeclineRentLoading(true);
+                const { data } = await contractApi.put(
+                    `v1/contract/${store.acceptRentModalData}`,
+                    {
+                        status: 'Canceled',
+                    }
+                );
+                dispatch(setPlayerContract(data?.data?.data));
+                setDeclineRentLoading(false);
+                dispatch(handleAcceptRentModal(false));
+                toast.success(
+                    `You have declined required rent of  ${contract.user_name}`
+                );
+            } catch (err) {
+                toast.error(
+                    err?.response?.data?.error ||
+                        "Something's wrong, please try later!"
+                );
+
+                setDeclineRentLoading(false);
+            }
+        },
     };
 
     return (
@@ -206,19 +289,25 @@ function Actions() {
             <div className={cx('wrapper')}>
                 {store.isLogin ? (
                     <>
-                        {/* <Tippy
-                            content={<Notifications />}
+                        <Tippy
+                            ref={notiRef}
+                            content={<Notifications notiRef={notiRef} />}
                             trigger='click'
-                            placement='bottom-start'
+                            placement='bottom'
                             interactive
-                            arrow
+                            arrow={false}
                             animation='scale'
                             theme='light'
                         >
                             <div className={cx('action__item')}>
                                 <i className={cx('fa-solid', 'fa-bell')}></i>
+                                {/* {newContract.length > 0 && (
+                                    <div className={cx('noti__count')}>
+                                        <span>{newContract.length}</span>
+                                    </div>
+                                )} */}
                             </div>
-                        </Tippy> */}
+                        </Tippy>
 
                         <div
                             className={cx('action__item')}
@@ -605,6 +694,70 @@ function Actions() {
                                 </div>
                             </div>
                         )}
+                    </div>
+                </Modal>
+            )}
+
+            {/* Accept modal */}
+            {store.acceptRentModal && (
+                <Modal
+                    title={'Rental management'}
+                    show={store.acceptRentModal}
+                    size={'small'}
+                    close={() => {
+                        dispatch(handleAcceptRentModal(false));
+                        dispatch(handleAcceptRentModalData(null));
+                    }}
+                >
+                    <div className={cx('contract-manage__modal')}>
+                        <div className={cx('title')}>User request: </div>
+                        <div className={cx('user__info')}>
+                            <div className={cx('user__avatar')}>
+                                <img src={contract.avatar} alt='' />
+                            </div>
+
+                            <div className={cx('user__name')}>
+                                {contract.user_name}
+                            </div>
+                        </div>
+                        <div className={cx('item')}>
+                            <div className={cx('item__title')}>
+                                Rental hours:{' '}
+                            </div>
+                            <div className={cx('item__content')}>
+                                {contract?.time}{' '}
+                                {contract?.time > 1 ? 'hours' : 'hour'}
+                            </div>
+                        </div>
+                        <div className={cx('item')}>
+                            <div className={cx('item__title')}>Request at:</div>
+                            <div className={cx('item__content')}>
+                                {moment(contract.created_at).calendar()}
+                            </div>
+                        </div>
+
+                        <div className={cx('form__action')}>
+                            <button
+                                className={cx('form__btn-close')}
+                                onClick={handleClick.declineRent}
+                            >
+                                {declineRentLoading ? (
+                                    <LoadingIcon />
+                                ) : (
+                                    'Decline'
+                                )}
+                            </button>
+
+                            <div className={cx('form__btn-primary')}>
+                                {acceptRentLoading ? (
+                                    <LoadingIcon />
+                                ) : (
+                                    <button onClick={handleClick.acceptRent}>
+                                        Accept
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </Modal>
             )}

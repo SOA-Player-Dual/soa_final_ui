@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 
 import transactionApi from '@/api/transactionApi';
 
-import { updateBalance } from '@/_redux/features/user/userSlice';
+import { updateBalance, setWithdraw } from '@/_redux/features/user/userSlice';
 
 import LoadingIcon from '@/layouts/LoadingIcon';
 
@@ -68,8 +68,13 @@ function WithDrawOTP() {
             });
 
             dispatch(updateBalance(data?.data?.balance));
+            dispatch(setWithdraw(data?.data?.transaction?.withdraw));
             navigate('/');
-            toast.success(`You have successfully withdrawn ${amount} VND`);
+            toast.success(
+                `You have successfully withdrawn ${parseInt(
+                    amount
+                ).toLocaleString()} VND`
+            );
         } catch (err) {
             toast.error(err.response.data.error || 'Something went wrong');
             setLoading(false);

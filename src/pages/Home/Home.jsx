@@ -14,6 +14,7 @@ import {
     setWithdraw,
     setIsTopupData,
     setIsWithdrawData,
+    setPlayerContract,
 } from '@/_redux/features/user/userSlice';
 import { setGames } from '@/_redux/features/games/gamesSlice';
 import { setPlayersPro } from '@/_redux/features/player/playerSlice';
@@ -50,19 +51,19 @@ function Home() {
 
     const checkPlayerPro = useSelector((state) => state?.player?.playersPro);
     const checkListGames = useSelector((state) => state?.games?.games);
-    const checkListFollowing = useSelector(
-        (state) => state?.user?.user?.following
-    );
-    const checkListTopup = useSelector(
-        (state) => state?.user?.user?.isTopupData
-    );
-    const checkListWithdraw = useSelector(
-        (state) => state?.user?.user?.isWithdrawData
-    );
+    // const checkListFollowing = useSelector(
+    //     (state) => state?.user?.user?.following
+    // );
+    // const checkListTopup = useSelector(
+    //     (state) => state?.user?.user?.isTopupData
+    // );
+    // const checkListWithdraw = useSelector(
+    //     (state) => state?.user?.user?.isWithdrawData
+    // );
 
-    const checkUserInformation = useSelector(
-        (state) => state?.user?.user?.information
-    );
+    // const checkUserInformation = useSelector(
+    //     (state) => state?.user?.user?.information
+    // );
     const checkUser = useSelector((state) => state?.user?.user?.isLogin);
 
     // Reset modal
@@ -79,44 +80,53 @@ function Home() {
     useEffect(() => {
         if (checkUser) {
             const getUserInformation = async () => {
-                if (
-                    checkUserInformation &&
-                    Object.getOwnPropertyNames(checkUserInformation).length ===
-                        0 &&
-                    checkUser
-                ) {
-                    const { data } = await userApi.get(`v1/user/id/${userID}`);
-                    dispatch(setUserInformation(data?.data?.user));
-                }
+                // if (
+                //     checkUserInformation &&
+                //     Object.getOwnPropertyNames(checkUserInformation).length ===
+                //         0 &&
+                //     checkUser
+                // ) {
+                const { data } = await userApi.get(`v1/user/id/${userID}`);
+                dispatch(setUserInformation(data?.data?.user));
+                // }
             };
 
             const getFollowing = async () => {
-                if (
-                    checkListFollowing &&
-                    Object.getOwnPropertyNames(checkListFollowing).length ===
-                        0 &&
-                    checkUser
-                ) {
-                    const { data } = await userApi.get(`v1/user/following`);
-                    dispatch(setFollowing(data?.data));
-                }
+                // if (
+                //     checkListFollowing &&
+                //     Object.getOwnPropertyNames(checkListFollowing).length ===
+                //         0 &&
+                //     checkUser
+                // ) {
+                const { data } = await userApi.get(`v1/user/following`);
+                dispatch(setFollowing(data?.data));
+                // }
             };
 
             const getTransactions = async () => {
-                if (checkUser && (!checkListTopup || !checkListWithdraw)) {
-                    const { data } = await transactionApi.get(`v1/transaction`);
+                // if (checkUser && (!checkListTopup || !checkListWithdraw)) {
+                const { data } = await transactionApi.get(`v1/transaction`);
 
-                    dispatch(setTopup(data?.data?.topup));
-                    dispatch(setIsTopupData(true));
+                dispatch(setTopup(data?.data?.topup));
+                dispatch(setIsTopupData(true));
 
-                    dispatch(setWithdraw(data?.data?.withdraw));
-                    dispatch(setIsWithdrawData(true));
-                }
+                dispatch(setWithdraw(data?.data?.withdraw));
+                dispatch(setIsWithdrawData(true));
+                // }
+            };
+
+            const getPlayerContract = async () => {
+                const { data } = await userApi.get(
+                    `v1/contract/player/${userID}`
+                );
+                console.log('data contract', data);
+                dispatch(setPlayerContract(data?.data?.data));
             };
 
             getUserInformation();
             getFollowing();
             getTransactions();
+            getPlayerContract();
             // reload page
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

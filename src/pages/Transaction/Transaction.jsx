@@ -19,6 +19,8 @@ function Transaction() {
                         to='/transaction-history/topup'
                         activeclassname={cx('active')}
                         className={cx('action__btn')}
+                        // defaultActiveClassName={cx('active')}
+                        // default active in the first time
                     >
                         Top up
                     </NavLink>

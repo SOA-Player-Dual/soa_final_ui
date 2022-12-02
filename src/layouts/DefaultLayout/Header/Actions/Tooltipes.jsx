@@ -42,6 +42,9 @@ function Tooltipes({ profileHref }) {
         transactionHistory: () => {
             navigate('/transaction-history');
         },
+        contractManagement: () => {
+            navigate('/contract-management');
+        },
         logout: () => {
             localStorage.removeItem('accessToken');
             dispatch(logout());
@@ -147,6 +150,18 @@ function Tooltipes({ profileHref }) {
                     </div>
                     <span className={cx('tooltip-item__label')}>
                         Follower list
+                    </span>
+                </div>
+
+                <div
+                    className={cx('tooltip-item')}
+                    onClick={handleClick.contractManagement}
+                >
+                    <div className={cx('label__icon')}>
+                        <i className={cx('fa-regular fa-folder-user')}></i>
+                    </div>
+                    <span className={cx('tooltip-item__label')}>
+                        Contract management
                     </span>
                 </div>
 

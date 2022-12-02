@@ -17,6 +17,8 @@ const modalSlice = createSlice({
             topupModal: false,
             donateModal: false,
             donateHistoryModal: false,
+            acceptRentModal: false,
+            acceptRentModalData: '',
         },
     },
     reducers: {
@@ -59,6 +61,12 @@ const modalSlice = createSlice({
         handleDonateHistoryModal: (state, action) => {
             state.modalType.donateHistoryModal = action.payload;
         },
+        handleAcceptRentModal: (state, action) => {
+            state.modalType.acceptRentModal = action.payload;
+        },
+        handleAcceptRentModalData: (state, action) => {
+            state.modalType.acceptRentModalData = action.payload;
+        },
     },
 });
 
@@ -76,6 +84,8 @@ export const {
     handleTopupModal,
     handleDonateModal,
     handleDonateHistoryModal,
+    handleAcceptRentModal,
+    handleAcceptRentModalData,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;
