@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 import {
     handleAcceptRentModal,
@@ -13,7 +13,7 @@ import styles from './Actions.module.scss';
 const cx = classNames.bind(styles);
 
 function NoticationTT({ notiRef }) {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state?.user?.user);
 
@@ -22,9 +22,9 @@ function NoticationTT({ notiRef }) {
     // );
 
     // concat 2 array
-    const newContract = user?.playerContract?.concat(
-        user?.information?.contract
-    );
+    // const newContract = user?.playerContract?.concat(
+    //     user?.information?.contract
+    // );
 
     const handleClickNotiItem = (id) => {
         notiRef.current._tippy.hide();

@@ -389,6 +389,7 @@
     padding: 8px 12px;
 
     .amount__display {
+        margin-bottom: 8px;
         span {
             // color display amount money
 
@@ -560,4 +561,8 @@
             }
         }
     }
+}
+
+.contract-manage__modal {
+    padding: 8px;
 }

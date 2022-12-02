@@ -306,7 +306,7 @@ function Actions() {
                                 )} */}
                             </div>
                         </Tippy>
-
+                        {/* 
                         <div
                             className={cx('action__item')}
                             onClick={handleClick.redirectMessenger}
@@ -314,7 +314,7 @@ function Actions() {
                             <i
                                 className={cx('fab', ' fa-facebook-messenger')}
                             ></i>
-                        </div>
+                        </div> */}
 
                         <Profile />
                     </>
@@ -469,10 +469,24 @@ function Actions() {
                             </div>
 
                             {amountTopUp > 0 && (
-                                <div className={cx('amount__display')}>
-                                    Amount:{' '}
-                                    <span>{VNnum2words(amountTopUp)} đồng</span>
-                                </div>
+                                <>
+                                    <div className={cx('amount__display')}>
+                                        Money text:{' '}
+                                        <span>
+                                            {VNnum2words(amountTopUp)} đồng
+                                        </span>
+                                    </div>
+
+                                    <div className={cx('amount__display')}>
+                                        Money number:{' '}
+                                        <span>
+                                            {parseInt(
+                                                amountTopUp
+                                            ).toLocaleString()}{' '}
+                                            VND
+                                        </span>
+                                    </div>
+                                </>
                             )}
                             <div className={cx('form__role')}>
                                 <div className={cx('top-up__btn')}>
@@ -526,12 +540,23 @@ function Actions() {
                             </div>
 
                             {amountWithdraw > 0 && (
-                                <div className={cx('amount__display')}>
-                                    Amount:{' '}
-                                    <span className={cx('withdraw__label')}>
-                                        {VNnum2words(amountWithdraw)} đồng
-                                    </span>
-                                </div>
+                                <>
+                                    <div className={cx('amount__display')}>
+                                        Money text:{' '}
+                                        <span className={cx('withdraw__label')}>
+                                            {VNnum2words(amountWithdraw)} đồng
+                                        </span>
+                                    </div>
+                                    <div className={cx('amount__display')}>
+                                        Money number:{' '}
+                                        <span className={cx('withdraw__label')}>
+                                            {parseInt(
+                                                amountWithdraw
+                                            ).toLocaleString()}{' '}
+                                            VND
+                                        </span>
+                                    </div>
+                                </>
                             )}
                             <div className={cx('form__role')}>
                                 <div className={cx('top-up__btn')}>
@@ -824,8 +849,11 @@ function Actions() {
                                                             color:
                                                                 item.status ===
                                                                 'Pending'
-                                                                    ? 'grey'
-                                                                    : 'green',
+                                                                    ? item.status ===
+                                                                      'Pending'
+                                                                        ? 'orange'
+                                                                        : 'green'
+                                                                    : 'red',
                                                         }}
                                                     >
                                                         {item.status}

@@ -41,6 +41,11 @@ function Body({ ratingRef }) {
         return videoId;
     };
 
+    let albumMedia = [];
+    if (user?.post?.type === 'Image' && user?.post?.media) {
+        albumMedia = JSON.parse(`${user?.post?.media}`);
+    }
+
     const embedYoutobe = (url) => {
         const videoId = getVideoId(url);
 
@@ -198,7 +203,7 @@ function Body({ ratingRef }) {
 
                                     <div className={cx('content__container')}>
                                         {user?.post &&
-                                        user.post.type === 'Video' ? (
+                                        user?.post?.type === 'Video' ? (
                                             <div
                                                 className={cx('video__content')}
                                             >
@@ -219,23 +224,20 @@ function Body({ ratingRef }) {
                                                 ></iframe>
                                             </div>
                                         ) : (
-                                            user?.post?.media &&
-                                            user?.post?.media.length > 0 && (
+                                            albumMedia &&
+                                            albumMedia.length > 0 && (
                                                 <div
                                                     className={cx(
                                                         'info__gallery'
                                                     )}
                                                 >
-                                                    {user?.post?.media.map(
+                                                    {albumMedia.map(
                                                         (data, index) => {
                                                             const count =
-                                                                user?.post
-                                                                    ?.media
-                                                                    .length - 4;
+                                                                albumMedia.length -
+                                                                4;
                                                             if (
-                                                                user?.post
-                                                                    ?.media
-                                                                    .length ===
+                                                                albumMedia.length ===
                                                                 1
                                                             ) {
                                                                 return (
@@ -262,9 +264,7 @@ function Body({ ratingRef }) {
                                                                     </div>
                                                                 );
                                                             } else if (
-                                                                user?.post
-                                                                    ?.media
-                                                                    .length ===
+                                                                albumMedia.length ===
                                                                 2
                                                             ) {
                                                                 return (
@@ -291,9 +291,7 @@ function Body({ ratingRef }) {
                                                                     </div>
                                                                 );
                                                             } else if (
-                                                                user?.post
-                                                                    ?.media
-                                                                    .length ===
+                                                                albumMedia.length ===
                                                                 3
                                                             ) {
                                                                 return (

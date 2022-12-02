@@ -39,6 +39,7 @@ function ModalEditProfile() {
     const [loadingGender, setLoadingGender] = useState(false);
     const [loadingGame, setLoadingGame] = useState(false);
     const [loadingDescription, setLoadingDescription] = useState(false);
+    const [rentMoneyLoading, setRentMoneyLoading] = useState(false);
 
     const [nicknameForm, setNicknameForm] = useState(false);
     const [usernameForm, setUsernameForm] = useState(false);
@@ -46,6 +47,7 @@ function ModalEditProfile() {
     const [genderForm, setGenderForm] = useState(false);
     const [descriptionForm, setDescriptionForm] = useState(false);
     const [gameForm, setGameForm] = useState(false);
+    const [rentMoneyForm, setRentMoneyForm] = useState(false);
 
     const [avatar, setAvatar] = useState('');
     const [urlCode, setUrlCode] = useState(user?.urlCode || '');
@@ -53,6 +55,7 @@ function ModalEditProfile() {
     const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth || '');
     const [gender, setGender] = useState(user?.gender || '');
     const [game, setGame] = useState({ games: [], response: [] });
+    const [rentMoney, setRentMoney] = useState(user?.player?.fee || '');
     const [description, setDescription] = useState(
         user?.player?.description || ''
     );
@@ -230,6 +233,27 @@ function ModalEditProfile() {
         }
     };
 
+    const handleUpdateFee = async () => {
+        if (!rentMoney) {
+            toast.error('Fee is required!');
+            return;
+        }
+
+        try {
+            setRentMoneyLoading(true);
+            const { data } = await userApi.put('v1/user', { fee: rentMoney });
+            dispatch(setUserInformation(data?.data?.user));
+            toast.success('Update fee successfully!');
+            setRentMoneyLoading(false);
+            setRentMoneyForm(false);
+        } catch (error) {
+            toast.error(
+                error?.response?.data?.error || 'Something went wrong!'
+            );
+            setRentMoneyLoading(false);
+        }
+    };
+
     const handleClickOpenForm = {
         name: () => {
             setNicknameForm((prev) => !prev);
@@ -253,6 +277,9 @@ function ModalEditProfile() {
 
         description: () => {
             setDescriptionForm((prev) => !prev);
+        },
+        fee: () => {
+            setRentMoneyForm((prev) => !prev);
         },
     };
 
@@ -743,6 +770,61 @@ function ModalEditProfile() {
                                     {description === 'Blank description'
                                         ? 'Add bio'
                                         : description}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Fee */}
+                <div className={cx('form__group')}>
+                    <div className={cx('heading')}>
+                        <div className={cx('title')}>Rental fee</div>
+                        <div
+                            className={cx('action')}
+                            onClick={handleClickOpenForm.fee}
+                        >
+                            {rentMoneyForm ? (
+                                <span>Cancel</span>
+                            ) : (
+                                <span>Edit</span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className={cx('content')}>
+                        <div className={cx('bio')}>
+                            {rentMoneyForm ? (
+                                <div className={cx('content__edit')}>
+                                    <div className={cx('form__input')}>
+                                        <input
+                                            type='number'
+                                            value={rentMoney}
+                                            onChange={(e) =>
+                                                setRentMoney(e.target.value)
+                                            }
+                                        />
+                                    </div>
+                                    <div className={cx('form__action')}>
+                                        <button
+                                            onClick={() =>
+                                                setRentMoneyForm(false)
+                                            }
+                                        >
+                                            Cancel
+                                        </button>
+                                        {rentMoneyLoading ? (
+                                            <LoadingIcon />
+                                        ) : (
+                                            <button onClick={handleUpdateFee}>
+                                                Save
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                <span>
+                                    {user?.player?.fee?.toLocaleString()} VND
                                 </span>
                             )}
                         </div>

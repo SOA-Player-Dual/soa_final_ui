@@ -25,7 +25,7 @@ import {
 } from '@/_redux/features/modal/modalSlice';
 
 import styles from './Home.module.scss';
-import GlobalChat from './GlobalChat';
+// import GlobalChat from './GlobalChat';
 // import Modal from '@/components/Modal';
 import Sidebar from './Sidebar';
 // import SignIn from '@/pages/Auth/SignIn';
@@ -165,9 +165,9 @@ function Home() {
     return (
         <>
             <div className={cx('wrapper')}>
-                <div className={cx('global-chat')}>
+                {/* <div className={cx('global-chat')}>
                     <GlobalChat />
-                </div>
+                </div> */}
 
                 <div className={cx('side-bar')}>
                     {/* <PerfectScrollbar> */}

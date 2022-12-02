@@ -4,7 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
 
-import { resetProfile } from '@/_redux/features/player/playerSlice';
+import userApi from '@/api/userApi';
+import {
+    resetProfile,
+    setPlayersPro,
+} from '@/_redux/features/player/playerSlice';
 
 import styles from './Content.module.scss';
 import Image from '@/components/Image';
@@ -50,9 +54,10 @@ function PlayersProRandom() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [gender]);
 
-    const handleUpdateProStore = () => {
+    const handleUpdateProStore = async () => {
         //    reload page
-        window.location.reload();
+        const { data } = await userApi.get('v1/player');
+        dispatch(setPlayersPro(data?.data?.user));
     };
 
     const handleLoadMore = () => {
