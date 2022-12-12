@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     handleModalWithdraw,
-    handleModalListFollowing,
     handleChangePassModal,
     handleTopupModal,
     handleDonateHistoryModal,
     handleContractManagementModal,
+    handleUsersDonationModal,
 } from '@/_redux/features/modal/modalSlice';
 import { logout } from '@/_redux/features/user/userSlice';
 
@@ -28,9 +28,6 @@ function Tooltipes({ profileHref }) {
         withDrawModal: () => {
             dispatch(handleModalWithdraw(true));
         },
-        followListModal: () => {
-            dispatch(handleModalListFollowing(true));
-        },
         topupModal: () => {
             dispatch(handleTopupModal(true));
         },
@@ -46,6 +43,9 @@ function Tooltipes({ profileHref }) {
         contractManagement: () => {
             // navigate('/contract-management');
             dispatch(handleContractManagementModal(true));
+        },
+        usersDonation: () => {
+            dispatch(handleUsersDonationModal(true));
         },
         logout: () => {
             localStorage.removeItem('accessToken');
@@ -129,6 +129,22 @@ function Tooltipes({ profileHref }) {
 
                 <div
                     className={cx('tooltip-item')}
+                    onClick={handleClick.usersDonation}
+                >
+                    <div className={cx('label__icon')}>
+                        <i
+                            className={cx(
+                                'fa-regular fa-rectangle-history-circle-user'
+                            )}
+                        ></i>
+                    </div>
+                    <span className={cx('tooltip-item__label')}>
+                        List of user donation
+                    </span>
+                </div>
+
+                <div
+                    className={cx('tooltip-item')}
                     onClick={handleClick.donateHistoryModal}
                 >
                     <div className={cx('label__icon')}>
@@ -143,7 +159,7 @@ function Tooltipes({ profileHref }) {
                     </span>
                 </div>
 
-                <div
+                {/* <div
                     className={cx('tooltip-item')}
                     onClick={handleClick.followListModal}
                 >
@@ -153,7 +169,7 @@ function Tooltipes({ profileHref }) {
                     <span className={cx('tooltip-item__label')}>
                         Follower list
                     </span>
-                </div>
+                </div> */}
 
                 <div
                     className={cx('tooltip-item')}

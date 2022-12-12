@@ -7,8 +7,10 @@ const userSlice = createSlice({
             id: '',
             information: {},
             following: {},
+            follower: {},
             topup: [],
             withdraw: [],
+            usersDonation: [],
             playerContract: [],
             isTopupData: false,
             isWithdrawData: false,
@@ -28,12 +30,16 @@ const userSlice = createSlice({
         setFollowing: (state, action) => {
             state.user.following = action.payload;
         },
+        setFollowers: (state, action) => {
+            state.user.follower = action.payload;
+        },
         updateGame: (state, action) => {
             state.user.information.get_game = action.payload;
         },
         updateFollowing: (state, action) => {
             state.user.following.followingData = action.payload;
         },
+
         updateContract: (state, action) => {
             state.user.information.contract = action.payload;
         },
@@ -65,14 +71,19 @@ const userSlice = createSlice({
         setPlayerContract: (state, action) => {
             state.user.playerContract = action.payload;
         },
+        setUsersDonation: (state, action) => {
+            state.user.usersDonation = action.payload;
+        },
         logout: (state) => {
             state.user.id = '';
             state.user.information = {};
             state.user.following = {};
+            state.user.follower = {};
             state.user.isLogin = false;
             state.user.topup = [];
             state.user.withdraw = [];
             state.user.playerContract = [];
+            state.user.usersDonation = [];
             state.user.isTopupData = false;
             state.user.isWithdrawData = false;
         },
@@ -96,5 +107,7 @@ export const {
     setIsWithdrawData,
     setRemovePost,
     setPlayerContract,
+    setUsersDonation,
+    setFollowers,
 } = userSlice.actions;
 export default userSlice.reducer;

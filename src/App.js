@@ -29,6 +29,9 @@ import PlayersProRandom from '@/pages/Home/Content/PlayersProRandom';
 import PlayersProFilterByGame from '@/pages/Home/Content/PlayersProFilterByGame';
 import Profile from '@/pages/Profile';
 import UserProfile from '@/pages/UserProfile';
+import Follower from '@/pages/UserProfile/Follower';
+import Body from '@/pages/UserProfile/Body';
+import Following from '@/pages/UserProfile/Following';
 import Messenger from '@/pages/Messenger';
 import MessengerNotSelected from '@/pages/Messenger/MessengerNotSelected';
 import MessengerContent from '@/pages/Messenger/MessengerContent';
@@ -41,7 +44,6 @@ import Transaction from '@/pages/Transaction';
 import Topup from '@/pages/Transaction/Topup';
 import Withdraw from '@/pages/Transaction/Withdraw';
 import ChangeNewPassword from '@/pages/Auth/SignIn/ChangeNewPassword';
-import ContractManagement from '@/pages/ContractManagement';
 
 function App() {
     const dispatch = useDispatch();
@@ -147,7 +149,12 @@ function App() {
                             <UserProfile />
                         </DefaultLayout>
                     }
-                />
+                >
+                    <Route index element={<Body />} />
+                    <Route path='follower' element={<Follower />} />
+                    <Route path='following' element={<Following />} />
+                </Route>
+
                 <Route
                     path='/player/profile/:id'
                     element={
@@ -197,15 +204,6 @@ function App() {
                     element={
                         <DefaultLayout>
                             <ChangeNewPassword />
-                        </DefaultLayout>
-                    }
-                />
-
-                <Route
-                    path='/contract-management'
-                    element={
-                        <DefaultLayout>
-                            <ContractManagement />
                         </DefaultLayout>
                     }
                 />

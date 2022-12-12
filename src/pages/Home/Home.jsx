@@ -6,6 +6,7 @@ import classNames from 'classnames/bind';
 import gameApi from '@/api/gameApi';
 import userApi from '@/api/userApi';
 import transactionApi from '@/api/transactionApi';
+import donateApi from '@/api/donateApi';
 
 import {
     setUserInformation,
@@ -15,6 +16,8 @@ import {
     setIsTopupData,
     setIsWithdrawData,
     setPlayerContract,
+    setUsersDonation,
+    setFollowers,
 } from '@/_redux/features/user/userSlice';
 import { setGames } from '@/_redux/features/games/gamesSlice';
 import { setPlayersPro } from '@/_redux/features/player/playerSlice';
@@ -115,6 +118,14 @@ function Home() {
                 // }
             };
 
+            const getTopDonator = async () => {
+                const { data } = await donateApi.get(
+                    `v1/player/${userID}/donate`
+                );
+
+                dispatch(setUsersDonation(data?.data?.donate));
+            };
+
             const getPlayerContract = async () => {
                 const { data } = await userApi.get(
                     `v1/contract/player/${userID}`
@@ -123,10 +134,20 @@ function Home() {
                 dispatch(setPlayerContract(data?.data?.data));
             };
 
+            const getFollower = async () => {
+                const { data } = await userApi.get(
+                    `v1/player/${userID}/follower`
+                );
+
+                dispatch(setFollowers(data?.data));
+            };
+
             getUserInformation();
             getFollowing();
             getTransactions();
             getPlayerContract();
+            getTopDonator();
+            getFollower();
             // reload page
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

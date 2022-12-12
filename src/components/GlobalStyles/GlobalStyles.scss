@@ -114,6 +114,7 @@ a {
 body {
     #tippy-2 {
         transform: translate3d(5px, 50px, 0px) !important;
+        inset: 0px 12px auto auto !important;
     }
     .tippy-box {
         border-radius: 8px;
@@ -480,7 +481,8 @@ body {
 body {
     .active {
         // css underline button active
-        border-bottom: 2px solid var(--primary-color);
+        background-color: rgba(22, 24, 35, 0.1);
+        border-radius: 0;
         color: var(--primary-color);
         // animation underline button active
     }

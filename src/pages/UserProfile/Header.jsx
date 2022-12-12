@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import { useDispatch, useSelector } from 'react-redux';
 import StarRatings from 'react-star-ratings';
+import { NavLink } from 'react-router-dom';
 
 import ModalEditProfile from './ModalEditProfile';
 import PostModal from './PostModal';
@@ -183,9 +184,28 @@ function Header({ exeScrollRating }) {
                     </div>
                     <hr />
                     <div className={cx('navigation')}>
-                        <div className={cx('navigation__item')}>
+                        <NavLink
+                            to={`/user/profile/${user.id}`}
+                            className={cx('navigation__item')}
+                            end
+                        >
                             Introduction
-                        </div>
+                        </NavLink>
+
+                        <NavLink
+                            to={`/user/profile/${user.id}/follower`}
+                            className={cx('navigation__item')}
+                        >
+                            Follower
+                        </NavLink>
+
+                        <NavLink
+                            to={`/user/profile/${user.id}/following`}
+                            className={cx('navigation__item')}
+                        >
+                            Following
+                        </NavLink>
+
                         <div
                             className={cx('navigation__item')}
                             onClick={exeScrollRating}

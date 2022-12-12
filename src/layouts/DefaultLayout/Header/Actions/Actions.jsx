@@ -28,6 +28,7 @@ import {
     handleAcceptRentModal,
     handleAcceptRentModalData,
     handleContractManagementModal,
+    handleUsersDonationModal,
 } from '@/_redux/features/modal/modalSlice';
 import {
     handleModalLogin,
@@ -82,14 +83,12 @@ function Actions() {
         modalWithdraw: useSelector(
             (state) => state?.modal?.modalType?.modalWithdraw
         ),
-        modalListFollowing: useSelector(
-            (state) => state?.modal?.modalType?.modalListFollowing
-        ),
         changePassModal: useSelector(
             (state) => state?.modal?.modalType?.changePassModal
         ),
 
         topupModal: useSelector((state) => state?.modal?.modalType?.topupModal),
+        usersDonation: useSelector((state) => state?.user?.user?.usersDonation),
         donateHitoryModal: useSelector(
             (state) => state?.modal?.modalType?.donateHistoryModal
         ),
@@ -104,6 +103,9 @@ function Actions() {
         ),
         contractManagementModal: useSelector(
             (state) => state?.modal?.modalType?.contractManagementModal
+        ),
+        usersDonationModal: useSelector(
+            (state) => state?.modal?.modalType?.usersDonationModal
         ),
     };
 
@@ -575,7 +577,6 @@ function Actions() {
             )}
 
             {/* Donate history */}
-
             {store.donateHitoryModal && (
                 <Modal
                     title={'Donate history'}
@@ -654,67 +655,85 @@ function Actions() {
                 </Modal>
             )}
 
-            {/* List following modal */}
-            {store.modalListFollowing && (
+            {/* Users Donation */}
+            {store.usersDonationModal && (
                 <Modal
-                    title='Following'
-                    size={'medium'}
-                    show={store.modalListFollowing}
-                    close={() => dispatch(handleModalListFollowing(false))}
+                    title={'Users Donation'}
+                    show={store.usersDonationModal}
+                    close={() => dispatch(handleUsersDonationModal(false))}
+                    size={'large'}
                 >
-                    <div className={cx('modal__following-list')}>
-                        {store?.listFollowing.following > 0 ? (
-                            <>
-                                <span>
-                                    Following total:&nbsp;
-                                    {store.listFollowing.following}{' '}
-                                </span>
-                                {store?.listFollowing?.followingData.map(
-                                    (item, index) => {
+                    <div className={cx('donate-history__modal')}>
+                        {store?.usersDonation &&
+                        store?.usersDonation?.length > 0 ? (
+                            <CTable>
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell scope='col'>
+                                            ID
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            {/* User donated */}
+                                            User donated
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Amount donated
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Nation
+                                        </CTableHeaderCell>
+                                        {/* <CTableHeaderCell scope='col'>
+                                            Message
+                                        </CTableHeaderCell>
+                                        <CTableHeaderCell scope='col'>
+                                            Donated time
+                                        </CTableHeaderCell> */}
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {store?.usersDonation.map((item, index) => {
                                         return (
-                                            <div
-                                                key={item?.id}
-                                                className={cx(
-                                                    'modal__following-list__item'
-                                                )}
-                                                onClick={() =>
-                                                    handleClick.redirectUserProfile(
-                                                        item?.id
-                                                    )
-                                                }
-                                            >
-                                                <div className={cx('avatar')}>
-                                                    {item?.avatar ? (
-                                                        <img
-                                                            src={item?.avatar}
-                                                            alt='avatar'
-                                                        />
-                                                    ) : (
-                                                        <Image
-                                                            src={item?.avatar}
-                                                            alt='avatar'
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div className={cx('name')}>
-                                                    {item?.nickname}
-                                                </div>
-                                            </div>
+                                            <CTableRow key={item.user.id}>
+                                                <CTableHeaderCell scope='row'>
+                                                    {index + 1}
+                                                </CTableHeaderCell>
+                                                <CTableDataCell>
+                                                    {item.user.nickname}
+                                                </CTableDataCell>
+                                                <CTableDataCell
+                                                    style={{
+                                                        color: '#fe2c55',
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                >
+                                                    {parseInt(
+                                                        item.donateTotal
+                                                    ).toLocaleString()}{' '}
+                                                    VND
+                                                </CTableDataCell>
+                                                <CTableDataCell>
+                                                    {item.user.nation}
+                                                </CTableDataCell>
+                                                {/* <CTableDataCell>
+                                                    {item.message}
+                                                </CTableDataCell>
+                                                <CTableDataCell>
+                                                    {moment(
+                                                        item.created_at
+                                                    ).calendar()}
+                                                </CTableDataCell> */}
+                                            </CTableRow>
                                         );
-                                    }
-                                )}
-                            </>
+                                    })}
+                                </CTableBody>
+                            </CTable>
                         ) : (
-                            <div className={cx('not__following')}>
-                                <div className={cx('title')}>
-                                    You are not following anyone!
+                            <div className={cx('donate__empty')}>
+                                <div className={cx('donate__empty-img')}>
+                                    {' '}
+                                    <img src={donate_empty} alt='empty' />
                                 </div>
-                                <div className={cx('not__following-img')}>
-                                    <img
-                                        src={no_following}
-                                        alt='no-following'
-                                    />
-                                </div>
+                                <span>You have not donated to anyone yet</span>
                             </div>
                         )}
                     </div>
@@ -830,7 +849,7 @@ function Actions() {
                                                     </CTableHeaderCell>
                                                     <CTableDataCell>
                                                         {findPlayerById(
-                                                            item.player
+                                                            item.user
                                                         )}
                                                     </CTableDataCell>
                                                     <CTableDataCell>

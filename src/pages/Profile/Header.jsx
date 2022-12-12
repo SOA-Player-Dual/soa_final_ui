@@ -382,24 +382,7 @@ function Header() {
                                     Donate
                                 </div>
                                 <div
-                                    className={cx(
-                                        store.userContract &&
-                                            store.userContract.length > 0 &&
-                                            store.userContract.filter(
-                                                (item) =>
-                                                    item?.player ===
-                                                    store?.player?.id
-                                            ).length > 0
-                                            ? store.userContract.filter(
-                                                  (item) =>
-                                                      item.player ===
-                                                          store?.player?.id &&
-                                                      item.status === 'Pending'
-                                              ).length > 0
-                                                ? 'pending__btn'
-                                                : 'renting__btn'
-                                            : 'info__action-btn'
-                                    )}
+                                    className={cx('info__action-btn')}
                                     onClick={handleClick.rentModal}
                                 >
                                     <i
@@ -408,21 +391,7 @@ function Header() {
                                             'fa-rectangle-history-circle-user'
                                         )}
                                     ></i>
-                                    {store.userContract &&
-                                    store.userContract.length > 0 &&
-                                    store.userContract.filter(
-                                        (item) =>
-                                            item?.player === store?.player?.id
-                                    ).length > 0
-                                        ? store.userContract.filter(
-                                              (item) =>
-                                                  item.player ===
-                                                      store?.player?.id &&
-                                                  item.status === 'Pending'
-                                          ).length > 0
-                                            ? 'Pending'
-                                            : 'Renting'
-                                        : 'Rent'}
+                                    Rent
                                 </div>
                             </div>
                         </div>
